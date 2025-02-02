@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: 20241014_add_constraint_on_product_url.xml
+      relativeToChangelogFile: true

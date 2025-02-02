@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="20240926_create_price_history_table.xml" author="Emelyanov535">
+        <createTable tableName="price_history">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Идентификатор">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="product_id" type="bigint" remarks="ID товара">
+                <constraints nullable="false" />
+            </column>
+            <column name="price" type="numeric(10,2)" remarks="Цена товара">
+                <constraints nullable="false" />
+            </column>
+            <column name="date" type="timestamptz" remarks="Дата сохранения">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="price_history"
+                                 baseColumnNames="product_id"
+                                 constraintName="fk_product_price_history"
+                                 referencedTableName="product"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

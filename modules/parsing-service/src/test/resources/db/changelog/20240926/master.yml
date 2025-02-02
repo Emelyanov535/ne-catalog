@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: 20240926_001_create_product_table.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 20240926_002_create_price_history_table.xml
+      relativeToChangelogFile: true

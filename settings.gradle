@@ -1,0 +1,3 @@
+rootProject.name = 'ne-catalog'
+
+include 'modules:parsing-service'

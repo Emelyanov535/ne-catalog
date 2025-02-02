@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: 20240926/master.yml
+      relativeToChangelogFile: true
+  - include:
+      file: 20241006/master.yml
+      relativeToChangelogFile: true
+  - include:
+      file: 20241014/master.yml
+      relativeToChangelogFile: true

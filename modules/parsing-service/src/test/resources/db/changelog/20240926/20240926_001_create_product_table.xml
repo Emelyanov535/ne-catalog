@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="20240926_create_product_table.xml" author="danil">
+        <createTable tableName="product">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Идентификатор товара">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="marketplace" type="varchar" remarks="Название маркетплейса (enum)">
+                <constraints nullable="false" />
+            </column>
+            <column name="category" type="varchar" remarks="Категория товара">
+                <constraints nullable="false" />
+            </column>
+            <column name="brand" type="varchar" remarks="Бренд товара">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_name" type="varchar" remarks="Название товара">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="timestamptz" remarks="Время добавления товара в базу">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="20240926_create_product_table.xml" author="danil">
+        <addColumn tableName="product">
+            <column name="url" type="varchar" remarks="Ссылка на товар">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+        <addColumn tableName="product">
+            <column name="image-url" type="varchar" remarks="Ссылка на изображение товара">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <dropTable tableName="price_history" cascadeConstraints="true" />
+        <sql>
+            CREATE TABLE if not exists price_history(
+                product_url varchar NOT NULL,
+                price numeric(10, 2) NOT NULL,
+                date timestamptz NOT NULL,
+                PRIMARY KEY (product_url, date)
+            ) PARTITION BY RANGE (date);
+        </sql>
+    </changeSet>
+</databaseChangeLog>
