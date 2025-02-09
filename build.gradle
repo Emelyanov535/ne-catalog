@@ -1,42 +1,21 @@
 plugins {
-    id 'java'
-    id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.springframework.boot' version '3.4.1'
-}
-
-group = 'ru.ulstu'
-version = '0.0.1-SNAPSHOT'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation project(":modules:parsing-service")
-
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3'
+    id 'org.springframework.boot' version '3.4.2' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
 subprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'org.springframework.boot'
+    group = 'ru.necatalog'
+    version = '0.0.1-SNAPSHOT'
 
-    dependencyManagement {
-        imports {
-            mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.1'
+    apply plugin: 'io.spring.dependency-management'
+
+    if (project.name == "app") {
+        apply plugin: 'java'
+        apply plugin: 'org.springframework.boot'
+    } else {
+        apply plugin: 'java-library'
+        java {
+            withSourcesJar()
         }
     }
 
@@ -44,10 +23,39 @@ subprojects {
         mavenCentral()
     }
 
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
+    }
+
+    compileJava.options.encoding = 'UTF-8'
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    ext {
+        set('spring_boot_version', '3.4.2')
+        set('web_driver_version', '5.5.0')
+        set('selenium_version', '4.25.0')
+        set('spring_retry_version', '2.0.9')
+        set('jsoup_vesion', '1.18.1')
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+        }
+    }
+
     dependencies {
-        annotationProcessor 'org.projectlombok:lombok'
         compileOnly 'org.projectlombok:lombok'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        annotationProcessor 'org.projectlombok:lombok'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 }
