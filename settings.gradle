@@ -1,3 +1,16 @@
 rootProject.name = 'ne-catalog'
 
-include 'modules:parsing-service'
+include(
+        'app',
+        'modules:persistence',
+
+        'modules:parsers:ozon-parser',
+        'modules:analog-finder',
+        'modules:favorites',
+        'modules:search',
+
+        'modules:parsers:wildberries-parser',
+        'modules:auth',
+        'modules:analytics',
+        'modules:notifications',
+)

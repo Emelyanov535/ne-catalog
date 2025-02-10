@@ -1,4 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: 20241006_001_add_columns_in_tables.xml
-      relativeToChangelogFile: true

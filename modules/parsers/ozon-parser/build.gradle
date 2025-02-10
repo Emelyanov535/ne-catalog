@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':modules:persistence')
+
+    implementation "io.github.bonigarcia:webdrivermanager:${web_driver_version}"
+    implementation "org.seleniumhq.selenium:selenium-java:${selenium_version}"
+    implementation "org.springframework.retry:spring-retry:${spring_retry_version}"
+    implementation "org.jsoup:jsoup:${jsoup_vesion}"
+}

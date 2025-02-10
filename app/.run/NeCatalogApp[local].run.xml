@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="NeCatalogApp [local]" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev" />
+    <option name="SCHEDULED_DEBUGGER" value="true" />
+    <envs>
+      <env name="POSTGRES_JDBC_PASSWORD" value="postgres" />
+      <env name="POSTGRES_JDBC_USERNAME" value="postgres" />
+      <env name="POSTGRES_JDBC_URL" value="localhost:5432/ne-catalog" />
+      <env name="SERVER_PORT" value="8080" />
+      <env name="OZON_PARSER_ENABLED" value="false" />
+      <env name="OZON_PARSER_MODE" value="headless" />
+    </envs>
+    <module name="ne-catalog.app.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ru.necatalog.app.NeCatalogApp" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

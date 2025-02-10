@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ne-catalog-app
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_JDBC_URL}
+    username: ${POSTGRES_JDBC_USERNAME}
+    password: ${POSTGRES_JDBC_PASSWORD}
+  liquibase:
+    change-log: classpath:/db/changelog/master.yml
