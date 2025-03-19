@@ -1,41 +1,35 @@
 package ru.necatalog.wildberriesparser.config;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
+import java.io.IOException;
+import java.util.Map;
+
 @Slf4j
+@RequiredArgsConstructor
 public class DynamicProxyInterceptor implements ClientHttpRequestInterceptor {
 
-    private final UserAgentProvider userAgentProvider;
-    private final ProxyProvider proxyProvider;
+	private final int proxyPort;
 
-    public DynamicProxyInterceptor(UserAgentProvider userAgentProvider, ProxyProvider proxyProvider) {
-        this.userAgentProvider = userAgentProvider;
-        this.proxyProvider = proxyProvider;
-    }
+	@Override
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+		boolean isIpCheck = request.getURI().toString().contains("checkip.amazonaws.com");
 
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        // Получаем случайный прокси
-        InetSocketAddress proxyAddress = proxyProvider.getRandomProxy();
-        log.info("Используемый прокси: {}:{}", proxyAddress.getHostName(), proxyAddress.getPort());
+		if (!isIpCheck) {
+			Map.Entry<String, String> randomUserAgent = UserAgentProvider.getRandomUserAgent();
+			request.getHeaders().set("sec-ch-ua-platform", randomUserAgent.getKey());
+			request.getHeaders().set("User-Agent", randomUserAgent.getValue());
 
-        // Устанавливаем прокси
-        System.setProperty("http.proxyHost", proxyAddress.getHostName());
-        System.setProperty("http.proxyPort", String.valueOf(proxyAddress.getPort()));
+			log.info("Используемый User-Agent ({}) : {}", randomUserAgent.getKey(), randomUserAgent.getValue());
+			log.info("Using SOCKS proxy on port: {}", proxyPort);
+		}
 
-        // Устанавливаем динамический user-agent
-        String randomUserAgent = userAgentProvider.getRandomUserAgent();
-        log.info("Используемый User-Agent: {}", randomUserAgent);
-        request.getHeaders().set("User-Agent", randomUserAgent);
-
-        // Выполняем запрос
-        return execution.execute(request, body);
-    }
+		return execution.execute(request, body);
+	}
 }
+

@@ -13,7 +13,11 @@ dependencies {
     implementation project(':modules:auth')
     implementation project(':modules:analytics')
     implementation project(':modules:notifications')
+    implementation project(':modules:catalog')
     implementation "org.springframework.retry:spring-retry:${spring_retry_version}"
 
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 }
