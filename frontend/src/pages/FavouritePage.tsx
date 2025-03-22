@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {useFavorites} from "@/services/useFavorites.ts";
 import {ItemCard} from "@/components/ItemCard.tsx";
 import {
     Pagination,
@@ -7,12 +8,11 @@ import {
     PaginationItem,
     PaginationLink,
     PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
-import {catalogService} from "@/services/CatalogService.ts";
-import {useFavorites} from "@/services/useFavorites.ts";
+    PaginationPrevious
+} from "@/components/ui/pagination.tsx";
+import {favouriteService} from "@/services/FavouriteService.ts";
 
-const Home: React.FC = () => {
+const FavouritePage: React.FC = () => {
     const [items, setItems] = useState<any[]>([]);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [page, setPage] = useState(1);
@@ -23,7 +23,7 @@ const Home: React.FC = () => {
         const fetchItems = async () => {
             try {
                 const adjustedPage = page <= 0 ? 1 : page;
-                const data = await catalogService.getProductList(adjustedPage - 1, itemsPerPage);
+                const data = await favouriteService.getFavoriteProductsWithPaging(adjustedPage - 1, itemsPerPage);
                 setItems(data.content || []);
                 setTotalItems(data.page.totalElements || 0);
             } catch (error) {
@@ -105,6 +105,6 @@ const Home: React.FC = () => {
             </Pagination>
         </div>
     );
-};
+}
 
-export default Home;
+export default FavouritePage;

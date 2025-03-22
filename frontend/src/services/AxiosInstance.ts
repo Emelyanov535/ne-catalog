@@ -3,13 +3,15 @@ import { localStorageService } from "./LocalStorageService";
 
 const axiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_BACKEND_API_URL,
+	withCredentials: false
 });
 
 axiosInstance.interceptors.request.use(
 	(config) => {
 		const accessToken = localStorageService.getAccessToken();
 		if (accessToken) {
-			config.headers["Authorization"] = `Bearer ${accessToken}`;
+			config.headers.Authorization = `Bearer ${accessToken}`;
+			config.withCredentials = false
 		}
 		return config;
 	},
@@ -25,8 +27,7 @@ axiosInstance.interceptors.response.use(
 	async (error) => {
 		const originalRequest = error.config;
 
-		// Если ошибка 401 и не делаем повторный запрос для токена
-		if (error.response?.status === 401 && !originalRequest._retry) {
+		if (error.response?.status === 403 && !originalRequest._retry) {
 			originalRequest._retry = true;
 
 			try {
@@ -36,15 +37,16 @@ axiosInstance.interceptors.response.use(
 					throw new Error("No refresh token available");
 				}
 
-				const response = await axiosInstance.post(`/refresh`, {
-					refresh_token: refreshToken,
+				const response = await axiosInstance.post(`/auth/refresh`, {
+					refreshToken: refreshToken,
 				});
 
-				const { access_token, refresh_token } = response.data;
+				localStorageService.setTokenToStorage({
+					access_token: response.data.accessToken,
+					refresh_token: response.data.refreshToken
+				});
 
-				localStorageService.setTokenToStorage({ access_token, refresh_token });
-
-				originalRequest.headers["Authorization"] = `Bearer ${access_token}`;
+				originalRequest.headers["Authorization"] = `Bearer ${response.data.accessToken}`;
 
 				return axiosInstance(originalRequest);
 			} catch (refreshError) {

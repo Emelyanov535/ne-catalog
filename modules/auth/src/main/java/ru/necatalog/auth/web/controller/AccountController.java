@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.necatalog.auth.service.AccountService;
 import ru.necatalog.auth.web.dto.RegisterDto;
+import ru.necatalog.auth.web.dto.UserInfo;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/account")
@@ -31,7 +34,13 @@ public class AccountController {
 
 	@GetMapping("/whoami")
 	@Operation(summary = "Получение информации о текущем пользователе", security = @SecurityRequirement(name = "bearerAuth"))
-	public ResponseEntity<String> whoami() {
-		return ResponseEntity.ok(accountService.getCurrentUser().getUsername());
+	public ResponseEntity<UserInfo> whoami() {
+		return ResponseEntity.ok(accountService.getUserInfo());
+	}
+
+	@GetMapping("/changeNotificationStatus")
+	@Operation(summary = "Изменение статуса отправки уведомлений", security = @SecurityRequirement(name = "bearerAuth"))
+	public void changeNotificationStatus() {
+		accountService.changeNotificationStatus();
 	}
 }

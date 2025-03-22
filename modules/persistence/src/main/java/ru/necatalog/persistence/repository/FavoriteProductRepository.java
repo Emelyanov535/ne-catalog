@@ -13,4 +13,6 @@ public interface FavoriteProductRepository extends JpaRepository<FavoriteProduct
 		where fp.user.id = :userId and fp.product.id = :productId
 		""")
 	FavoriteProductEntity findByUserIdAndProductId(@Param("userId") Long userId, @Param("productId") Long productId);
+
+	boolean existsByUserIdAndProductId(Long userId, Long productId);
 }

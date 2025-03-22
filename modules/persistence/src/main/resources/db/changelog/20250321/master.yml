@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: 20250321_001_add_column_to_user_tables.xml
+      relativeToChangelogFile: true

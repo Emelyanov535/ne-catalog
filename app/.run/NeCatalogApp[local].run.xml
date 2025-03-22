@@ -5,7 +5,7 @@
         <envs>
             <env name="POSTGRES_JDBC_PASSWORD" value="postgres" />
             <env name="POSTGRES_JDBC_USERNAME" value="postgres" />
-            <env name="POSTGRES_JDBC_URL" value="localhost:5432/test-2" />
+            <env name="POSTGRES_JDBC_URL" value="localhost:5432/ne-catalog" />
             <env name="SERVER_PORT" value="8080" />
             <env name="OZON_PARSER_ENABLED" value="false" />
             <env name="OZON_PARSER_MODE" value="headless" />

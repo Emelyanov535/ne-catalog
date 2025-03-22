@@ -13,7 +13,6 @@ class LocalStorageService {
 	}
 
 	getAccessToken() {
-		console.log(localStorage.getItem(this.accessName))
 		return localStorage.getItem(this.accessName);
 	}
 
