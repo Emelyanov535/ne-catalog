@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':modules:persistence')
+    implementation project(':modules:notifications')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation "org.springframework.retry:spring-retry:${spring_retry_version}"

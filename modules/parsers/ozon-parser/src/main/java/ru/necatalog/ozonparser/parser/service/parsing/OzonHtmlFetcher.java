@@ -34,7 +34,7 @@ public class OzonHtmlFetcher {
             driver.manage().timeouts().pageLoadTimeout(Duration.of(10, ChronoUnit.SECONDS));
             driver.get(pageUrl);
             WebDriverWait wait = new WebDriverWait(driver, Duration.of(10, ChronoUnit.SECONDS));
-            var accessDeniedPage = new AccessDeniedPage(driver, wait);
+            var accessDeniedPage = new AccessDeniedPage(driver);
             var categoryPage = new CategoryPage(driver, wait);
             var noContentPage = new NoContentPage(driver, wait);
             wait.until(d -> checkForWaitingPageLoading(accessDeniedPage, categoryPage, noContentPage, lastPageInCategory));
