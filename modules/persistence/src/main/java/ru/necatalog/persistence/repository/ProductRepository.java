@@ -26,4 +26,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     Page<ProductEntity> findAllByMarketplaceAndCategory(Marketplace marketplace, Category category, Pageable pageable);
 
+    Page<ProductEntity> findAll(Pageable pageable);
+
 }

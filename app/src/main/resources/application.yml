@@ -12,3 +12,43 @@ spring:
     password: ${POSTGRES_JDBC_PASSWORD}
   liquibase:
     change-log: classpath:/db/changelog/master.yml
+  mail:
+    host: smtp.gmail.com
+    username: rpplabs098@gmail.com
+    password: sxwf ohjr cgba wext
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
+
+rest:
+  forecast-service:
+    host: http://time-series.athene.tech/api/1.0
+    methods:
+      specific-method-forecast: /getSpecificMethodForecast
+      specific-method-smoothed: /getSpecificMethodSmoothed
+      forecast: /getForecast
+
+server:
+  servlet:
+    context-path: "/api/v1"
+  port: 8080
+
+wildberries:
+  status: false
+  base-url: "https://static-basket-01.wbbasket.ru"
+  catalog-url: "/vol0/data/main-menu-ru-ru-v3.json"
+  user-agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0)"
+  catalog-wb-url: "https://catalog.wb.ru/catalog/"
+  retry-attempts: 5
+  retry-delay: 1000
+  shard: "electronic41/v2"
+  laptop-url: "/catalog"
+
+jwt:
+  secret:
+    access: "518710bf24640bef7899413d9003491c368e50edca6a9365e9cfc69181b9d8dcba9dd3f73d383d1e65bec00be9d696bc4829d79f0649e1675e4db937d5946c3428cbc8cf58aba82aadc33e12136691f50ae1ab17a9c681038bac54eeb1d4fb540c6d78aeea639daeb8b62d85a96e3ca2c76738ec1ba34d584427bfd515debe2ebbe37cf6ade2c2381ed8e4de35b93001f21edca97196a5b790bfee5c8a99c85eb61b2613a5717a1f06310ebf255135fd2d30f72e27d20ac5b15884a1ace160e3531fe8517a07e4cc0eab81c2d616fb89ede8ced9393a9cce4e14adb2a1096d83e17337bc5a6bb954a69f3fae39054db20a3c337fc363198f5a2885be831916e8"
+    refresh: "fe40f04929b3ef81719e9a07a439bb7f851908b52d50f8fa62174676e524262f6e2c3bdae31549eda55275e058040fdad1770f3c61c4b3d48bb9e92c1f20f1398f4e5ce05beb19ad217b591cce65c05591260ef5672672babc7af2d4b5faa8aa4e25b218618edb735026f4180ff4dce3e23c7614ea8fac6d9b799231d14f7dfd1b6baa8ed377fa37750934feab3348a9b67f70e5a482fe3bfa2b4178ae56e1f5081830ff8f66dd365127e39537fb6cba3bd8c681c358c07eba53ebac4950354bcf25a2d5f6cdea2bbcba251d52ed69bd8514edd8ee39e4d833e6db0bc0fd685dca33523a24f1653bd60c0895c621e93582fbe150df61f474d3b05efe903342ab"

@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: 20250308_001_create_user_table.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 20250308_002_create_user_roles_table.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 20250308_003_create_favorite_products_table.xml
+      relativeToChangelogFile: true
