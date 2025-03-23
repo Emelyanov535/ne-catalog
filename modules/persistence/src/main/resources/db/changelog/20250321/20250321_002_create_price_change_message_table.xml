@@ -10,7 +10,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="product_id" type="BIGINT">
+            <column name="product_url" type="varchar">
                 <constraints nullable="false"/>
             </column>
             <column name="old_price" type="numeric(10,2)" remarks="Старая цена товара">
@@ -27,8 +27,8 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="price_change_message" baseColumnNames="product_id"
-                                 referencedTableName="product" referencedColumnNames="id"
+        <addForeignKeyConstraint baseTableName="price_change_message" baseColumnNames="product_url"
+                                 referencedTableName="product" referencedColumnNames="url"
                                  constraintName="fk_price_change_message_product" onDelete="CASCADE"/>
     </changeSet>
 

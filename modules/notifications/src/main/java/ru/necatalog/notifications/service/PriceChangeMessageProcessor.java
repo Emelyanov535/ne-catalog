@@ -26,7 +26,7 @@ public class PriceChangeMessageProcessor {
 		List<PriceChangeMessage> newMessages = priceChangeMessageRepository.findAllByProcessedFalse();
 
 		Map<UserEntity, List<PriceChangeMessage>> userMessages = newMessages.stream()
-				.flatMap(message -> userRepository.findAllNotificatedUsers(message.getProduct().getId()).stream()
+				.flatMap(message -> userRepository.findAllNotificatedUsers(message.getProduct().getUrl()).stream()
 						.map(user -> Map.entry(user, message)))
 				.collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
 

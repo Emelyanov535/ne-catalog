@@ -30,7 +30,7 @@ public class PriceChangeMessage {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "product_id", nullable = false)
+	@JoinColumn(name = "product_url", nullable = false)
 	private ProductEntity product;
 
 	@Column(name = "old_price", nullable = false, precision = 10, scale = 2)

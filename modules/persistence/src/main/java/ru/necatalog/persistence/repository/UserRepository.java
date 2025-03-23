@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 		select u
 		from UserEntity u
 		join u.favoriteProducts fp
-		where u.isNotification = true and fp.product.id = :productId
+		where u.isNotification = true and fp.product.url = :productUrl
 		""")
-	List<UserEntity> findAllNotificatedUsers(@Param("productId") Long productId);
+	List<UserEntity> findAllNotificatedUsers(@Param("productUrl") String productUrl);
 }
