@@ -1,8 +1,14 @@
 dependencies {
+    implementation project(':modules:config')
     implementation project(':modules:persistence')
+    implementation project(':modules:common')
 
     implementation "io.github.bonigarcia:webdrivermanager:${web_driver_version}"
     implementation "org.seleniumhq.selenium:selenium-java:${selenium_version}"
     implementation "org.springframework.retry:spring-retry:${spring_retry_version}"
     implementation "org.jsoup:jsoup:${jsoup_vesion}"
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    implementation('org.springframework.boot:spring-boot-starter-test')
+    testRuntimeOnly('org.springframework.boot:spring-boot-starter-test')
 }

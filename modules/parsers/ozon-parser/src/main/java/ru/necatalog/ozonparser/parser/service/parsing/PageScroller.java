@@ -1,12 +1,16 @@
 package ru.necatalog.ozonparser.parser.service.parsing;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
+import org.checkerframework.checker.units.qual.N;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,37 +20,25 @@ public class PageScroller {
 
     private static final String SCROLL_TO_PAGE_HEIGHT = "window.scrollTo(0, document.body.scrollHeight);";
 
-    public void scrollToEndOfPage(WebDriver driver) throws InterruptedException {
+    public void scrollToEndOfPage(WebDriver driver) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         AtomicLong lastHeight = new AtomicLong((long) js.executeScript(ALL_CONTENT_PAGE_HEIGHT));
-        int attemptsLimit = 100;
-        log.info("Начинаем пролистывать страницу до конца");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        //log.info("Начинаем пролистывать страницу до конца");
         while (true) {
             js.executeScript(SCROLL_TO_PAGE_HEIGHT);
-
-            long newHeight = (long) js.executeScript(ALL_CONTENT_PAGE_HEIGHT);
-
+            AtomicLong finalLastHeight = lastHeight;
             try {
-                var nextPageButtons = driver.findElements(By.cssSelector("div[data-widget='megaPaginator'] > div")).get(1)
-                    .findElement(By.cssSelector(":scope > div > div > div"))
-                    .findElements(By.tagName("a"));
-
-                if (nextPageButtons != null && newHeight > lastHeight.get()) {
-                    log.info("ЗАКОНЧИЛИ СКРОЛЛИТЬ");
-                    break;
+                boolean heightChanged = wait.until((ExpectedCondition<Boolean>) d -> {
+                    Long newHeight = (Long) js.executeScript(ALL_CONTENT_PAGE_HEIGHT);
+                    if (Long.valueOf(newHeight).equals(finalLastHeight.get())) {}
+                    return newHeight > finalLastHeight.get();
+                });
+                if (heightChanged) {
+                    lastHeight = new AtomicLong((long) js.executeScript("return document.body.scrollHeight"));
                 }
-            } catch (Exception ignored) {}
-
-
-            if (newHeight > lastHeight.get()) {
-                attemptsLimit = 100;
-                lastHeight.set(newHeight);
-            } else {
-                attemptsLimit--;
-                Thread.sleep(1000);
-                if (attemptsLimit == 0) {
-                    break;
-                }
+            } catch (TimeoutException e) {
+                break;
             }
         }
     }

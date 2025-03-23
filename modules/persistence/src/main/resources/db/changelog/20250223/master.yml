@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: 20250223_0_change_product_pk.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 20250223_1_add_product_attribute_tables.xml
+      relativeToChangelogFile: true

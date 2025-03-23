@@ -5,9 +5,9 @@ import ru.necatalog.persistence.enumeration.Category;
 
 public enum OzonCategory {
 
-    LAPTOP ("/noutbuki-15692/?brandcertified=t", Category.LAPTOP),
+    LAPTOP ("/noutbuki-15692/?brandcertified=t", Category.LAPTOP);
 
-    SMARTPHONE ("/smartfony-15502/?brandcertified=t", Category.SMARTPHONE);
+    //SMARTPHONE ("/smartfony-15502/?brandcertified=t", Category.SMARTPHONE);
 
     private static final String BASE_CATEGORY_URL = "https://www.ozon.ru/category";
 

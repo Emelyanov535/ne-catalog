@@ -1,20 +1,30 @@
 package ru.necatalog.ozonparser.parser.service.parsing;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import ru.necatalog.ozonparser.config.properties.OzonParserConfigProperties;
+import ru.necatalog.ozonparser.config.properties.OzonParserProperties;
 import ru.necatalog.ozonparser.parser.enumeration.OzonCategory;
+import ru.necatalog.ozonparser.parser.service.dto.Characteristic;
 import ru.necatalog.ozonparser.parser.service.dto.ParsedData;
+import ru.necatalog.ozonparser.parser.service.processor.AttributeProcessor;
 import ru.necatalog.ozonparser.service.OzonProductService;
+import ru.necatalog.ozonparser.utils.OzonConsts;
+import ru.necatalog.persistence.entity.ProductAttributeEntity;
+import ru.necatalog.persistence.entity.ProductEntity;
+import ru.necatalog.persistence.repository.ProductAttributeRepository;
 
 @Slf4j
 public class OzonParsingService {
@@ -25,28 +35,38 @@ public class OzonParsingService {
 
     private final Semaphore semaphore;
 
-    private final OzonHtmlFetcher categoryPageParsingService;
+    private final OzonHtmlFetcher ozonHtmlFetcher;
 
-    private final OzonParserConfigProperties ozonConfigProperties;
+    private final OzonParserProperties ozonConfigProperties;
 
     private final OzonPageParser ozonPageParser;
 
     private final OzonProductService productService;
+    
+    private final ProductAttributeRepository productAttributeRepository;
+
+    private final Map<OzonCategory, AttributeProcessor> attributeProcessorsMap = new HashMap<>();
 
     public OzonParsingService(OzonHtmlFetcher categoryPageParsingService,
-                              OzonParserConfigProperties ozonConfigProperties, OzonPageParser ozonPageParser,
-                              OzonProductService productService) {
-        this.pageExecutorService = Executors.newFixedThreadPool(ozonConfigProperties.getMaxThreads());
+                              OzonParserProperties ozonConfigProperties,
+                              OzonPageParser ozonPageParser,
+                              OzonProductService productService,
+                              List<AttributeProcessor> attributeProcessors,
+                              ProductAttributeRepository productAttributeRepository) {
+        this.pageExecutorService = Executors.newFixedThreadPool(1/*ozonConfigProperties.getMaxThreads()*/);
         this.semaphore = new Semaphore(ozonConfigProperties.getMaxThreads());
+        this.productAttributeRepository = productAttributeRepository;
         this.urlCache = new ConcurrentHashMap<>();
         for (OzonCategory category : OzonCategory.values()) {
             urlCache.put(category.getCategoryUrl(), ConcurrentHashMap.newKeySet());
         }
 
-        this.categoryPageParsingService = categoryPageParsingService;
+        this.ozonHtmlFetcher = categoryPageParsingService;
         this.ozonConfigProperties = ozonConfigProperties;
         this.ozonPageParser = ozonPageParser;
         this.productService = productService;
+        attributeProcessors.forEach(processor ->
+            attributeProcessorsMap.put(processor.getCategory(), processor));
     }
 
     public void startProcessing() {
@@ -84,27 +104,53 @@ public class OzonParsingService {
                                      AtomicBoolean lastPageInCategory) {
         try {
             MDC.put("pageUrl", pageUrl);
-            String pageSource = categoryPageParsingService.fetchPageHtml(pageUrl, lastPageInCategory);
-            List<ParsedData> parsedProducts =
-                ozonPageParser.parseProductsFromCategoryPage(pageSource, category.getMappedCategory());
-            log.info("""
-                
-                КОНЕЦ ПАРСИНГА СТРАНИЦЫ КАТЕГОРИИ
-                КОЛИЧЕСТВО НАЙДЕННЫХ ТОВАРОВ НА СТРАНИЦЕ {},
-                
-                """, parsedProducts.size());
-            if (urlCache.size() > 1000000) {
-                urlCache.clear();
-            }
-            Set<String> categoryCachecUrl = urlCache.get(category.getCategoryUrl());
-            List<ParsedData> uniqueData = parsedProducts.stream()
-                .filter(data -> categoryCachecUrl.add(data.getUrl()))
-                .toList();
-            productService.saveBatch(uniqueData);
+            String pageSource = ozonHtmlFetcher.fetchCategoryPageHtml(pageUrl, lastPageInCategory);
+            ozonPageParser.parseProductsFromCategoryPage(pageSource, category.getMappedCategory())
+                .filter(this::isNotDuplicate)
+                .forEach(product -> {
+                    Optional<ProductEntity> productEntity = productService.save(product);
+                    try {
+                        if (productEntity.isPresent()) {
+                            processAttributePage(category, productEntity.get().getUrl());
+                        } else { // TODO удалить после заполнения уже сохраненных товаров
+                            processAttributePage(category, product.getUrl());
+                        }
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
+                });
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         } finally {
             MDC.clear();
             semaphore.release();
         }
+    }
+
+    AtomicInteger productsCount = new AtomicInteger();
+    public void processAttributePage(OzonCategory category,
+                                     String productUrl) throws JsonProcessingException {
+        String pageUrl = OzonConsts.OZON_API_LINK
+            + "/entrypoint-api.bx/page/json/v2?url="
+            + productUrl.replace(OzonConsts.OZON_MAIN_LINK, "")
+            + "?layout_container=pdpPage2column&layout_page_index=2";
+        String json = ozonHtmlFetcher.fetchPageJson(pageUrl);
+        List<Characteristic> characteristics = ozonPageParser.parseAttributesPage(json);
+        List<ProductAttributeEntity> attributeEntities = attributeProcessorsMap.get(category)
+            .process(characteristics, productUrl);
+        productAttributeRepository.saveAll(attributeEntities);
+        log.info("Сохарнили атрибуты суммарно для {}", productsCount.addAndGet(1));
+    }
+
+    private boolean isNotDuplicate(ParsedData product) {
+        boolean newProduct = urlCache.get(product.getCategoryUrl()).add(product.getUrl());
+        if (urlCache.get(product.getCategoryUrl()).size() >= 100000) {
+            urlCache.get(product.getCategoryUrl()).clear();
+        }
+        if (!newProduct) {
+            log.info("Дубликат {}", product.getUrl());
+        }
+        return newProduct;
     }
 
 }

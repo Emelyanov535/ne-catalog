@@ -1,5 +1,5 @@
 ozon-parser:
-  enabled: ${OZON_PARSER_ENABLED:true}
+  enabled: ${OZON_ENABLED:true}
   max-threads: ${OZON_MAX_PROCESSING_THREADS:5}
-  max-num-of-pages-on-screen: ${OZON_MAX_NUM_OF_PAGES_ON_SCREEN:100}\
+  max-num-of-pages-on-screen: ${OZON_MAX_NUM_OF_PAGES_ON_SCREEN:100}
   mode: ${OZON_PARSER_MODE:headless} # visible|headless

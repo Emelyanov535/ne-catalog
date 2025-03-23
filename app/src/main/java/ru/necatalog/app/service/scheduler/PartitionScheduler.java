@@ -45,7 +45,7 @@ public class PartitionScheduler {
     }
 
     private void checkAndCreatePartition(String partitionName, LocalDate startDate) {
-        if (!partitionService.checkPartitionExists(partitionName)) {
+        if (true || !partitionService.checkPartitionExists(partitionName)) {
             LocalDate endDate = startDate.plusMonths(1);
             partitionService.createPartition(partitionName, startDate.toString(), endDate.toString());
             log.info("Партиция {} создана для диапазона: {} - {} ", partitionName, startDate, endDate);

@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -12,6 +13,7 @@ import ru.necatalog.ozonparser.parser.pool.WebDriverPool;
 import ru.necatalog.ozonparser.parser.service.page.AccessDeniedPage;
 import ru.necatalog.ozonparser.parser.service.page.CategoryPage;
 import ru.necatalog.ozonparser.parser.service.page.NoContentPage;
+import ru.necatalog.ozonparser.utils.OzonConsts;
 
 @Slf4j
 public class OzonHtmlFetcher {
@@ -27,11 +29,11 @@ public class OzonHtmlFetcher {
     }
 
     @Retryable(maxAttempts = 10, recover = "recover")
-    public String fetchPageHtml(String pageUrl,
-                                AtomicBoolean lastPageInCategory) {
+    public String fetchCategoryPageHtml(String pageUrl,
+                                        AtomicBoolean lastPageInCategory) {
         var driver = webDriverPool.borrowDriver();
         try {
-            driver.manage().timeouts().pageLoadTimeout(Duration.of(10, ChronoUnit.SECONDS));
+            log.info("Приступаем к обработке страницы {}", pageUrl);
             driver.get(pageUrl);
             WebDriverWait wait = new WebDriverWait(driver, Duration.of(10, ChronoUnit.SECONDS));
             var accessDeniedPage = new AccessDeniedPage(driver);
@@ -40,10 +42,11 @@ public class OzonHtmlFetcher {
             wait.until(d -> checkForWaitingPageLoading(accessDeniedPage, categoryPage, noContentPage, lastPageInCategory));
             checkAceesDeniedAndResolve(accessDeniedPage);
 
-            pageScroller.scrollToEndOfPage(driver);
+            if (!lastPageInCategory.get()) {
+                pageScroller.scrollToEndOfPage(driver);
+            }
             return driver.getPageSource();
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             webDriverPool.returnDriver(driver);
@@ -103,4 +106,17 @@ public class OzonHtmlFetcher {
         log.error("Все ретраи провалились");
     }
 
+    public String fetchPageJson(String pageUrl) {
+        var driver = webDriverPool.borrowDriver();
+        try {
+            driver.get(pageUrl);
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+            return driver.getPageSource();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            webDriverPool.returnDriver(driver);
+        }
+    }
 }

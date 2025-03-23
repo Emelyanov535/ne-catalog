@@ -1,5 +1,7 @@
 package ru.necatalog.ozonparser.parser.pool;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -8,7 +10,8 @@ import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.ObjectFactory;
-import ru.necatalog.ozonparser.config.properties.OzonParserConfigProperties;
+import ru.necatalog.ozonparser.config.properties.OzonParserProperties;
+import ru.necatalog.ozonparser.utils.OzonConsts;
 
 @Slf4j
 public class WebDriverPool {
@@ -19,12 +22,9 @@ public class WebDriverPool {
 
     private final ObjectFactory<WebDriver> webDriverFactory;
 
-    private final OzonParserConfigProperties ozonConfigProperties;
-
     public WebDriverPool(ObjectFactory<WebDriver> webDriverFactory,
-                         OzonParserConfigProperties ozonConfigProperties) {
+                         OzonParserProperties ozonConfigProperties) {
         this.webDriverFactory = webDriverFactory;
-        this.ozonConfigProperties = ozonConfigProperties;
         int poolSize = ozonConfigProperties.getMaxThreads();
 
         for (int i = 0; i < poolSize; i++) {
@@ -33,7 +33,10 @@ public class WebDriverPool {
     }
 
     private WebDriver createNewDriver() {
-        return webDriverFactory.getObject();
+        WebDriver wd = webDriverFactory.getObject();
+        wd.manage().timeouts().pageLoadTimeout(Duration.of(10, ChronoUnit.SECONDS));
+        wd.get(OzonConsts.OZON_MAIN_LINK);
+        return wd;
     }
 
     public WebDriver borrowDriver() {
