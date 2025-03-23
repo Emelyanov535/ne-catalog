@@ -32,7 +32,6 @@ public class ParsingService {
     private final ConversionService conversionService;
     private final WildberriesConfigProperties wildberriesConfigProperties;
     private final ProductService productService;
-    private final TestService testService;
 
     public void parse() {
         int page = 1;
@@ -68,9 +67,8 @@ public class ParsingService {
                 productEntities.add(productEntity);
                 priceHistories.add(priceHistory);
             });
-            testService.checkPriceAndNotify(productEntities, priceHistories);
             productService.saveData(productEntities, priceHistories);
-            // Здесь логика по просмотру изменилась ли цена товара с предыдущими ценами, отправка уведомлений
+            productService.addMessageToDb(priceHistories);
             page++;
 //        } while (page <= totalPages);
         } while (page <= 100);
@@ -117,6 +115,14 @@ public class ParsingService {
         if (vol <= 1655) return "11";
         if (vol <= 1919) return "12";
         if (vol <= 2045) return "13";
-        return "14";
+        if (vol <= 2191) return "14";
+        if (vol <= 2403) return "15";
+        if (vol <= 2620) return "16";
+        if (vol <= 2837) return "17";
+        if (vol <= 3051) return "18";
+        if (vol <= 3267) return "19";
+        if (vol <= 3485) return "20";
+
+        return "21";
     }
 }
