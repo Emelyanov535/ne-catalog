@@ -61,9 +61,9 @@ const FavouritePage: React.FC = () => {
                 {items.length > 0 ? (
                     items.map((item) => (
                         <ItemCard
-                            key={item.id}
+                            key={item.url}
                             product={item}
-                            isFavorite={favorites.has(item.id)}
+                            isFavorite={favorites.has(item.url)}
                             onToggleFavorite={toggleFavorite}
                         />
                     ))

@@ -1,5 +1,4 @@
 interface ProductDto {
-    id: number,
     marketplace: string,
     category: string,
     brand: string,

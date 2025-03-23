@@ -2,7 +2,7 @@ import { HeartIcon } from "lucide-react";
 import { useState } from "react";
 
 interface FavoriteButtonProps {
-    productId: number;
+    productUrl: string;
     isFavorite: boolean;
     onToggle: () => void;
     className?: string;
