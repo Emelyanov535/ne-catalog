@@ -20,7 +20,7 @@ public class CatalogService {
 		return productRepository.findAll(pageable);
 	}
 
-	public ProductEntity getProductById(Long id) {
-		return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+	public ProductEntity getProductById(String url) {
+		return productRepository.findById(url).orElseThrow(() -> new RuntimeException("Product not found"));
 	}
 }

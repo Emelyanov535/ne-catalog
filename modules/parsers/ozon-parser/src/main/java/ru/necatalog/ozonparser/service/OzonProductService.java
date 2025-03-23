@@ -43,15 +43,13 @@ public class OzonProductService {
         return productEntity;
     }
 
-    AtomicInteger productsCount = new AtomicInteger();
     @Transactional
     public Optional<ProductEntity> save(ParsedData product) {
         Optional<ProductEntity> productEntity = Optional.empty();
-        if (!productRepository.existsByUrl(product.getUrl())) {
+        if (!productRepository.existsById(product.getUrl())) {
             productEntity = Optional.of(productRepository.save(getProduct(product)));
         }
         productPriceRepository.save(getPriceHistory(product));
-        log.info("Сохранили историю цены суммарно {}", productsCount.addAndGet(1));
         return productEntity;
     }
 }

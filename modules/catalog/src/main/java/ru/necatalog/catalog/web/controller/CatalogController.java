@@ -28,9 +28,9 @@ public class CatalogController {
 		return catalogService.getListProduct(page, size);
 	}
 
-	@GetMapping("/{id}")
-	@Operation(summary = "Получить информацию о товаре по идентификатору")
-	public ProductEntity getProduct(@PathVariable(value = "id") Long id) {
-		return catalogService.getProductById(id);
+	@GetMapping("/{url}")
+	@Operation(summary = "Получить информацию о товаре по ссылке")
+	public ProductEntity getProduct(@PathVariable(value = "url") String url) {
+		return catalogService.getProductById(url);
 	}
 }

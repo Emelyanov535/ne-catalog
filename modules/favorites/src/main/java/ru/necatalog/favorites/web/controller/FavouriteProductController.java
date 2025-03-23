@@ -24,16 +24,16 @@ import java.util.List;
 public class FavouriteProductController {
 	private final FavoriteProductService favoriteProductService;
 
-	@GetMapping("/{productId}")
+	@GetMapping("/{productUrl}")
 	@Operation(summary = "Добавление товара в избранное")
-	public void addFavouriteProduct(@PathVariable("productId") Long productId) {
-		favoriteProductService.addProductToFavorite(productId);
+	public void addFavouriteProduct(@PathVariable("productUrl") String productUrl) {
+		favoriteProductService.addProductToFavorite(productUrl);
 	}
 
-	@DeleteMapping("/{productId}")
+	@DeleteMapping("/{productUrl}")
 	@Operation(summary = "Удаление товара из избранного")
-	public void removeProductFromFavorite(@PathVariable("productId") Long productId) {
-		favoriteProductService.removeProductFromFavorite(productId);
+	public void removeProductFromFavorite(@PathVariable("productUrl") String productUrl) {
+		favoriteProductService.removeProductFromFavorite(productUrl);
 	}
 
 	@GetMapping("/list")

@@ -13,7 +13,7 @@ import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.persistence.enumeration.Marketplace;
 
 @Repository
-public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+public interface ProductRepository extends JpaRepository<ProductEntity, String> {
 
     List<ProductEntity> findAllByUrlIn(List<String> urls);
 

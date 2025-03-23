@@ -1,6 +1,5 @@
 package ru.necatalog.favorites.service;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,25 +24,25 @@ public class FavoriteProductService {
 	private final AccountService accountService;
 
 	@Transactional
-	public void addProductToFavorite(Long productId) {
+	public void addProductToFavorite(String productUrl) {
 		final UserEntity userEntity = accountService.getCurrentUser();
 
-		if (favoriteProductRepository.existsByUserIdAndProductId(userEntity.getId(), productId)) {
+		if (favoriteProductRepository.existsByUserIdAndProductUrl(userEntity.getId(), productUrl)) {
 			return;
 		}
 
 		FavoriteProductEntity favoriteProductEntity = FavoriteProductEntity.builder()
 				.user(userEntity)
-				.product(productRepository.findById(productId).orElseThrow())
+				.product(productRepository.findById(productUrl).orElseThrow())
 				.build();
 
 		favoriteProductRepository.save(favoriteProductEntity);
 	}
 
 	@Transactional
-	public void removeProductFromFavorite(Long productId) {
+	public void removeProductFromFavorite(String productUrl) {
 		final UserEntity userEntity = accountService.getCurrentUser();
-		FavoriteProductEntity favoriteProductEntity = favoriteProductRepository.findByUserIdAndProductId(userEntity.getId(), productId);
+		FavoriteProductEntity favoriteProductEntity = favoriteProductRepository.findByUserIdAndProductUrl(userEntity.getId(), productUrl);
 		favoriteProductRepository.deleteById(favoriteProductEntity.getId());
 	}
 

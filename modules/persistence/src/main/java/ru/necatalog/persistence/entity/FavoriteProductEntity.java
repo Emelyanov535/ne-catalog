@@ -20,7 +20,7 @@ public class FavoriteProductEntity {
 	private UserEntity user;
 
 	@ManyToOne
-	@JoinColumn(name = "product_id", nullable = false)
+	@JoinColumn(name = "product_url", nullable = false)
 	private ProductEntity product;
 }
 
