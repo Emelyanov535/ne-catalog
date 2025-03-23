@@ -37,6 +37,9 @@ server:
     context-path: "/api/v1"
   port: 8080
 
+notification:
+  status: false
+
 wildberries:
   status: false
   base-url: "https://static-basket-01.wbbasket.ru"

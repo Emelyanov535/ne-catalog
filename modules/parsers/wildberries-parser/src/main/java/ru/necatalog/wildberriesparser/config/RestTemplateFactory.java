@@ -28,10 +28,10 @@ public class RestTemplateFactory {
 
         Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", selectedPort));
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setProxy(proxy);
+//        factory.setProxy(proxy);
 
         RestTemplate restTemplate = new RestTemplate(factory);
-        restTemplate.getInterceptors().add(new DynamicProxyInterceptor(selectedPort));
+//        restTemplate.getInterceptors().add(new DynamicProxyInterceptor(selectedPort));
 
         log.info("Created RestTemplate with proxy on port: {}", selectedPort);
 
