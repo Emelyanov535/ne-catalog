@@ -110,10 +110,9 @@ public class OzonParsingService {
                 .forEach(product -> {
                     Optional<ProductEntity> productEntity = productService.save(product);
                     try {
+                        // TODO передалать на отложенные задания (БД/Kafka)
                         if (productEntity.isPresent()) {
                             processAttributePage(category, productEntity.get().getUrl());
-                        } else { // TODO удалить после заполнения уже сохраненных товаров
-                            processAttributePage(category, product.getUrl());
                         }
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);

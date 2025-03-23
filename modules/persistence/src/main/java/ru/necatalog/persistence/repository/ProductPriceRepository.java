@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.necatalog.persistence.entity.PriceHistoryEntity;
-import ru.necatalog.persistence.entity.PriceHistoryId;
+import ru.necatalog.persistence.entity.id.PriceHistoryId;
 import ru.necatalog.persistence.repository.projection.PriceValueData;
 
 @Repository

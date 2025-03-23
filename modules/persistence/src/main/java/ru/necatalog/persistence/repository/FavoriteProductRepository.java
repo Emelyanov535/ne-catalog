@@ -10,9 +10,9 @@ import ru.necatalog.persistence.entity.FavoriteProductEntity;
 public interface FavoriteProductRepository extends JpaRepository<FavoriteProductEntity, Long> {
 	@Query(value = """
 		select fp from FavoriteProductEntity as fp
-		where fp.user.id = :userId and fp.product.id = :productId
+		where fp.user.id = :userId and fp.product.url = :productUrl
 		""")
-	FavoriteProductEntity findByUserIdAndProductId(@Param("userId") Long userId, @Param("productId") Long productId);
+	FavoriteProductEntity findByUserIdAndProductUrl(@Param("userId") Long userId, @Param("productUrl") String productUrl);
 
-	boolean existsByUserIdAndProductId(Long userId, Long productId);
+	boolean existsByUserIdAndProductUrl(Long userId, String productUrl);
 }
