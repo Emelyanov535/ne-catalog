@@ -1,6 +1,6 @@
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Badge} from "@/components/ui/badge";
-import {TrendingUpIcon} from "lucide-react";
+import {TrendingDownIcon, TrendingUpIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useNavigate} from "react-router-dom";
 import {FavoriteButton} from "@/components/FavoriteButton.tsx";
@@ -42,12 +42,23 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
                 </CardDescription>
                 <CardTitle>{product.productName}</CardTitle>
 
-                <div className="absolute top-4 right-4">
-                    <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-                        <TrendingUpIcon className="size-3"/>
-                        +12.5%
-                    </Badge>
-                </div>
+                {product.percentChange !== 0 && product.percentChange !== undefined && (
+                    <div className="absolute top-4 right-4">
+                        <Badge
+                            variant="outline"
+                            className={`flex gap-1 rounded-lg text-xs ${
+                                product.percentChange > 0 ? "text-red-600 border-red-600" : "text-green-600 border-green-600"
+                            }`}
+                        >
+                            {product.percentChange > 0 ? (
+                                <TrendingUpIcon className="size-3 text-red-600" />
+                            ) : (
+                                <TrendingDownIcon className="size-3 text-green-600" />
+                            )}
+                            {product.percentChange > 0 ? `+${product.percentChange.toFixed(2)}%` : `${product.percentChange.toFixed(2)}%`}
+                        </Badge>
+                    </div>
+                )}
             </CardHeader>
 
             <CardFooter className="mt-auto flex flex-col items-start gap-2 text-sm">

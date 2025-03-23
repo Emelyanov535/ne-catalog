@@ -52,6 +52,9 @@ public class ProductEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
+    @Column(name = "percent_change")
+    private Double percentChange;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) {
