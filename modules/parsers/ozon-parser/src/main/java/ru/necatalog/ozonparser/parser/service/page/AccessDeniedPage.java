@@ -3,7 +3,6 @@ package ru.necatalog.ozonparser.parser.service.page;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 @Slf4j
 public class AccessDeniedPage implements MarketplacePage {

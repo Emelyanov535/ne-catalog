@@ -7,7 +7,6 @@ public class OzonProductMapper {
 
     public ProductDto toProductDto(ProductEntity product) {
         return new ProductDto(
-            product.getId(),
             product.getMarketplace(),
             product.getCategory(),
             product.getBrand(),

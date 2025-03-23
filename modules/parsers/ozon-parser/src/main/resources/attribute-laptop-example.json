@@ -1,0 +1,646 @@
+{
+  "totalCount": 37,
+  "link": "https://www.ozon.ru/product/lenovo-ideapad-slim-3-15iah8-noutbuk-15-6-intel-core-i5-12450h-ram-16-gb-ssd-512-gb-intel-uhd-1691925365/features/",
+  "characteristics": [
+    {
+      "title": "Корпус",
+      "short": [
+        {
+          "key": "MaxWeight",
+          "name": "Вес, кг",
+          "values": [
+            {
+              "text": "1.60",
+              "key": "MaxWeight_0"
+            }
+          ]
+        },
+        {
+          "key": "Material",
+          "name": "Материал корпуса",
+          "values": [
+            {
+              "text": "ABS пластик",
+              "key": "Material_0"
+            }
+          ]
+        },
+        {
+          "key": "FormFactorLaptop",
+          "name": "Форм-фактор ноутбука",
+          "values": [
+            {
+              "text": "Полноразмерный ноутбук",
+              "key": "FormFactorLaptop_0"
+            }
+          ]
+        },
+        {
+          "key": "KeyboardBacklight",
+          "name": "Подсветка клавиатуры",
+          "values": [
+            {
+              "text": "Нет",
+              "link": "/category/noutbuki-bez-podsvetki-klaviatury/",
+              "key": "KeyboardBacklight_0"
+            }
+          ],
+          "hintText": "Дополнительная подсветка у клавиш выполняет эстетическую функцию – придает клавиатуре более стильный вид – и облегчает поиск нужной клавиши в условиях плохой освещенности (работа ночью, презентация в темном помещении). Особенно востребована подсветка на клавиатуре геймерских ноутбуков – чаще всего используется красный, реже синий и зеленый цвет, а также спектр RGB/ARGB. Белая подсветка, как правило, рассчитана на офисные и рабочие модели."
+        }
+      ]
+    },
+    {
+      "title": "Встроенное оборудование",
+      "short": [
+        {
+          "key": "WebCameraCurtain",
+          "name": "Шторка для веб-камеры",
+          "values": [
+            {
+              "text": "Есть",
+              "link": "/category/noutbuki-s-shtorkoy-dlya-veb-kamery/",
+              "key": "WebCameraCurtain_0"
+            }
+          ],
+          "hintText": "Шторка для веб-камеры – специальное приспособление, которое позволяет закрыть объектив, чтобы предотвратить несанкционированное наблюдение. Чтобы открыть доступ к веб-камере, достаточно сместить «заслонку» в сторону. Шторка не мешает закрывать ноутбук. Она незаметна на раме экрана и не отвлекает внимание во время работы. Удобная и аккуратная альтернатива заклеиванию камеры скотчем."
+        },
+        {
+          "key": "WirelessNetwork",
+          "name": "Модуль связи WiFi",
+          "values": [
+            {
+              "text": "802.11ax",
+              "key": "WirelessNetwork_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Основные",
+      "short": [
+        {
+          "key": "OSNote",
+          "name": "Операционная система",
+          "values": [
+            {
+              "text": "Без системы",
+              "link": "/category/noutbuki-bez-operatsionnoy-sistemy/",
+              "key": "OSNote_0"
+            }
+          ],
+          "hintText": "Операционная система (ОС) – комплекс программ, отвечающий за управление всем софтом. От типа ОС зависит работа офисных программ, браузеров, игр. Windows 10 Home поддерживает почти весь функционал для ежедневных задач. Windows 10 Pro – расширенная профессиональная версия предыдущей редакции с доступом к корпоративным и бизнес инструментам, а также к управлению через удаленный рабочий стол. MacOS – фирменная ОС бренда Apple. Linux – семейство ОС, рассчитанное в первую очередь на IT-специалистов."
+        }
+      ]
+    },
+    {
+      "title": "Процессор",
+      "short": [
+        {
+          "key": "CPUName",
+          "name": "Процессор",
+          "values": [
+            {
+              "text": "Intel Core i5-12450H",
+              "key": "CPUName_0"
+            }
+          ]
+        },
+        {
+          "key": "CPUModel",
+          "name": "Модель процессора",
+          "values": [
+            {
+              "text": "Intel Core i5",
+              "link": "/category/noutbuki-s-protsessorom-intel-core-i5/",
+              "key": "CPUModel_0"
+            }
+          ],
+          "hintText": "Модель процессора подбирается под индивидуальные задачи пользователя. Для повседневных и простейших игр подойдут Intel Pentium, Intel Celeron и AMD 3000 Series. Топовая сборка для мощных игр и «тяжелых» задач для разработчиков и графических дизайнеров – Intel Core i9, AMD Ryzen 7/9. Для игр и задач средней сложности – Intel Core i5/7 и AMD Ryzen 5. Процессор M1, отличается высокой энегроэффективностью и производительностью за счет техпроцессора в 5 нм и чипа с 8 ядрами."
+        },
+        {
+          "key": "CPUBrandShort",
+          "name": "Бренд процессора",
+          "values": [
+            {
+              "text": "Intel",
+              "key": "CPUBrandShort_0"
+            }
+          ]
+        },
+        {
+          "key": "FrequencyStr",
+          "name": "Частота процессора, ГГц",
+          "values": [
+            {
+              "text": "4.40",
+              "key": "FrequencyStr_0"
+            }
+          ]
+        },
+        {
+          "key": "CPUCores",
+          "name": "Число ядер процессора",
+          "values": [
+            {
+              "text": "8",
+              "link": "/category/noutbuki-8-yadernye/",
+              "key": "CPUCores_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Накопители данных",
+      "short": [
+        {
+          "key": "VolumeSSDStr",
+          "name": "Общий объем SSD, ГБ",
+          "values": [
+            {
+              "text": "512",
+              "key": "VolumeSSDStr_0"
+            }
+          ]
+        },
+        {
+          "key": "HDType",
+          "name": "Тип накопителя",
+          "values": [
+            {
+              "text": "SSD",
+              "link": "/category/noutbuki-s-ssd/",
+              "key": "HDType_0"
+            }
+          ]
+        },
+        {
+          "key": "NumSSD",
+          "name": "Количество SSD",
+          "values": [
+            {
+              "text": "1",
+              "link": "/category/noutbuki-s-1-ssd/",
+              "key": "NumSSD_0"
+            }
+          ]
+        },
+        {
+          "key": "SSDSize",
+          "name": "Форм-фактор SSD",
+          "values": [
+            {
+              "text": "M.2",
+              "link": "/category/noutbuki-s-ssd-m2/",
+              "key": "SSDSize_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Видеокарта",
+      "short": [
+        {
+          "key": "GPUName",
+          "name": "Видеокарта",
+          "values": [
+            {
+              "text": "Intel UHD Graphics",
+              "link": "/category/noutbuki-s-videokartoy-intel-uhd-graphics/",
+              "key": "GPUName_0"
+            }
+          ]
+        },
+        {
+          "key": "GPUType",
+          "name": "Тип видеокарты",
+          "values": [
+            {
+              "text": "Встроенная",
+              "link": "/category/noutbuki-so-vstroennoy-videokartoy/",
+              "key": "GPUType_0"
+            }
+          ],
+          "hintText": "Встроенная видеокарта интегрирована в процессор и использует общую оперативную память. Устройство подходит для повседневных задач, офисных программ и несложных игр. Дискретные видеокарты – отдельные модули – задействуют собственную память, поэтому характеристики графики и производительность системы намного выше, но стоят они дороже и требуют активного охлаждения. С гибридной видеокартой можно переключаться на разные режимы. Игровые видеокарты (например, GTX RTX) поддерживают тяжелые игры."
+        },
+        {
+          "key": "GPUBrandsShort",
+          "name": "Бренд графического процессора",
+          "values": [
+            {
+              "text": "Intel",
+              "link": "/category/noutbuki-s-graficheskim-protsessorom-intel/",
+              "key": "GPUBrandsShort_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Экран",
+      "short": [
+        {
+          "key": "RSDiagonalStr",
+          "name": "Диагональ экрана, дюймы",
+          "values": [
+            {
+              "text": "15.6",
+              "key": "RSDiagonalStr_0"
+            }
+          ],
+          "hintText": "Данный параметр характеризует размер экрана и выражается в дюймах (1 дюйм = 2,54 см)"
+        },
+        {
+          "key": "TechnologyMatrixNote",
+          "name": "Технология матрицы",
+          "values": [
+            {
+              "text": "IPS",
+              "link": "/category/noutbuki-s-ips-matritsey/",
+              "key": "TechnologyMatrixNote_0"
+            }
+          ],
+          "hintText": "Матрица – важнейших элемент экрана. От нее зависит общее качество изображения. IPS матрицы – самый популярный вариант для среднего и высокого ценового сегмента. Обеспечивает яркое изображение, качество которого почти не изменяется независимо от угла обзора. OLED-матрицы на основе органических светодиодов дают отличную яркость, контрастность и цветопередачу, максимально широкие углы обзора, но стоят дороже. TN матрицы – самые простые и доступные, подходят для офисных задач и сёрфинга в интернете."
+        },
+        {
+          "key": "ScreenCover",
+          "name": "Покрытие экрана",
+          "values": [
+            {
+              "text": "Матовое",
+              "key": "ScreenCover_0"
+            }
+          ],
+          "hintText": "Матовое покрытие не дает бликов при ярком свете и на нем менее заметны загрязнения, однако качество изображения и цветопередача заметно ниже, чем у глянцевого. Поэтому модели с матовым покрытием стоят дешевле и чаще всего предназначены для работы/деловых целей. Глянцевое покрытие обеспечивает хорошую цветопередачу и высокую контрастность, но дает блики на солнце. Антибликовое покрытие решает эту проблему: ноутбуки можно использовать даже в условиях яркого внешнего освещения."
+        },
+        {
+          "key": "Resolution",
+          "name": "Разрешение экрана",
+          "values": [
+            {
+              "text": "1920x1080",
+              "key": "Resolution_0"
+            }
+          ]
+        },
+        {
+          "key": "SensorScreen",
+          "name": "Сенсорный экран",
+          "values": [
+            {
+              "text": "Нет",
+              "key": "SensorScreen_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Интерфейсы и разъемы",
+      "short": [
+        {
+          "key": "CardReader",
+          "name": "Картридер",
+          "values": [
+            {
+              "text": "SD",
+              "link": "/category/noutbuki-s-podderzhkoy-kart-pamyati-sd/",
+              "key": "CardReader_0"
+            }
+          ]
+        },
+        {
+          "key": "NumItems",
+          "name": "Число портов HDMI",
+          "values": [
+            {
+              "text": "1",
+              "key": "NumItems_0"
+            }
+          ]
+        },
+        {
+          "key": "UsbThree",
+          "name": "Число портов USB Type-A  3.2 Gen 1",
+          "values": [
+            {
+              "text": "2",
+              "key": "UsbThree_0"
+            }
+          ]
+        },
+        {
+          "key": "UsbC",
+          "name": "Число портов USB Type-C",
+          "values": [
+            {
+              "text": "1",
+              "key": "UsbC_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Оперативная память",
+      "short": [
+        {
+          "key": "RAM",
+          "name": "Оперативная память",
+          "values": [
+            {
+              "text": "16 ГБ",
+              "link": "/category/noutbuki-16-gb-operativnoy-pamyati/",
+              "key": "RAM_0"
+            }
+          ],
+          "hintText": "Объем оперативной памяти – один из важнейших параметров для производительности системы. Чем больше объем, тем лучше устройство справляется с тяжелым программами и тем эффективнее отрабатывает несколько одновременных ресурсоемких процессов. Большой объем оперативной памяти обеспечивает стабильную работу без сбоев и «зависаний»."
+        },
+        {
+          "key": "RAMType",
+          "name": "Тип памяти",
+          "values": [
+            {
+              "text": "LPDDR5",
+              "key": "RAMType_0"
+            }
+          ]
+        },
+        {
+          "key": "UpgradeCapability",
+          "name": "Возможность расширения RAM, до",
+          "values": [
+            {
+              "text": "Без возможности расширения",
+              "key": "UpgradeCapability_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Дополнительные",
+      "short": [
+        {
+          "key": "Sku",
+          "name": "Артикул",
+          "values": [
+            {
+              "text": "1691925365",
+              "key": "Sku"
+            }
+          ],
+          "copyText": "1691925365"
+        },
+        {
+          "key": "Brand",
+          "name": "Бренд",
+          "values": [
+            {
+              "text": "Lenovo",
+              "link": "/brand/lenovo-26303248/?all_items=true",
+              "key": "Brand_0"
+            }
+          ]
+        },
+        {
+          "key": "KeypadLayout",
+          "name": "Раскладка клавиатуры",
+          "values": [
+            {
+              "text": "Русская раскладка",
+              "link": "/category/noutbuki-s-russkoy-klaviaturoy/",
+              "key": "KeypadLayout_0"
+            }
+          ]
+        },
+        {
+          "key": "CapacityWh",
+          "name": "Емкость аккумулятора, Втч",
+          "values": [
+            {
+              "text": "47",
+              "key": "CapacityWh_0"
+            }
+          ]
+        },
+        {
+          "key": "Country",
+          "name": "Страна-изготовитель",
+          "values": [
+            {
+              "text": "Китай",
+              "link": "/category/kitayskie-noutbuki/",
+              "key": "Country_0"
+            }
+          ]
+        },
+        {
+          "key": "OZONWarranty",
+          "name": "Гарантия OZON",
+          "values": [
+            {
+              "text": "1 год",
+              "key": "OZONWarranty_0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "productTitle": "Характеристики: Lenovo IdeaPad Slim 3 15IAH8 Ноутбук 15.6, Intel Core i5-12450H, RAM 16 ГБ, SSD 512 ГБ, Intel UHD Graphics, Без системы, (83ER0080RK;83ER00DLRK), серый, Русская раскладка",
+  "paramsLink": "",
+  "paramsLinkText": "",
+  "lexemes": {
+    "allCharacteristicsText": "Все характеристики",
+    "ariaLabel": "Подсказка",
+    "collapseText": "Свернуть",
+    "moreText": "Подробнее",
+    "notificationError": "Ваш браузер не поддерживает данный функционал",
+    "shawAllCharacteristicsText": "Показать все характеристики",
+    "successfulCopyText": "Артикул скопирован"
+  },
+  "cellTrackingInfo": {
+    "uis": {
+      "main": "36tWvlx7LhpkLnMlT7zPV3qcZwlw8Yc09ZD4NC611A4Y",
+      "sku": "08tYz54J6crDO7K5IQ6OWKOuyDyXyqUrvR4OrUEg6z1q",
+      "suggest": "NOtwp89Vvc3OL9rxUX0KjQ0Sg91rq5i6qpvNQC72ppxm"
+    },
+    "tags": {
+      "Brand_0": "57tw17Rgqc9wB0ZEUxoEK4Pizr25K9tLGMP8yt93EpNr",
+      "CPUCores_0": "NOtwp89VvcPjpql3c3z3ynqF4GNggrTOEnV1qCxB39YW",
+      "CPUModel_0": "lRt6l8kOgtJAlX8h49KMN3cA7yK5pi86AX5hYvj03r",
+      "CardReader_0": "16tLXoOnvf4MP08WCG8wMJ1hj5p7ZysZWgmYQt35ArGv",
+      "Country_0": "16tLXoOnvfAgRJx6hZjQZ3ZTQ02nV4cr2J1BGiyZvYZy",
+      "GPUBrandsShort_0": "57tw17RgqcxA0AB6cAlpNBEFKM3Qp7hPBKVZEiGEwOmx",
+      "GPUName_0": "83tBg0QOnSAJoKZJH0W9xnyC4AgQA0U2ny7qoh5kv8rG",
+      "GPUType_0": "36tWvlx7Lh2lxnNXC1zZNLGCl5ENoOHknY6DXUXvQ8lw",
+      "HDType_0": "jYtZ0XAlpfpZRm8GSJNvzZEh9qP75YurmZZlVhlAZn5A",
+      "KeyboardBacklight_0": "oZt6mR8lxtOP9EBrUwzwQYnFXLWoJ9IkokYAnHL1GXkA",
+      "KeypadLayout_0": "LZtl2rXNEiK9lgymiKAznmXH1kl3ZLCRzXKYPhvw3NMw",
+      "NumSSD_0": "mqtkq361EckOw4ZyFYB4WyMTnmjyDrIVlRDvpF8jwxXl",
+      "OSNote_0": "57tw17Rgqc9G1xyLFpzrwOqhy9pOgI4xV933IxgmXMA",
+      "RAM_0": "6WtZJvMVQfXXrAxZsm5BnJyI6Dg8pWUvxnZ44CgmM62R",
+      "SSDSize_0": "mqtkq361EcP3BPWVhKPKGvPT2YlZMvS14ZKxgumEmq0R",
+      "TechnologyMatrixNote_0": "Z8tXYLxPOI32OpoxSj65pJ6Hv9NYKLUA0w1Vvsmk0vow",
+      "WebCameraCurtain_0": "r2t4OY6wLCB2J4mKcKzqKR9hWDpxEvhwY9jJ2HDPY7LQ"
+    }
+  },
+  "params": {
+    "anchor": "section-characteristics",
+    "canExpand": false,
+    "columns": 2,
+    "dataType": "characteristics",
+    "disablePaidBrand": false,
+    "disclaimer": "Информация о технических характеристиках, комплекте поставки, стране изготовления, внешнем виде и цвете товара носит справочный характер и основывается на последних доступных к моменту публикации сведениях",
+    "hintMaxLength": 1500,
+    "isShowTitleAsH1": false,
+    "isWidgetCharacteristicsOnPage": false,
+    "isWidgetDescriptionOnPage": false,
+    "limit": 300,
+    "linkToCharacteristics": "#section-characteristics",
+    "linkToCharacteristicsButtonText": "Перейти к характеристикам",
+    "linkToDescription": "#section-description",
+    "linkToDescriptionButtonText": "Перейти к описанию",
+    "linkToExternal": "",
+    "linkToExternalText": "Подробнее",
+    "markedDownLink": "https://docs.ozon.ru/common-mobile/discounted-products/",
+    "paramsLinkTarget": "self",
+    "showLongCharacteristics": true,
+    "theme": "default",
+    "thresholdLength": 60,
+    "title": "Характеристики",
+    "topList": false,
+    "viewLine": "dotted",
+    "visibleCount": 100
+  },
+"add": {
+  "title": "Видеокарта",
+  "short": [
+    {
+      "key": "GPUName",
+      "name": "Видеокарта",
+      "values": [
+        {
+          "text": "NVIDIA GeForce RTX 4070 для ноутбуков (8 Гб)",
+          "key": "GPUName_0"
+        }
+      ]
+    },
+    {
+      "key": "VideoMemory",
+      "name": "Видеопамять",
+      "values": [
+        {
+          "text": "6 ГБ",
+          "key": "VideoMemory_0"
+        }
+      ],
+      "hintText": "Объем дискретной видеопамяти. Чем он больше, тем более мощнее, производительнее и, соответственно, дороже будет видеокарта. Для ежедневных задач, офисной работы, учебы, несложных игр не требуется экстремально большой объем: для начального и среднего уровня подойдет 2-4 ГБ. Для мощных игр и решения профильных «тяжелых» задач нужен объем выше 6 ГБ."
+    },
+    {
+      "key": "GPUType",
+      "name": "Тип видеокарты",
+      "values": [
+        {
+          "text": "Дискретная",
+          "link": "/category/noutbuki-s-diskretnoy-videokartoy/",
+          "key": "GPUType_0"
+        }
+      ],
+      "hintText": "Встроенная видеокарта интегрирована в процессор и использует общую оперативную память. Устройство подходит для повседневных задач, офисных программ и несложных игр. Дискретные видеокарты – отдельные модули – задействуют собственную память, поэтому характеристики графики и производительность системы намного выше, но стоят они дороже и требуют активного охлаждения. С гибридной видеокартой можно переключаться на разные режимы. Игровые видеокарты (например, GTX RTX) поддерживают тяжелые игры."
+    },
+    {
+      "key": "GPUBrandsShort",
+      "name": "Бренд графического процессора",
+      "values": [
+        {
+          "text": "NVIDIA",
+          "key": "GPUBrandsShort_0"
+        }
+      ]
+    }
+  ]
+},
+  "add2": {
+    "title":"Накопители данных",
+    "short":[{
+      "key":"VolumeSSDStr",
+      "name":"Общий объем SSD, ГБ",
+      "values":[
+        {
+          "text":"256",
+          "key":"VolumeSSDStr_0"
+        }]
+    },
+    {
+      "key":"VolumeHDDStr",
+      "name":"Общий объем HDD, ГБ",
+      "values":[{
+        "text":"500",
+        "key":"VolumeHDDStr_0"
+      }]
+    },
+    {
+      "key":"HDType",
+      "name":"Тип накопителя",
+      "values":[
+        {
+          "text":"SSD",
+          "link":"/category/noutbuki-s-ssd/",
+          "key":"HDType_0"
+        },
+        {
+          "text":"HDD",
+          "link":"/category/noutbuki-s-hdd/",
+          "key":"HDType_1"
+        }
+      ]
+    },
+    {
+      "key":"NumSSD",
+      "name":"Количество SSD",
+      "values":[
+        {
+          "text":"1",
+          "link":"/category/noutbuki-s-1-ssd/",
+          "key":"NumSSD_0"
+        }
+      ]
+    },
+    {
+      "key":"SSDSize",
+      "name":"Форм-фактор SSD",
+      "values":[
+        {
+          "text":"2.5",
+          "link":"/category/noutbuki-s-ssd25/",
+          "key":"SSDSize_0"
+        }
+      ]
+    },
+    {
+      "key":"NumHDD",
+      "name":"Количество HDD",
+      "values":[
+        {
+          "text":"2",
+          "key":"NumHDD_0"
+        }
+      ]
+    },
+    {
+      "key":"HDDSize",
+      "name":"Форм-фактор HDD",
+      "values":[
+        {
+          "text":"2.5",
+          "key":"HDDSize_0"
+        }
+      ]
+    }
+    ]
+  }
+}

@@ -5,11 +5,11 @@ springBoot {
 
 dependencies {
     implementation project(':modules:persistence')
-    implementation project(':modules:parsers:ozon-parser')
     implementation project(':modules:analog-finder')
     implementation project(':modules:favorites')
     implementation project(':modules:search')
     implementation project(':modules:parsers:wildberries-parser')
+    implementation project(':modules:parsers:ozon-parser')
     implementation project(':modules:auth')
     implementation project(':modules:analytics')
     implementation project(':modules:notifications')

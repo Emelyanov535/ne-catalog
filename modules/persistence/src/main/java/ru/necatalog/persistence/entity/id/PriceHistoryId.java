@@ -1,4 +1,4 @@
-package ru.necatalog.persistence.entity;
+package ru.necatalog.persistence.entity.id;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;

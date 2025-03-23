@@ -1,14 +1,20 @@
 rootProject.name = 'ne-catalog'
+
 include(
         'app',
         'modules:persistence',
+
         'modules:parsers:ozon-parser',
         'modules:analog-finder',
         'modules:favorites',
         'modules:search',
+
         'modules:parsers:wildberries-parser',
         'modules:auth',
         'modules:analytics',
         'modules:notifications',
         'modules:catalog'
+
+        'modules:config',
+        'modules:common'
 )

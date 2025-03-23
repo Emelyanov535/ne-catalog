@@ -1,0 +1,517 @@
+{
+  "totalCount":33,
+  "link":"https://www.ozon.ru/product/poco-smartfon-f6-globalnaya-versiya-global-8-256-gb-zelenyy-1722080901/features/",
+  "characteristics": [
+    {
+      "title":"Габариты и вес",
+      "short": [
+        {
+          "key":"Dimensions",
+          "name":"Размеры, мм",
+          "values": [
+            {
+              "text":"160.5*74.4*7.8",
+              "key":"Dimensions_0"
+            }
+          ]
+        },
+        {
+          "key":"Weight",
+          "name":"Вес товара, г",
+          "values": [
+            {
+              "text":"179",
+              "key":"Weight_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title":"Память и процессор",
+      "short": [
+        {
+          "key":"CPUMobile",
+          "name":"Процессор",
+          "values": [
+            {
+              "text":"Snapdragon 8s Gen3 (8 ядер), 3.0 ГГц",
+              "key":"CPUMobile_0"
+            }
+          ]
+        },
+        {
+          "key":"CPUCores",
+          "name":"Число ядер процессора",
+          "values": [
+            {
+              "text":"8",
+              "link":"/category/smartfony-s-8-yadernym-protsessorom/",
+              "key":"CPUCores_0"
+            }
+          ]
+        },
+        {
+          "key":"smartphoneram",
+          "name":"Оперативная память",
+          "values": [
+            {
+              "text":"8 ГБ",
+              "link":"/category/smartfony-s-operativnoy-pamyatyu-8-gb/",
+              "key":"smartphoneram_0"
+            }
+          ]
+        },
+        {
+          "key":"VolumeMemoryPhone",
+          "name":"Встроенная память",
+          "values": [
+            {
+              "text":"256 ГБ",
+              "key":"VolumeMemoryPhone_0"
+            }
+          ]
+        },
+        {
+          "key":"CPUBrand",
+          "name":"Бренд процессора",
+          "values": [
+            {
+              "text":"Qualcomm",
+              "key":"CPUBrand_0"
+            }
+          ]
+        },
+        {
+          "key":"FrequencyStr",
+          "name":"Частота процессора, ГГц",
+          "values": [
+            {
+              "text":"3",
+              "key":"FrequencyStr_0"
+            }
+          ]
+        },
+        {
+          "key":"GPUBrands",
+          "name":"Бренд графического процессора",
+          "values": [
+            {
+              "text":"Adreno",
+              "key":"GPUBrands_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title":"Экран",
+      "short": [
+        {
+          "key":"RSDiagonalStr",
+          "name":"Диагональ экрана, дюймы",
+          "values": [
+            {
+              "text":"6.67",
+              "key":"RSDiagonalStr_0"
+            }
+          ],
+          "hintText":"Данный параметр характеризует размер экрана и выражается в дюймах (1 дюйм = 2,54 см)"
+        },
+        {
+          "key":"Resolution",
+          "name":"Разрешение экрана",
+          "values": [
+            {
+              "text":"1220x2712",
+              "key":"Resolution_0"
+            }
+          ]
+        },
+        {
+          "key":"LCDTechnology",
+          "name":"Технология матрицы",
+          "values": [
+            {
+              "text":"AMOLED",
+              "link":"/category/smartfony-s-matritsey-amoled/",
+              "key":"LCDTechnology_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title":"Связь",
+      "short": [
+        {
+          "key":"WirelessTechShort",
+          "name":"Беспроводные интерфейсы",
+          "values": [
+            {
+              "text":"Wi-Fi",
+              "link":"/category/smartfony-s-wi-fi/",
+              "key":"WirelessTechShort_0"
+            },
+            {
+              "text":"GPS",
+              "key":"WirelessTechShort_1"
+            }
+          ],
+          "hintText":"Беспроводные интерфейсы значительно расширяют функциональность устройства. Чип NFC дает возможность бесконтактной оплаты с помощью гаджета. Технология Bluetooth используется для бесконтактной передачи данных и связи устройств (беспроводных наушников, фитнес-браслетов). Технология ANT+ похожа на Bluetooth, но потребляет меньше энергии, а радиус ее действия достигает 30 метров. Протокол ANT+ чаще всего используют шагомер, пульсометры, мониторы сердечного ритма."
+        },
+        {
+          "key":"MobileStandartShort",
+          "name":"Стандарты связи",
+          "values": [
+            {
+              "text":"3G",
+              "link":"/category/smartfony-3g/",
+              "key":"MobileStandartShort_0"
+            },
+            {
+              "text":"4G (LTE)",
+              "link":"/category/smartfony-lte/",
+              "key":"MobileStandartShort_1"
+            },
+            {
+              "text":"5G",
+              "key":"MobileStandartShort_2"
+            },
+            {
+              "text":"2G",
+              "link":"/category/smartfony-2g/",
+              "key":"MobileStandartShort_3"
+            }
+          ],
+          "hintText":"Буква G в аббревиатуре стандарта связи означает generation, то есть поколение. Чем выше цифра, тем новее и современнее поколение связи: стандарт 2G не потянет загрузку веб-страницы, тогда как 4G и LTE обеспечивают передачу данных на очень высокой скорости, в том числе и просмотр видео. Стандарт 4G может быть нестабилен вдали от городов. Новейшее поколение связи 5G на 2021 год развернуто точечно в нескольких городах по всему миру. В России этот стандарт связи пока только тестируется."
+        },
+        {
+          "key":"NumSIM",
+          "name":"Число физических SIM-карт",
+          "values": [
+            {
+              "text":"2",
+              "link":"/category/smartfony-s-dvumya-sim-kartami/",
+              "key":"NumSIM_0"
+            }
+          ],
+          "hintText":"Большинство современных устройств рассчитаны на несколько сим-карт – пользователь может установить сразу две сим-карты, например, разных операторов. Обычно это делается для того, чтобы разделить рабочие и личные контакты или для сохранения старого номера при переходе к новому сотовому оператору."
+        },
+        {
+          "key":"BluetoothVersion",
+          "name":"Модуль связи Bluetooth",
+          "values": [
+            {
+              "text":"5.4",
+              "key":"BluetoothVersion_0"
+            }
+          ]
+        },
+        {
+          "key":"WirelessNetwork",
+          "name":"Модуль связи WiFi",
+          "values": [
+            {
+              "text":"802.11 a/b/g/n/ac/ax",
+              "key":"WirelessNetwork_0"
+            }
+          ]
+        },
+        {
+          "key":"NavigationOS",
+          "name":"Навигация",
+          "values": [
+            {
+              "text":"Beidou",
+              "link":"/category/smartfony-s-beidou/",
+              "key":"NavigationOS_0"
+            },
+            {
+              "text":"GALILEO",
+              "link":"/category/smartfony-s-galileo/",
+              "key":"NavigationOS_1"
+            },
+            {
+              "text":"GPS",
+              "link":"/category/smartfony-s-gps/",
+              "key":"NavigationOS_2"
+            },
+            {
+              "text":"ГЛОНАСС",
+              "link":"/category/smartfony-s-glonass/",
+              "key":"NavigationOS_3"
+            },
+            {
+              "text":"QZSS",
+              "key":"NavigationOS_4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title":"Основные",
+      "short": [
+        {
+          "key":"SmartphoneVersion",
+          "name":"Версия смартфона",
+          "values": [
+            {
+              "text":"Global",
+              "link":"/category/smartfony-global-versii/",
+              "key":"SmartphoneVersion_0"
+            }
+          ]
+        },
+        {
+          "key":"Refurbished",
+          "name":"Восстановленный",
+          "values": [
+            {
+              "text":"Нет",
+              "key":"Refurbished_0"
+            }
+          ],
+          "hintText":"Смартфон уже был в пользовании и возвращается в продажу с обновленными комплектующими"
+        },
+        {
+          "key":"OSWithoutVer",
+          "name":"Операционная система",
+          "values": [
+            {
+              "text":"Android",
+              "link":"/category/smartfony-na-android/",
+              "key":"OSWithoutVer_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title":"Особенности",
+      "short": [
+        {
+          "key":"Sensors",
+          "name":"Встроенные датчики",
+          "values": [
+            {
+              "text":"Акселерометр",
+              "link":"/category/smartfony-s-akselerometrom/",
+              "key":"Sensors_0"
+            }
+          ]
+        },
+        {
+          "key":"Authentication",
+          "name":"Аутентификация",
+          "values": [
+            {
+              "text":"Распознавание лица",
+              "link":"/category/smartfony-s-datchikom-raspoznavaniya-litsa/",
+              "key":"Authentication_0"
+            },
+            {
+              "text":"Сканер отпечатка",
+              "link":"/category/smartfony-so-skanerom-otpechatka/",
+              "key":"Authentication_1"
+            }
+          ],
+          "hintText":"Аутентификация позволяет установить дополнительный уровень защиты. Сканер отпечатка пальца – функция, которая запоминает отпечаток пальца владельца и разблокирует устройство только при прикосновении к датчику. Технология распознавания лица сканирует черты лица и строит 3D-модель – разблокировать устройство может только владелец. Распознавание лиц плохо работает с близнецами и с детскими лицами, а также в условиях слабой освещенности (в некоторых моделях)."
+        }
+      ]
+    },
+    {
+      "title":"Аккумулятор",
+      "short": [
+        {
+          "key":"Capacity",
+          "name":"Емкость аккумулятора, мАч",
+          "values": [
+            {
+              "text":"5000",
+              "key":"Capacity_0"
+            }
+          ]
+        },
+        {
+          "key":"ChargingFeatures",
+          "name":"Функции зарядки",
+          "values": [
+            {
+              "text":"Поддержка быстрой зарядки",
+              "link":"/category/smartfony-s-podderzhkoy-bystroy-zaryadki/",
+              "key":"ChargingFeatures_0"
+            }
+          ],
+          "hintText":"С функцией поддержки быстрой зарядки можно полностью зарядить устройство в экспресс-режиме – в среднем это займет не больше часа. Опция беспроводной зарядки позволяет заряжать гаджет, не соединяя его со шнуром питания (если в устройстве есть индукционные катушки). Большинство современных беспроводных зарядок сами по себе должны быть включены в розетку, поэтому этот способ нельзя назвать автономным. Функция зарядки внешних устройств позволяет использовать гаджет в качестве аккумулятора."
+        }
+      ]
+    },
+    {
+      "title":"Камера",
+      "short": [
+        {
+          "key":"ResolutionBackCam",
+          "name":"Разрешение основной камеры, Мпикс",
+          "values": [
+            {
+              "text":"50",
+              "key":"ResolutionBackCam_0"
+            }
+          ]
+        },
+        {
+          "key":"NumRearCams",
+          "name":"Количество основных камер",
+          "values": [
+            {
+              "text":"2",
+              "link":"/category/smartfony-s-2-kamerami/",
+              "key":"NumRearCams_0"
+            }
+          ]
+        },
+        {
+          "key":"ResolutionFrontCam",
+          "name":"Разрешение фронтальной (селфи) камеры, Мпикс",
+          "values": [
+            {
+              "text":"20",
+              "key":"ResolutionFrontCam_0"
+            }
+          ]
+        },
+        {
+          "key":"MaxVideoSpeed",
+          "name":"Макс. скорость видеосъемки, кадр/с",
+          "values": [
+            {
+              "text":"60",
+              "key":"MaxVideoSpeed_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title":"Корпус",
+      "short": [
+        {
+          "key":"InterfaceShort",
+          "name":"Интерфейсы",
+          "values": [
+            {
+              "text":"USB Type-C",
+              "link":"/category/smartfony-s-usb-type-c/",
+              "key":"InterfaceShort_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title":"Дополнительные",
+      "short": [
+        {
+          "key":"Sku",
+          "name":"Артикул",
+          "values": [
+            {
+              "text":"1722080901",
+              "key":"Sku"
+            }
+          ],
+          "copyText":"1722080901"
+        },
+        {
+          "key":"Type",
+          "name":"Тип",
+          "values": [
+            {
+              "text":"Смартфон",
+              "key":"Type_0"
+            }
+          ]
+        },
+        {
+          "key":"Country",
+          "name":"Страна-изготовитель",
+          "values": [
+            {
+              "text":"Китай",
+              "link":"/category/smartfony-iz-kitaya/",
+              "key":"Country_0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "productTitle":"Характеристики: Poco Смартфон F6 Глобальная версия Global 8/256 ГБ, зеленый",
+  "paramsLink":"",
+  "paramsLinkText":"",
+  "lexemes": {
+    "allCharacteristicsText":"Все характеристики",
+    "ariaLabel":"Подсказка",
+    "collapseText":"Свернуть",
+    "moreText":"Подробнее",
+    "notificationError":"Ваш браузер не поддерживает данный функционал",
+    "shawAllCharacteristicsText":"Показать все характеристики",
+    "successfulCopyText":"Артикул скопирован"
+  },
+  "cellTrackingInfo": {
+    "uis": {
+      "main":"k2tov8366sDLKXWvFQl5yroFZXnXKYcpRZovgs0nnAlx",
+      "sku":"r2t4OP300HQzjwMKfqXwkvwIBmBxB0UQGoj2QTLy2Wxo",
+      "suggest":"16tLX2wDDSKDMWYnhmV328VsG2jYvJsgEwXA6IOqxx3r"
+    },
+    "tags":
+    {
+      "Authentication_0":"Y7tjXEoJJIZ4wj3Vs29V8nXfNqkOQRuX7lky2s63o43V",
+      "Authentication_1":"NOtwpD5rrc83RJ3PU2RZkPYU9XGZNQTA2lG8rIB3E4kW",
+      "CPUCores_0":"DqtDZNrKKfm8v1q8H3AL2EmtzqqKggSjYgYBDfVJXAlE",
+      "ChargingFeatures_0":"GRt29KZppU7PgN1BH64x7Woh1Z91BnfqOxMyjUrvZ4XB",
+      "Country_0":"6WtZJjlAASQLL9ZXSGOLoEfDrVy6gTNWGZzKUEEg7Jx",
+      "InterfaceShort_0":"LZtl2yMppuXBqXz6fxwQLPVCvp1QORs36m2K4hJ7vXnr",
+      "LCDTechnology_0":"PjtJn8ArrcJZ2ZY7fq1RXWKT73BXgMfjPvm08clp5Ql8",
+      "MobileStandartShort_0":"16tLX2wDDSA2oNx4HVvA065s3EXK57HOzWXwJCPpGYAJ",
+      "MobileStandartShort_1":"w0tgnJZzzIg7GZKVhYLXBLxi2M30EFKjWyr7U7o8kZA",
+      "MobileStandartShort_3":"w0tgnJZzzI3PKqAPhLDJ6Zh4nNgPGiJYjv7xHyNBRQL",
+      "NavigationOS_0":"6WtZJjlAAS6nqNx1iB3wr01F0V4Q7xIDVNRwlTEp4KgN",
+      "NavigationOS_1":"36tWv6YJJcQVDw5t4jQMN4u86LY8lSJ7rj95sq7J0mr",
+      "NavigationOS_2":"mqtkqBLKKhG9DRO9cX74v9hV5qww7TGRA2q8FAMwGLP",
+      "NavigationOS_3":"nRtrVApqqIzYPpqDcQQql8osKY8KBXIo6OjyYIDg5AWx",
+      "NumRearCams_0":"83tBgD8ZZSRKxn66SEnlA9QckpnRQXiZEvvmBCvK3Mxv",
+      "NumSIM_0":"nRtrVApqqI0wKW3ltKBRxAPs5Vk59rf0zWmWBUV4PAx6",
+      "OSWithoutVer_0":"OgtEkzr99s0J1YvhXDYRBVTKLJ83Muwny4Aqf2Xjk68",
+      "Sensors_0":"qQtJvK6PPc273YVPcJ39DWyhlprZBLfKylgRBiL9RzRK",
+      "SmartphoneVersion_0":"XQtkZV7yyhQk4ryGSg5J5N0uGmn4M3cw1QRpvIqqZ41R",
+      "WirelessTechShort_0":"99trjLVggIB4WyvrU8DGlWNTOj9pj6T2BrRGNfRM1GyB",
+      "smartphoneram_0":"Y7tjXEoJJIG4V55WFGox18yFE0kr6Ef2D6zyvfkE58OQ"
+    }
+  },
+  "params": {
+    "anchor":"section-characteristics",
+    "canExpand":false,"columns":2,"dataType":"characteristics",
+    "disablePaidBrand":false,
+    "disclaimer":"Информация о технических характеристиках, комплекте поставки, стране изготовления, внешнем виде и цвете товара носит справочный характер и основывается на последних доступных к моменту публикации сведениях",
+    "hintMaxLength":1500,
+    "isShowTitleAsH1":false,
+    "isWidgetCharacteristicsOnPage":false,
+    "isWidgetDescriptionOnPage":false,
+    "limit":300,
+    "linkToCharacteristics":"#section-characteristics",
+    "linkToCharacteristicsButtonText":"Перейти к характеристикам",
+    "linkToDescription":"#section-description",
+    "linkToDescriptionButtonText":"Перейти к описанию",
+    "linkToExternal":"",
+    "linkToExternalText":"Подробнее",
+    "markedDownLink":"https://docs.ozon.ru/common-mobile/discounted-products/",
+    "paramsLinkTarget":"self",
+    "showLongCharacteristics":true,"theme":"default",
+    "thresholdLength":60,"title":"Характеристики",
+    "topList":false,"viewLine":"dotted",
+    "visibleCount":100
+  }
+}

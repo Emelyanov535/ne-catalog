@@ -1,14 +1,18 @@
 package ru.necatalog.ozonparser.parser.service.page;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+
+import static ru.necatalog.ozonparser.utils.OzonConsts.OZON_MAIN_LINK;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.necatalog.common.exception.ParsingException;
 import ru.necatalog.ozonparser.parser.service.dto.ParsedData;
 import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.persistence.enumeration.Marketplace;
@@ -16,17 +20,21 @@ import ru.necatalog.persistence.enumeration.Marketplace;
 @Slf4j
 public class OzonCategoryPage {
 
-    private static final String OZON_MAIN_LINK = "https://www.ozon.ru";
+    private static final String ORIGINAL_TEXT = "Оригинал";
 
-    public static final String SEARCH_RESULTS_CSS_SELECTOR = "div[data-widget='searchResultsV2']";
+    private static final String SEARCH_RESULTS_CSS_SELECTOR = "div[data-widget='searchResultsV2']";
 
-    public static final int INDEX_OF_EXTRA_DIV_IF_SALE_PRODUCT = 1;
+    private static final String PRODUCT_URL_SELECTOR = "a:first-of-type";
 
-    public static final int INDEX_OF_PRODUCT_PRICE = 0;
+    private static final String PRODUCT_IMAGE_SELECTOR = "a:first-of-type > div > div:first-of-type img";
 
-    public static final int INDEX_OF_PRODUCT_BRAND = 1;
+    private static final String PRODUCT_BRAND_SELECTOR = "div:first-of-type > div:nth-of-type(2) > span:first-of-type";
 
-    public static final int INDEX_OF_PRODUCT_NAME = 2;
+    private static final String PRODUCT_NAME_SELECTOR = "div:first-of-type > a:first-of-type > div:first-of-type > span:first-of-type";
+
+    private static final String PRODUCT_PRICE_SELECTOR = "div:first-of-type > div:first-of-type > span:first-of-type";
+
+    private static final String LEFT_COUNT = "div:first-of-type > div:nth-of-type(2) > span:first-of-type";
 
     private final Document document;
 
@@ -34,78 +42,18 @@ public class OzonCategoryPage {
         this.document = Jsoup.parse(pageHtml);
     }
 
-    public List<ParsedData> getProducts(Category category) {
-        List<ParsedData> products = new ArrayList<>();
-
+    public Stream<ParsedData> getProducts(Category category) {
         Elements searchResultsDivs = getSearchResultsDivs();
         if (searchResultsDivs.isEmpty()) {
-            return List.of();
+            return Stream.of();
         }
         log.info("нашли столько результатов на странице {}", searchResultsDivs.size());
 
-        for (Element searchResultsDiv : searchResultsDivs) {
-            Elements productsDivs = getProductsDivs(searchResultsDiv);
-            List<Elements> allProductDataDivs = getAllProductDataDivs(productsDivs);
-            List<ParsedData> parsedProductsData = extractParsedData(allProductDataDivs, category);
-            products.addAll(parsedProductsData);
-        }
-
-        /*try {
-
-            for (Element searchResultsDiv : searchResultsDivs) {
-                var productDivs = searchResultsDiv.select("> div > div");
-                for (Element productDiv : productDivs) {
-                    Elements productDataDivs = productDivs.select("> div > *");
-                    if (productDataDivs.select("> *").isEmpty()) {
-                        continue;
-                    }
-                    productDataDivs.removeLast();
-                    Element productUrlAndImageUrlA = productDataDivs.first();
-                    Element productDataDiv = productDataDivs.last();
-                    Elements productDataInnerDivs = productDataDiv.select("> *");
-                    try {
-                        if (productDataInnerDivs.get(INDEX_OF_EXTRA_DIV_IF_SALE_PRODUCT)
-                            .select("span").text().toLowerCase()
-                            .contains("осталось")) {
-                            productDataInnerDivs.remove(INDEX_OF_EXTRA_DIV_IF_SALE_PRODUCT);
-                        }
-                    } catch (Exception ignored) {}
-
-                    Elements productBrandBlockSpans = productDataInnerDivs.get(INDEX_OF_PRODUCT_BRAND).select("> span");
-
-                    String productUrl = OZON_MAIN_LINK + productUrlAndImageUrlA.attr("href").replaceAll("\\?.*$", "");
-                    String productImageUrl = productUrlAndImageUrlA.select("> div > div")
-                        .first().getElementsByTag("img")
-                        .first().attr("src");
-
-                    BigDecimal productPrice;
-                    try {
-                        productPrice = parseOzonPriceToBigDecimal(
-                            productDataInnerDivs.get(INDEX_OF_PRODUCT_PRICE).select("> div > span")
-                                .first().text());
-                    } catch (Exception e) {
-                        log.error("не удалось распарсить цену");
-                        continue;
-                    }
-
-                    String productBrand = productBrandBlockSpans.first().selectFirst("> span > b").text();
-                    String productName = productDataInnerDivs.get(INDEX_OF_PRODUCT_NAME).select("> div > span").text();
-
-                    ParsedData parsedData = new ParsedData();
-                    parsedData.setCategory(category);
-                    parsedData.setMarketplace(Marketplace.OZON);
-                    parsedData.setUrl(productUrl);
-                    parsedData.setImageUrl(productImageUrl);
-                    parsedData.setPrice(productPrice);
-                    parsedData.setBrand(productBrand);
-                    parsedData.setProductName(productName);
-                    products.add(parsedData);
-                }
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }*/
-        return products;
+        return searchResultsDivs.stream()
+            .flatMap(searchResultsDiv -> {
+                Elements productsDivs = getProductsDivs(searchResultsDiv);
+                return extractParsedData(productsDivs, category);
+            });
     }
 
     private Elements getSearchResultsDivs() {
@@ -121,107 +69,107 @@ public class OzonCategoryPage {
         return searchResultsDiv.select("> div > div");
     }
 
-    private List<Elements> getAllProductDataDivs(Elements productsDivs) {
-        List<Elements> allProductDataDivs = new ArrayList<>();
-        for (Element productDiv : productsDivs) {
-            Elements productDataDivs = productDiv.select("> div > *");
-            if (productDataDivs.select("> *").isEmpty()) {
-                continue;
+    AtomicInteger productsCount = new AtomicInteger();
+
+    private Stream<ParsedData> extractParsedData(Elements productDivs,
+                                                 Category category) {
+        log.info("Суммарно спарсили {} товаров", productsCount.addAndGet(productDivs.size()));
+        return productDivs.stream()
+            .map(productDiv -> {
+                try {
+                    if (isAbsent(productDiv)) {
+                        log.info("Нет в наличии");
+                        return null;
+                    }
+                    removeExtraInfo(productDiv);
+                    return getProductData(productDiv, category);
+                } catch (Exception e) {
+                    log.warn(e.getMessage());
+                }
+                return null;
+            })
+            .filter(Objects::nonNull);
+    }
+
+    private boolean isAbsent(Element productDiv) {
+        return productDiv.selectFirst("div[title='Нет в наличии']") != null
+            || productDiv.getElementsByTag("a").isEmpty();
+    }
+
+    @SuppressWarnings("all")
+    private void removeExtraInfo(Element productDiv) {
+        try {
+            Element leftCountBlock = productDiv.selectFirst(LEFT_COUNT);
+            if (leftCountBlock == null) {
+                return;
             }
-            removeAddInFavouriteDiv(productDataDivs);
-            allProductDataDivs.add(productDataDivs);
-        }
-        return allProductDataDivs;
-    }
-
-    private void removeAddInFavouriteDiv(Elements productDataDivs) {
-//        productDataDivs.removeLast();
-    }
-
-    private List<ParsedData> extractParsedData(List<Elements> allProductDataDivs,
-                                               Category category) {
-        List<ParsedData> parsedData = new ArrayList<>();
-        for (Elements productDataDivs : allProductDataDivs) {
-            try {
-                ParsedData parsedDataItem = getParsedDataItem(productDataDivs, category);
-                parsedData.add(parsedDataItem);
-            } catch (Exception e) {
-                //log.error(e.getMessage(), e);
+            if (leftCountBlock.text().contains("Осталось")) {
+                leftCountBlock.parent().remove();
             }
+        } catch (Throwable ignored) {
+            // ignored
         }
-        return parsedData;
     }
 
-    private ParsedData getParsedDataItem(Elements productDataDivs,
-                                         Category category) {
-        removeExtraDivIfExists(productDataDivs);
+    private ParsedData getProductData(Element productDiv,
+                                      Category category) {
         return ParsedData.builder()
             .category(category)
             .marketplace(Marketplace.OZON)
-            .url(extractUrl(productDataDivs))
-            .imageUrl(extractImageUrl(productDataDivs))
-            .brand(extractBrand(productDataDivs))
-            .productName(extractProductName(productDataDivs))
-            .price(extractPrice(productDataDivs))
+            .url(extractUrl(productDiv))
+            .imageUrl(extractImageUrl(productDiv))
+            .brand(extractBrand(productDiv))
+            .productName(extractProductName(productDiv))
+            .price(extractPrice(productDiv))
             .build();
     }
 
-    private void removeExtraDivIfExists(Elements productDataDivs) {
-        Element productDataDiv = productDataDivs.last();
-        Elements productDataInnerDivs = productDataDiv.select("> *");
-        try {
-            if (productDataInnerDivs.get(INDEX_OF_EXTRA_DIV_IF_SALE_PRODUCT)
-                .select("span").text().toLowerCase()
-                .contains("осталось")) {
-                productDataInnerDivs.remove(INDEX_OF_EXTRA_DIV_IF_SALE_PRODUCT);
-            }
-        } catch (Exception ignored) {}
-    }
-
-    private String extractUrl(Elements productDataDivs) {
-        Element productUrlA = productDataDivs.first();
-        return OZON_MAIN_LINK + productUrlA
-            .attr("href").replaceAll("\\?.*$", "");
-    }
-
-    private String extractImageUrl(Elements productDataDivs) {
-        Element productImageUrlA = productDataDivs.first();
-        return productImageUrlA.select("> div > div")
-            .first().getElementsByTag("img")
-            .first().attr("src");
-    }
-
-    private String extractBrand(Elements productDataDivs) {
-        Elements productDataInnerDivs = getProductMainDataInnerDivs(productDataDivs);
-        //log.info(productDataInnerDivs.html());
-        Elements productBrandBlockSpans = productDataInnerDivs.get(INDEX_OF_PRODUCT_BRAND)
-            .select("> span");
-        String brand = productBrandBlockSpans.first().selectFirst("> span > b").text();
-        if (productBrandBlockSpans.size() == 1 && "Оригинал".equals(brand)) {
-            return "БРЕНД_НЕ_УКАЗАН";
+    private String extractUrl(Element productDiv) {
+        Element productUrlBlock = productDiv.selectFirst(PRODUCT_URL_SELECTOR);
+        if (productUrlBlock == null) {
+            throw new ParsingException("Не обнаружен блок ссылки!");
         }
-        return brand;
+        return OZON_MAIN_LINK + replaceExtraParamsFromUrl(productUrlBlock.attr("href"));
     }
 
-    private String extractProductName(Elements productDataDivs) {
-        Elements productDataInnerDivs = getProductMainDataInnerDivs(productDataDivs);
-        return productDataInnerDivs.get(INDEX_OF_PRODUCT_NAME)
-            .select("> div > span").text();
+    private String replaceExtraParamsFromUrl(String url) {
+        return url.replaceAll("\\?.*$", "");
     }
 
-    private BigDecimal extractPrice(Elements productDataDivs) {
-        Elements productDataInnerDivs = getProductMainDataInnerDivs(productDataDivs);
-        return parseOzonPriceToBigDecimal(
-            productDataInnerDivs.get(INDEX_OF_PRODUCT_PRICE).select("> div > span")
-                .first().text());
+    private String extractImageUrl(Element productDiv) {
+        Element productImageBlock = productDiv.selectFirst(PRODUCT_IMAGE_SELECTOR);
+        if (productImageBlock == null) {
+            throw new ParsingException("Не обнаружен блок с изображением товара!");
+        }
+        return productImageBlock.attr("src");
     }
 
-    private Elements getProductMainDataInnerDivs(Elements productDataDivs) {
-        return productDataDivs.last().select("> *");
+    private String extractBrand(Element productDiv) {
+        Element productBrandBlock = productDiv.selectFirst(PRODUCT_BRAND_SELECTOR);
+        if (productBrandBlock == null) {
+            throw new ParsingException("Не обнаружен блок с названием бренда!");
+        }
+        return ORIGINAL_TEXT.equals(productBrandBlock.text()) ? "" : productBrandBlock.text();
+    }
+
+    private String extractProductName(Element productDiv) {
+        Element productNameBlock = productDiv.selectFirst(PRODUCT_NAME_SELECTOR);
+        if (productNameBlock == null) {
+            throw new ParsingException("Не обнаружен блок c названием товара!");
+        }
+        return productNameBlock.text();
+    }
+
+    private BigDecimal extractPrice(Element productDiv) {
+        Element productPriceBlock = productDiv.selectFirst(PRODUCT_PRICE_SELECTOR);
+        if (productPriceBlock == null) {
+            throw new ParsingException("Не обнаружен блок c ценой товара!");
+        }
+        return parseOzonPriceToBigDecimal(productPriceBlock.text());
     }
 
     private BigDecimal parseOzonPriceToBigDecimal(String ozonPrice) {
-        String cleanedString = ozonPrice.replaceAll("[^\\d]", "");
+        String cleanedString = ozonPrice.replaceAll("\\D", "");
         return new BigDecimal(cleanedString);
     }
 
