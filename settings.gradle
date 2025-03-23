@@ -13,7 +13,7 @@ include(
         'modules:auth',
         'modules:analytics',
         'modules:notifications',
-        'modules:catalog'
+        'modules:catalog',
 
         'modules:config',
         'modules:common'
