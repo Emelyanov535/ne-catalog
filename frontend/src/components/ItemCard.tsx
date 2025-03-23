@@ -8,7 +8,7 @@ import {FavoriteButton} from "@/components/FavoriteButton.tsx";
 interface ItemCardProps {
     product: ProductDto;
     isFavorite: boolean;
-    onToggleFavorite: (productId: number) => void;
+    onToggleFavorite: (productUrl: string) => void;
 }
 
 export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps) {
@@ -16,7 +16,7 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
     const fallbackImage =
         "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-10615.jpg";
 
-    if (!product || !product.id) return null;
+    if (!product || !product.url) return null;
 
     return (
         <Card className="flex flex-col h-full relative">
@@ -31,9 +31,9 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
                 />
 
                 <FavoriteButton
-                    productId={product.id}
+                    productUrl={product.url}
                     isFavorite={isFavorite}
-                    onToggle={() => onToggleFavorite(product.id)}
+                    onToggle={() => onToggleFavorite(product.url)}
                     className="absolute top-4 left-4"
                 />
 
@@ -63,7 +63,7 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
 
             <CardFooter className="mt-auto flex flex-col items-start gap-2 text-sm">
                 <div className="text-2xl font-semibold">100 000</div>
-                <Button type="button" className="w-full" onClick={() => navigate(`/product/${product.id}`)}>
+                <Button type="button" className="w-full" onClick={() => navigate(`/product/${product.url}`)}>
                     Узнать подробнее
                 </Button>
             </CardFooter>
