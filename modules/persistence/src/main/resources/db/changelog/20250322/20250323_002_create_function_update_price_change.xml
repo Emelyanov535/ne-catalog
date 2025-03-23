@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="20250323_002_add_trigger_update_percent_change" author="artem">
+        <sql>
+            DROP TRIGGER IF EXISTS update_percent_change ON price_history;
+            DROP FUNCTION IF EXISTS calculate_percent_change;
+
+            CREATE FUNCTION calculate_percent_change() RETURNS TRIGGER AS '
+            DECLARE
+            last_price NUMERIC;
+                prev_price NUMERIC;
+            BEGIN
+                -- Получаем последние две цены для данного продукта
+            SELECT price INTO last_price
+            FROM price_history
+            WHERE product_url = NEW.product_url
+            ORDER BY date DESC
+                LIMIT 1 OFFSET 0;
+
+            SELECT price INTO prev_price
+            FROM price_history
+            WHERE product_url = NEW.product_url
+            ORDER BY date DESC
+                LIMIT 1 OFFSET 1;
+
+            -- Если есть предыдущая цена, обновляем процент изменения
+            IF prev_price IS NOT NULL AND prev_price > 0 THEN
+            UPDATE product
+            SET percent_change = ((last_price - prev_price) / prev_price) * 100
+            WHERE url = NEW.product_url;
+            END IF;
+
+            RETURN NEW;
+            END;
+            ' LANGUAGE plpgsql;
+
+            CREATE TRIGGER update_percent_change
+                AFTER INSERT ON price_history
+                FOR EACH ROW EXECUTE FUNCTION calculate_percent_change();
+        </sql>
+
+        <rollback>
+            DROP TRIGGER IF EXISTS update_percent_change ON price_history;
+            DROP FUNCTION IF EXISTS calculate_percent_change;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
