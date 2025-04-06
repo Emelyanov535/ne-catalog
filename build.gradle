@@ -45,6 +45,7 @@ subprojects {
         set('selenium_version', '4.25.0')
         set('spring_retry_version', '2.0.9')
         set('jsoup_vesion', '1.18.1')
+        set('apache_text_version', '1.10.0')
     }
 
     dependencyManagement {
