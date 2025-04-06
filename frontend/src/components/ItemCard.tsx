@@ -1,6 +1,6 @@
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Badge} from "@/components/ui/badge";
-import {TrendingUpIcon} from "lucide-react";
+import {TrendingDownIcon, TrendingUpIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useNavigate} from "react-router-dom";
 import {FavoriteButton} from "@/components/FavoriteButton.tsx";
@@ -8,7 +8,7 @@ import {FavoriteButton} from "@/components/FavoriteButton.tsx";
 interface ItemCardProps {
     product: ProductDto;
     isFavorite: boolean;
-    onToggleFavorite: (productId: number) => void;
+    onToggleFavorite: (productUrl: string) => void;
 }
 
 export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps) {
@@ -16,7 +16,7 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
     const fallbackImage =
         "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-10615.jpg";
 
-    if (!product || !product.id) return null;
+    if (!product || !product.url) return null;
 
     return (
         <Card className="flex flex-col h-full relative">
@@ -31,9 +31,9 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
                 />
 
                 <FavoriteButton
-                    productId={product.id}
+                    productUrl={product.url}
                     isFavorite={isFavorite}
-                    onToggle={() => onToggleFavorite(product.id)}
+                    onToggle={() => onToggleFavorite(product.url)}
                     className="absolute top-4 left-4"
                 />
 
@@ -42,17 +42,28 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
                 </CardDescription>
                 <CardTitle>{product.productName}</CardTitle>
 
-                <div className="absolute top-4 right-4">
-                    <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-                        <TrendingUpIcon className="size-3"/>
-                        +12.5%
-                    </Badge>
-                </div>
+                {product.percentChange !== 0 && product.percentChange !== undefined && (
+                    <div className="absolute top-4 right-4">
+                        <Badge
+                            variant="outline"
+                            className={`flex gap-1 rounded-lg text-xs ${
+                                product.percentChange > 0 ? "text-red-600 border-red-600" : "text-green-600 border-green-600"
+                            }`}
+                        >
+                            {product.percentChange > 0 ? (
+                                <TrendingUpIcon className="size-3 text-red-600" />
+                            ) : (
+                                <TrendingDownIcon className="size-3 text-green-600" />
+                            )}
+                            {product.percentChange > 0 ? `+${product.percentChange.toFixed(2)}%` : `${product.percentChange.toFixed(2)}%`}
+                        </Badge>
+                    </div>
+                )}
             </CardHeader>
 
             <CardFooter className="mt-auto flex flex-col items-start gap-2 text-sm">
                 <div className="text-2xl font-semibold">100 000</div>
-                <Button type="button" className="w-full" onClick={() => navigate(`/product/${product.id}`)}>
+                <Button type="button" className="w-full" onClick={() => navigate(`/product/${product.url}`)}>
                     Узнать подробнее
                 </Button>
             </CardFooter>

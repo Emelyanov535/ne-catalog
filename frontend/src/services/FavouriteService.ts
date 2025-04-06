@@ -2,9 +2,9 @@ import axiosInstance from "@/services/AxiosInstance.ts";
 import { toast } from "sonner";
 
 class FavouriteService {
-    async addToFavorites(productId: number) {
+    async addToFavorites(productUrl: string) {
         try {
-            await axiosInstance.get(`/favorite/${productId}`);
+            await axiosInstance.get(`/favorite?productUrl=${productUrl}`);
             return true;
         } catch (error) {
             toast.error("Ошибка при добавлении в избранное: " + error);
@@ -12,9 +12,9 @@ class FavouriteService {
         }
     }
 
-    async removeFromFavorites(productId: number) {
+    async removeFromFavorites(productUrl: string) {
         try {
-            await axiosInstance.delete(`/favorite/${productId}`);
+            await axiosInstance.delete(`/favorite?productUrl=${productUrl}`);
             return true;
         } catch (error) {
             toast.error("Ошибка при удалении из избранного: " + error);
