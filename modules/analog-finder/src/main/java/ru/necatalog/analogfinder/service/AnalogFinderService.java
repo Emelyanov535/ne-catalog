@@ -100,7 +100,7 @@ public class AnalogFinderService {
 
             if (StringUtils.isNotBlank(baseAttribute.getValue())
                 && StringUtils.isNotBlank(referenceAttribute.getValue())) {
-                if (ValueType.INTEGER.name().equals(baseAttribute.getValueType()) || StringUtils.isNotBlank(baseAttribute.getUnit())) {
+                if (ValueType.NUMBER.name().equals(baseAttribute.getValueType()) || StringUtils.isNotBlank(baseAttribute.getUnit())) {
                     try {
                         double baseValue = Double.parseDouble(baseAttribute.getValue());
                         double referenceValue = Double.parseDouble(referenceAttribute.getValue());
