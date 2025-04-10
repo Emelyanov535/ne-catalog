@@ -98,13 +98,12 @@ public class SearchService {
         where ph.date = (select max(ph2.date) from price_history ph2 where ph2.product_url = p.url)
         """);
 
-        // Фильтрация по поисковому запросу
         if (searchQuery != null && !searchQuery.isBlank()) {
             query.append(" and (to_tsvector(p.product_name) @@ plainto_tsquery(:searchQuery)) ");
         }
 
         boolean hasFilters = attributeValues != null && !attributeValues.isEmpty();
-        if (hasFilters) {
+        if (hasFilters && !attributeValues.containsKey("page")) {
             query.append("""
             and p.url in (
                 select pa.product_url

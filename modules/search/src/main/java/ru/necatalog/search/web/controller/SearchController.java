@@ -30,6 +30,13 @@ public class SearchController implements SearchApi {
                                      Integer page,
                                      Integer size,
                                      Map<String, String> attributeValues) {
+        attributeValues.remove("page");
+        attributeValues.remove("size");
+        attributeValues.remove("sortDir");
+        attributeValues.remove("sortBy");
+        attributeValues.remove("sortAttribute");
+        attributeValues.remove("searchQuery");
+        attributeValues.remove("category");
         return searchService.search(category, searchQuery, sortAttribute, sortDir, page, size, attributeValues);
     }
 
