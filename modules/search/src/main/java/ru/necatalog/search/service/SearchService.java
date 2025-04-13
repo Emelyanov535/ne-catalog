@@ -94,11 +94,12 @@ public class SearchService {
                p.percent_change
         from product p
         join price_history ph on ph.product_url = p.url
+        join product_ts_vector ptv on ptv.url = p.url
         where ph.date = (select max(ph2.date) from price_history ph2 where ph2.product_url = p.url)
         """);
 
         if (searchQuery != null && !searchQuery.isBlank()) {
-            query.append(" and (to_tsvector(p.product_name) @@ plainto_tsquery(:searchQuery)) ");
+            query.append(" and (ptv.product_name @@ plainto_tsquery(:searchQuery)) ");
         }
 
         boolean hasFilters = attributeValues != null && !attributeValues.isEmpty();

@@ -1,7 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: 20250409_001_add_price_in_product.xml
-      relativeToChangelogFile: true
-  - include:
-      file: 20250323_002_create_function_update_price_change.xml
-      relativeToChangelogFile: true
