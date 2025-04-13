@@ -2,4 +2,7 @@ dependencies {
     implementation project(':modules:config')
     implementation project(':modules:persistence')
     implementation project(':modules:common')
+
+    implementation "org.apache.commons:commons-text:${apache_text_version}"
+    implementation "com.github.haifengl:smile-core:4.3.0"
 }

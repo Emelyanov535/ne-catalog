@@ -3,7 +3,7 @@
     <option name="ACTIVE_PROFILES" value="dev" />
     <option name="SCHEDULED_DEBUGGER" value="true" />
     <envs>
-      <env name="OZON_ENABLED" value="true" />
+      <env name="OZON_ENABLED" value="false" />
       <env name="OZON_MAX_PROCESSING_THREADS" value="1" />
       <env name="OZON_PARSER_MODE" value="headless" />
       <env name="POSTGRES_JDBC_PASSWORD" value="postgres" />

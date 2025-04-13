@@ -156,8 +156,8 @@ public class LaptopAttributeProcessor implements AttributeProcessor {
 
     private String getValueType(String value) {
         try {
-            Integer.parseInt(value);
-            return ValueType.INTEGER.name();
+            Double.parseDouble(value);
+            return ValueType.NUMBER.name();
         } catch (NumberFormatException e) {
             return ValueType.STRING.name();
         }
