@@ -1,34 +1,159 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { catalogService } from "@/services/CatalogService.ts";
+import {useParams} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {catalogService} from "@/services/CatalogService.ts";
+import {FavoriteButton} from "@/components/FavoriteButton.tsx";
+import {useFavorites} from "@/services/useFavorites.ts";
+import {Component} from "@/components/ui/line-chart.tsx";
+import {Separator} from "@radix-ui/react-dropdown-menu";
+import {Button} from "@/components/ui/button.tsx";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@radix-ui/react-tabs";
 
 const ProductDetail: React.FC = () => {
-    const { id } = useParams<{ id: bigint }>();
+    const {url} = useParams<{ url: string }>();
     const [product, setProduct] = useState<ProductDto | null>(null);
+    const decodedUrl = decodeURIComponent(url as string);
+    const {favorites, toggleFavorite} = useFavorites();
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const data = await catalogService.getProductById(id);
-                console.log(data)
+                const data = await catalogService.getProductByUrl(decodedUrl);
                 setProduct(data);
             } catch (error) {
                 console.error("Ошибка при загрузке данных", error);
             }
         };
         fetchProduct();
-    }, [id]);
+    }, [decodedUrl]);
 
     if (!product) return <p>Загрузка...</p>;
 
-
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold">{product.productName}</h1>
-            <p>Бренд: {product.brand}</p>
-            <p>Цена: 100 000</p>
-            <img src={product.imageUrl} alt={product.productName} className="w-60 h-60 object-contain" />
+        <div className="flex justify-center items-center p-4">
+            <div className="w-full max-w-7xl p-6">
+                {/* Верхний блок с названием и рейтингом */}
+                <div className="flex justify-between items-center">
+                    <div>
+                        <p className="text-lg font-semibold">{product.productName}</p>
+                        <p className="text-gray-500 text-sm">57 000 ₽ — 82 770 ₽</p>
+                    </div>
+                    <FavoriteButton
+                        productUrl={product.url}
+                        isFavorite={favorites.has(product.url)}
+                        onToggle={() => toggleFavorite(product.url)}
+                    />
+                </div>
+                <Separator className="my-4 border-t border-gray-300"></Separator>
+
+                {/* Нижний блок с фото, характеристиками и ценами */}
+                <div className="flex gap-6">
+                    {/* Фото */}
+                    <div className="w-1/4 flex justify-center">
+                        <img src={product.imageUrl} alt={product.productName} className="w-90 h-90 object-contain"/>
+                    </div>
+
+                    {/* Характеристики */}
+                    <div className="w-1/2 space-y-2">
+                        <p className="text-lg font-semibold">О товаре</p>
+
+                        <div className="grid gap-2">
+                            {[
+                                {label: "Экран", value: "6.1 дюйм, 2556x1179, OLED/POLED"},
+                                {label: "Процессор", value: "Apple A16 Bionic, 6-ядерный"},
+                                {label: "Оперативная память", value: "6 Гб"},
+                                {label: "Встроенная память", value: "128 Гб"},
+                                {label: "Емкость аккумулятора", value: "3349 мА*ч"},
+                            ].map((item, index) => (
+                                <div key={index} className="flex items-center">
+                                    <span className="text-gray-500 whitespace-nowrap">{item.label}</span>
+                                    <span className="flex-grow border-b border-dotted border-gray-400 mx-2"></span>
+                                    <span className="whitespace-nowrap">{item.value}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+
+                    {/* Цены в магазинах */}
+                    <div className="w-1/3 space-y-3">
+                        <div className="p-3 border rounded-lg shadow-sm bg-white">
+                            <p className="text-sm font-semibold">М.Видео</p>
+                            <p className="text-lg font-bold">78 990 ₽</p>
+                            <Button type="submit" className="w-full p-5">
+                                Перейти на сайт
+                            </Button>
+                        </div>
+                        <div className="p-3 border rounded-lg shadow-sm bg-white">
+                            <p className="text-sm font-semibold">Эльдорадо</p>
+                            <p className="text-lg font-bold">79 490 ₽</p>
+                            <Button type="submit" className="w-full p-5">
+                                Перейти на сайт
+                            </Button>
+                        </div>
+                        <div className="p-3 border rounded-lg shadow-sm bg-white">
+                            <p className="text-sm font-semibold">DNS</p>
+                            <p className="text-lg font-bold">77 999 ₽</p>
+                            <Button type="submit" className="w-full p-5">
+                                Перейти на сайт
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+                <Tabs defaultValue="about" className="w-[800px] pt-10">
+                    <TabsList className="grid w-full grid-cols-5">
+                        <TabsTrigger value="about">О товаре</TabsTrigger>
+                        <TabsTrigger value="price">Цены</TabsTrigger>
+                        <TabsTrigger value="analog">Аналоги</TabsTrigger>
+                        <TabsTrigger value="attribute">Характеристики</TabsTrigger>
+                        <TabsTrigger value="analyse">Анализ цен</TabsTrigger>
+                    </TabsList>
+                    <Separator className="my-4 border-t border-gray-300"></Separator>
+                    <TabsContent value="about">
+
+                    </TabsContent>
+                    <TabsContent value="price">
+
+                    </TabsContent>
+                    <TabsContent value="analog">
+
+                    </TabsContent>
+                    <TabsContent value="attribute">
+
+                    </TabsContent>
+                    <TabsContent value="analyse">
+                        <Component url={decodedUrl}></Component>
+                    </TabsContent>
+                </Tabs>
+            </div>
         </div>
+
+        // {product.percentChange !== 0 && product.percentChange !== undefined && (
+        //     <div>
+        //         <TooltipProvider>
+        //             <Tooltip>
+        //                 <TooltipTrigger asChild>
+        //                     <Badge
+        //                         variant="outline"
+        //                         className={`flex gap-1 rounded-lg text-xs ${
+        //                             product.percentChange > 0 ? "text-red-600 border-red-600" : "text-green-600 border-green-600"
+        //                         }`}
+        //                     >
+        //                         {product.percentChange > 0 ? (
+        //                             <TrendingUpIcon className="size-3 text-red-600" />
+        //                         ) : (
+        //                             <TrendingDownIcon className="size-3 text-green-600" />
+        //                         )}
+        //                         {product.percentChange > 0 ? `+${product.percentChange.toFixed(2)}%` : `${product.percentChange.toFixed(2)}%`}
+        //                     </Badge>
+        //                 </TooltipTrigger>
+        //                 <TooltipContent>
+        //                     <p>The price has changed by {product.percentChange.toFixed(2)}% since the last collection</p>
+        //                 </TooltipContent>
+        //             </Tooltip>
+        //         </TooltipProvider>
+        //     </div>
+        // )}
     );
 };
 

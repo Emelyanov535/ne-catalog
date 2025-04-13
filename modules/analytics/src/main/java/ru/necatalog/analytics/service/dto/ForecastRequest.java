@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -25,17 +24,8 @@ public class ForecastRequest {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class OriginalTimeSeries {
-		private List<Value> values;
-	}
-
-	@Getter
-	@Setter
-	@Builder
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class Value {
-		private String date;
-		private BigDecimal value;
+		private List<ValueDto> values;
+		private int length;
 	}
 }
 

@@ -29,8 +29,6 @@ rest:
     host: http://time-series.athene.tech/api/1.0
     methods:
       specific-method-forecast: /getSpecificMethodForecast
-      specific-method-smoothed: /getSpecificMethodSmoothed
-      forecast: /getForecast
 
 server:
   servlet:
@@ -50,6 +48,7 @@ wildberries:
   retry-delay: 1000
   shard: "electronic41/v2"
   laptop-url: "/catalog"
+
 
 jwt:
   secret:

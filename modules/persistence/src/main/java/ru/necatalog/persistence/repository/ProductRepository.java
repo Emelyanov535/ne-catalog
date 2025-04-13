@@ -36,4 +36,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             "where p.category = :category")
     PriceFilterDto findPriceFilterData(@Param("category") String category);
 
+    @Query(value = """
+        SELECT * FROM product
+        WHERE similarity(product_name, :input) > 0.86
+        ORDER BY similarity(product_name, :input) DESC
+    """, nativeQuery = true)
+    List<ProductEntity> findSimilarProducts(@Param("input") String input);
+
 }

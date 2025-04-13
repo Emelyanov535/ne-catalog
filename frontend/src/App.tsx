@@ -19,7 +19,7 @@ const App: React.FC = () => {
                     <Route path="/signUp" element={<SignUp/>}/>
                     <Route path="/signIn" element={<SignIn/>}/>
                     <Route path="/" element={<Home/>}/>
-                    <Route path="/product/:id" element={<ProductDetail/>}/>
+                    <Route path="/product/:url" element={<ProductDetail/>}/>
 
                     {/* Защищенные маршруты */}
                     <Route element={<PrivateRoute/>}>

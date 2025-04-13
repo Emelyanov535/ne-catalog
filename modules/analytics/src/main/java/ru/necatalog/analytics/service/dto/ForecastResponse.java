@@ -23,20 +23,10 @@ public class ForecastResponse {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class TimeSeries {
-		private List<Value> values;
+		private List<ValueDto> values;
 		private String name;
 		private int length;
 		private boolean empty;
-	}
-
-	@Getter
-	@Setter
-	@Builder
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class Value {
-		private String date;
-		private BigDecimal value;
 	}
 
 	@Getter

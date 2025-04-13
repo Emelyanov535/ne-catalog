@@ -17,10 +17,9 @@ class CatalogService {
         }
     }
 
-    async getProductById(id: bigint) {
+    async getProductByUrl(url: string) {
         try {
-            const response = await axiosInstance.get(`/catalog/${id}`);
-            console.log("asdfsdfsdf", response)
+            const response = await axiosInstance.get(`/catalog/getByUrl?url=${url}`);
             if (response.status !== 200) {
                 toast.error("Ошибка при загрузке данных");
             }

@@ -58,6 +58,7 @@ public class ParsingService {
                 ProductEntity productEntity = conversionService.convert(dto, ProductEntity.class);
                 productEntity.setUrl(String.format(URL_FORMAT, dto.getId()));
                 productEntity.setImageUrl(getImageUrl(dto.getId()));
+                productEntity.setPercentChange(0.0);
 
                 PriceHistoryEntity priceHistory = PriceHistoryEntity.builder()
                         .id(new PriceHistoryId(productEntity.getUrl(), ZonedDateTime.now()))

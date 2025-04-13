@@ -63,7 +63,7 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
 
             <CardFooter className="mt-auto flex flex-col items-start gap-2 text-sm">
                 <div className="text-2xl font-semibold">100 000</div>
-                <Button type="button" className="w-full" onClick={() => navigate(`/product/${product.url}`)}>
+                <Button type="button" className="w-full" onClick={() => navigate(`/product/${encodeURIComponent(product.url)}`)}>
                     Узнать подробнее
                 </Button>
             </CardFooter>

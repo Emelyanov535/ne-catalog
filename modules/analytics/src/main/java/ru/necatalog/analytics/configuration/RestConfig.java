@@ -23,8 +23,6 @@ public class RestConfig {
 		@Setter
 		public static class Methods {
 			private String specificMethodForecast;
-			private String specificMethodSmoothed;
-			private String forecast;
 		}
 	}
 }

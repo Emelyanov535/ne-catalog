@@ -4,7 +4,7 @@ import {LoginForm} from "@/components/ui/login-form.tsx";
 
 const SignIn: React.FC = () => {
     return (
-        <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="flex h-screen items-center justify-center">
             <div className="w-full max-w-sm">
                 <LoginForm/>
             </div>
