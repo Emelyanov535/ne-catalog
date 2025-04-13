@@ -78,7 +78,6 @@ public class SearchService {
                                      Integer page,
                                      Integer size,
                                      Map<String, String> attributeValues) {
-
         List<AttributeEntity> categoryAttributes = attributes.values().stream()
             .filter(attr -> attr.getGroup().contains(category.name()))
             .toList();

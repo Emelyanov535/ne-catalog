@@ -14,11 +14,12 @@ import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.search.dto.FilterData;
 import ru.necatalog.search.dto.SearchResult;
 
-@RequestMapping("/api/v1/search")
+@RequestMapping("/search")
 @Tag(name = "Поиск и фильтрация товара")
 public interface SearchApi {
 
     @GetMapping("/{category}/filters")
+    @Operation(summary = "Получить доступные фильтры для категории")
     FilterData getAvailableFilters(@PathVariable("category") Category category);
 
     @GetMapping("/{category}")

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@RequestMapping("/api/v1/find-analog")
+@RequestMapping("/find-analog")
 @Tag(name = "Поиск аналогов товара")
 public interface AnalogFinderApi {
 
