@@ -1,6 +1,7 @@
 package ru.necatalog.search.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,14 +11,10 @@ import ru.necatalog.persistence.enumeration.Marketplace;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchResult {
+public class SearchResults {
 
-    private String productName;
-    private String url;
-    private String brand;
-    private Marketplace marketplace;
-    private String imageUrl;
-    private BigDecimal price;
-    private Double percentChange;
+    List<SearchResult> results;
+
+    long maxPage;
 
 }

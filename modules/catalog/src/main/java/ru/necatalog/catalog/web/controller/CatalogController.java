@@ -1,5 +1,7 @@
 package ru.necatalog.catalog.web.controller;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.necatalog.persistence.entity.ProductEntity;
 import ru.necatalog.catalog.service.CatalogService;
+import ru.necatalog.persistence.enumeration.Category;
 
 @RestController
 @RequestMapping("/catalog")
@@ -33,4 +36,11 @@ public class CatalogController {
 	public ProductEntity getProduct(@RequestParam(value = "url") String url) {
 		return catalogService.getProductById(url);
 	}
+
+	@GetMapping("/categories")
+	@Operation(summary = "Получить доступные категории")
+	public Category[] getCategories() {
+		return catalogService.getCategories();
+	}
+
 }

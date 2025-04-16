@@ -26,7 +26,7 @@
       <env name="OZON_MAX_PROCESSING_THREADS" value="1" />
       <env name="OZON_PARSER_MODE" value="headless" />
       <env name="POSTGRES_JDBC_PASSWORD" value="postgres" />
-      <env name="POSTGRES_JDBC_URL" value="localhost:5432/test-3" />
+      <env name="POSTGRES_JDBC_URL" value="localhost:5432/ne-catalog" />
       <env name="POSTGRES_JDBC_USERNAME" value="postgres" />
       <env name="SERVER_PORT" value="8080" />
     </envs>

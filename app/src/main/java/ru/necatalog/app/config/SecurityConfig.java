@@ -68,9 +68,12 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://127.0.0.1:3000")); // Разрешенные фронты
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешенные методы
-		configuration.setAllowedHeaders(List.of("*")); // Разрешенные заголовки
+		configuration.setAllowedOrigins(
+			List.of("http://localhost:5173", "http://127.0.0.1:3000", "http://localhost:3000")); // Разрешенные фронты
+		configuration.setAllowedMethods(
+			List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешенные методы
+		configuration.setAllowedHeaders(
+			List.of("*")); // Разрешенные заголовки
 		configuration.setAllowCredentials(true); // Разрешаем куки и токены
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

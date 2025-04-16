@@ -43,4 +43,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     """, nativeQuery = true)
     List<ProductEntity> findSimilarProducts(@Param("input") String input);
 
+    @Query("""
+        select p.category from ProductEntity p where p.url = :productUrl
+        """)
+    Category getProductCategory(@Param("productUrl") String productUrl);
 }

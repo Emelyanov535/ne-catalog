@@ -1,4 +1,4 @@
-interface ProductDto {
+interface AnalogDto {
     marketplace: string,
     category: string,
     brand: string,

@@ -30,6 +30,21 @@ class CatalogService {
             throw error;
         }
     }
+
+    async getCategories() {
+        try {
+            const response = await axiosInstance.get(`/catalog/categories`);
+            if (response.status !== 200) {
+                toast.error("Ошибка при загрузке данных");
+            }
+
+            return response.data;
+        } catch (error) {
+            toast.error("Ошибка:" + error);
+            throw error;
+        }
+    }
+
 }
 
 
