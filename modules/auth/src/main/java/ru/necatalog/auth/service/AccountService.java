@@ -25,6 +25,7 @@ public class AccountService {
 				.username(registerDto.getUsername())
 				.password(passwordEncoder.encode(registerDto.getPassword()))
 				.roles(Set.of(Role.USER))
+				.isNotification(true)
 				.build();
 
 		return userRepository.save(userEntity).getId();

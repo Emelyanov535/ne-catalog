@@ -13,12 +13,16 @@ const ProductDetail: React.FC = () => {
     const [product, setProduct] = useState<ProductDto | null>(null);
     const decodedUrl = decodeURIComponent(url as string);
     const {favorites, toggleFavorite} = useFavorites();
+    const [similarProducts, setSimilarProducts] = useState<ShopPriceDto[]>([]);
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const data = await catalogService.getProductByUrl(decodedUrl);
                 setProduct(data);
+
+                const similarData = await catalogService.getSimilarProductsByUrl(decodedUrl);
+                setSimilarProducts(similarData);
             } catch (error) {
                 console.error("Ошибка при загрузке данных", error);
             }
@@ -27,7 +31,6 @@ const ProductDetail: React.FC = () => {
     }, [decodedUrl]);
 
     if (!product) return <p>Загрузка...</p>;
-
     return (
         <div className="flex justify-center items-center p-4">
             <div className="w-full max-w-7xl p-6">
@@ -73,30 +76,29 @@ const ProductDetail: React.FC = () => {
                         </div>
                     </div>
 
-
                     {/* Цены в магазинах */}
                     <div className="w-1/3 space-y-3">
-                        <div className="p-3 border rounded-lg shadow-sm bg-white">
-                            <p className="text-sm font-semibold">М.Видео</p>
-                            <p className="text-lg font-bold">78 990 ₽</p>
-                            <Button type="submit" className="w-full p-5">
-                                Перейти на сайт
-                            </Button>
-                        </div>
-                        <div className="p-3 border rounded-lg shadow-sm bg-white">
-                            <p className="text-sm font-semibold">Эльдорадо</p>
-                            <p className="text-lg font-bold">79 490 ₽</p>
-                            <Button type="submit" className="w-full p-5">
-                                Перейти на сайт
-                            </Button>
-                        </div>
-                        <div className="p-3 border rounded-lg shadow-sm bg-white">
-                            <p className="text-sm font-semibold">DNS</p>
-                            <p className="text-lg font-bold">77 999 ₽</p>
-                            <Button type="submit" className="w-full p-5">
-                                Перейти на сайт
-                            </Button>
-                        </div>
+                        {[
+                            ...similarProducts.filter(p => p.url === decodedUrl),
+                            ...similarProducts.filter(p => p.url !== decodedUrl)
+                        ].map((product, index) => {
+                            const isCurrent = product.url === decodedUrl;
+
+                            return (
+                                <div
+                                    key={index}
+                                    className={`p-3 border rounded-lg shadow-sm bg-white ${
+                                        isCurrent ? "border-blue-500 bg-blue-50 shadow-md" : ""
+                                    }`}
+                                >
+                                    <p className="text-sm font-semibold">{product.marketplace}</p>
+                                    <p className="text-lg font-bold">{product.price.toLocaleString("ru-RU")} ₽</p>
+                                    <a href={product.url} target="_blank" rel="noopener noreferrer">
+                                        <Button className="w-full p-5">Перейти на сайт</Button>
+                                    </a>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
 

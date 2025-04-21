@@ -30,6 +30,20 @@ class CatalogService {
             throw error;
         }
     }
+
+    async getSimilarProductsByUrl(url: string) {
+        try {
+            const response = await axiosInstance.get(`/forecast/test?url=${url}`);
+            if (response.status !== 200) {
+                toast.error("Ошибка при загрузке данных");
+            }
+
+            return response.data;
+        } catch (error) {
+            toast.error("Ошибка:" + error);
+            throw error;
+        }
+    }
 }
 
 

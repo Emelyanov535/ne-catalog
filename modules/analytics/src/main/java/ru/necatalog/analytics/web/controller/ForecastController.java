@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.necatalog.analytics.service.ForecastService;
 import ru.necatalog.analytics.service.ProductFinderService;
+import ru.necatalog.analytics.service.impl.ProductFinderServiceImpl;
 import ru.necatalog.analytics.web.dto.ForecastWithHistoricalAndPredData;
 import ru.necatalog.persistence.entity.ProductEntity;
+import ru.necatalog.persistence.repository.projection.SimilarProductData;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/forecast")
@@ -31,7 +32,7 @@ public class ForecastController {
 	}
 
 	@GetMapping("/test")
-	public ResponseEntity<List<ProductEntity>> test(@RequestParam("search") String search) {
-		return ResponseEntity.ok(productFinderService.findSimilarProducts(search));
+	public ResponseEntity<List<SimilarProductData>> test(@RequestParam("url") String url) {
+		return ResponseEntity.ok(productFinderService.getProductsInfo(url));
 	}
 }

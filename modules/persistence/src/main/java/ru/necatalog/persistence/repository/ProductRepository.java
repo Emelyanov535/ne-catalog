@@ -13,6 +13,7 @@ import ru.necatalog.persistence.dto.PriceFilterDto;
 import ru.necatalog.persistence.entity.ProductEntity;
 import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.persistence.enumeration.Marketplace;
+import ru.necatalog.persistence.repository.projection.SimilarProductData;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, String> {
@@ -37,10 +38,22 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     PriceFilterDto findPriceFilterData(@Param("category") String category);
 
     @Query(value = """
-        SELECT * FROM product
-        WHERE similarity(product_name, :input) > 0.86
-        ORDER BY similarity(product_name, :input) DESC
+        SELECT DISTINCT ON (p.product_name)
+               p.marketplace,
+               p.product_name,
+               p.url,
+               p.image_url,
+               p.percent_change,
+               ph.price
+        FROM product p
+        JOIN price_history ph ON p.url = ph.product_url
+        WHERE similarity(p.product_name,
+        	(select p.product_name
+        	from product p
+        	where p.url = :input)
+        ) > 0.85
+        ORDER BY p.product_name, ph.date DESC
     """, nativeQuery = true)
-    List<ProductEntity> findSimilarProducts(@Param("input") String input);
+    List<SimilarProductData> findSimilarProducts(@Param("input") String input);
 
 }
