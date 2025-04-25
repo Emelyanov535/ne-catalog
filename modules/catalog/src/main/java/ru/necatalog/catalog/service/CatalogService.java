@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.necatalog.persistence.entity.ProductEntity;
+import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.persistence.repository.ProductRepository;
 
 
@@ -23,4 +24,8 @@ public class CatalogService {
 	public ProductEntity getProductById(String url) {
 		return productRepository.findById(url).orElseThrow(() -> new RuntimeException("Product not found"));
 	}
+
+    public Category[] getCategories() {
+		return Category.values();
+    }
 }

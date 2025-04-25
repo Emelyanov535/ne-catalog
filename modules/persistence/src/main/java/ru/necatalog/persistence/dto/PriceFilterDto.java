@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PriceFilterDto {
 
-    BigDecimal priceStart;
-
     BigDecimal priceEnd;
+
+    BigDecimal priceStart;
 
 }

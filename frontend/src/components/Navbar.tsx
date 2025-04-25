@@ -15,12 +15,16 @@ import {
 import {Label} from "@/components/ui/label.tsx";
 import {Switch} from "@/components/ui/switch.tsx";
 import {ModeToggle} from "@/components/mode-toggle.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {catalogService} from "@/services/CatalogService.ts";
+import {CategoryTranslations} from "@/types/CategoryTranslations.ts";
 
 const Navbar: React.FC = () => {
     const [isNotificationsEnabled, setIsNotificationsEnabled] = useState<boolean>(false);
     const navigate = useNavigate();
     const isAuthenticated = Boolean(localStorageService.getAccessToken());
     const [username, setUsername] = useState<string>("");
+    const [categories, setCategories] = useState<string[]>([""]);
 
     const fetchUserData = async () => {
         try {
@@ -42,6 +46,7 @@ const Navbar: React.FC = () => {
     };
 
     useEffect(() => {
+        fetchCategories();
         if (isAuthenticated) {
             fetchUserData();
         }
@@ -55,9 +60,17 @@ const Navbar: React.FC = () => {
         navigate("/favorites");
     };
 
+    const fetchCategories = async () => {
+        setCategories(await catalogService.getCategories());
+    }
+
+    const goToCatalog = (category: string) => {
+        navigate("/catalog/" + category);
+    }
+
     return (
         <header className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto flex h-14 items-center px-4 md:px-6">
+            <div className="flex justify-between container mx-auto flex h-14 items-center px-4 md:px-6">
                 <div className="flex items-center gap-4">
                     <a href="/" className="flex items-center gap-2 font-bold">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" className="h-6 w-6">
@@ -66,14 +79,27 @@ const Navbar: React.FC = () => {
                         </svg>
                         <span className="hidden lg:inline">ne-catalog</span>
                     </a>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">
+                                Выбрать категорию
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {categories.map((category, index) => (
+                                <DropdownMenuItem key={index.toString()} onClick={() => goToCatalog(category)}>
+                                    {CategoryTranslations[category] || category}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
 
-                <div className="ml-auto flex items-center gap-2">
-                    <button
-                        className="hidden md:flex items-center border rounded-lg px-4 py-2 text-sm bg-gray-100 dark:bg-gray-800">
-                        Search...
-                    </button>
+                <div className="">
 
+                </div>
+
+                <div className="flex items-center gap-2">
                     <ModeToggle/>
 
                     {isAuthenticated ? (

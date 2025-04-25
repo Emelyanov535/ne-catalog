@@ -21,10 +21,10 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
     return (
         <Card className="flex flex-col h-full relative">
             <CardHeader>
-                <img
+                <img //TODO сделать красиво
                     src={product.imageUrl || fallbackImage}
                     alt={product.productName}
-                    className="w-full h-40 object-contain rounded-t-lg"
+                    className="w-full h-50 object-contain rounded-t-lg"
                     onError={(e) => {
                         (e.target as HTMLImageElement).src = fallbackImage;
                     }}
@@ -36,11 +36,10 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
                     onToggle={() => onToggleFavorite(product.url)}
                     className="absolute top-4 left-4"
                 />
-
                 <CardDescription className="text-2xl font-semibold">
                     {product.brand || "No Brand"}
                 </CardDescription>
-                <CardTitle>{product.productName}</CardTitle>
+                <CardTitle className={"overflow-hidden"}>{product.productName}</CardTitle>
 
                 {product.percentChange !== 0 && product.percentChange !== undefined && (
                     <div className="absolute top-4 right-4">
@@ -62,7 +61,7 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
             </CardHeader>
 
             <CardFooter className="mt-auto flex flex-col items-start gap-2 text-sm">
-                <div className="text-2xl font-semibold">100 000</div>
+                {product.price && (<div className="text-2xl font-semibold">{product.price} ₽</div>)}
                 <Button type="button" className="w-full" onClick={() => navigate(`/product/${encodeURIComponent(product.url)}`)}>
                     Узнать подробнее
                 </Button>

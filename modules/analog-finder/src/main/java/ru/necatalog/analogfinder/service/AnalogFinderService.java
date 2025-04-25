@@ -13,14 +13,20 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.necatalog.analogfinder.dto.AnalogResult;
 import ru.necatalog.persistence.entity.AttributeEntity;
 import ru.necatalog.persistence.entity.ProductAttributeEntity;
+import ru.necatalog.persistence.entity.ProductEntity;
+import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.persistence.enumeration.ValueType;
 import ru.necatalog.persistence.enumeration.attribute.laptop.LaptopProcessorAttribute;
 import ru.necatalog.persistence.repository.AttributeRepository;
 import ru.necatalog.persistence.repository.ProductAttributeRepository;
+import ru.necatalog.persistence.repository.ProductPriceRepository;
+import ru.necatalog.persistence.repository.ProductRepository;
 import smile.clustering.CentroidClustering;
 import smile.clustering.KMeans;
 
@@ -34,11 +40,15 @@ public class AnalogFinderService {
 
     private final EntityManager em;
 
+    private final ProductRepository productRepository;
+    private final ProductPriceRepository productPriceRepository;
+
     @Transactional(readOnly = true)
-    public Map<String, List<Double>> findAnalogs(String productUrl,
+    public List<AnalogResult> findAnalogs(String productUrl,
                                                  List<String> attributeGroups) {
-        List<AttributeEntity> attributes = attributeRepository.findAllByGroupIn(attributeGroups);
-        Map<String, List<ProductAttributeEntity>> allProductsAttributes = findProductsWithAttributes(attributes);
+        List<AttributeEntity> attributes = attributeRepository.findAllByNameIn(attributeGroups);
+        Long productPrice = productPriceRepository.getPrice(productUrl);
+        Map<String, List<ProductAttributeEntity>> allProductsAttributes = findProductsWithAttributes(attributes, productPrice);
         List<ProductAttributeEntity> baseProduct = allProductsAttributes.get(productUrl).stream()
             .filter(pa ->
                 StringUtils.isNotBlank(pa.getValue()) )
@@ -51,11 +61,16 @@ public class AnalogFinderService {
             vectors.put(productAttributes.getFirst().getId().getProductUrl(),
                 vectorize(baseProduct, productAttributes));
         }
-        return findAnalogues(productUrl, vectors, 70, 5).stream()
+        Map<String, List<Double>> productUrlsVectors = findAnalogues(productUrl, vectors, 70, 5).stream()
             .collect(Collectors.toMap(Function.identity(), vectors::get));
+        return productRepository.findAllByUrlIn(productUrlsVectors.keySet().stream().toList()).stream()
+            .map(prod -> new AnalogResult(prod.getProductName(), prod.getUrl(), prod.getBrand(),
+                prod.getMarketplace(), prod.getImageUrl()))
+            .toList();
     }
 
-    private Map<String, List<ProductAttributeEntity>> findProductsWithAttributes(List<AttributeEntity> attributes) {
+    private Map<String, List<ProductAttributeEntity>> findProductsWithAttributes(List<AttributeEntity> attributes,
+                                                                                 Long productPrice) {
         String sb = """
                 select new ru.necatalog.persistence.entity.ProductAttributeEntity(
                     pa.id,
@@ -63,9 +78,10 @@ public class AnalogFinderService {
                     pa.value,
                     pa.unit)
                 from ProductAttributeEntity pa
-                where pa.id.attributeId in :attributeIds
+                join PriceHistoryEntity ph on ph.id.productUrl = pa.id.productUrl
+                where pa.id.attributeId in :attributeIds and ph.price >= %s and ph.price <= %s
             """;
-
+        sb = sb.formatted(productPrice * 0.8, productPrice * 1.2);
         List<ProductAttributeEntity> productAttributeEntities = em.createQuery(sb, ProductAttributeEntity.class)
             .setParameter("attributeIds", attributes.stream().map(AttributeEntity::getId).toList())
             .getResultList();
@@ -102,12 +118,16 @@ public class AnalogFinderService {
                 && StringUtils.isNotBlank(referenceAttribute.getValue())) {
                 if (ValueType.NUMBER.name().equals(baseAttribute.getValueType()) || StringUtils.isNotBlank(baseAttribute.getUnit())) {
                     try {
-                        double baseValue = Double.parseDouble(baseAttribute.getValue());
-                        double referenceValue = Double.parseDouble(referenceAttribute.getValue());
+                        double baseValue = Double.parseDouble(baseAttribute.getValue()
+                            .replace(baseAttribute.getUnit(), "")
+                            .replace(" ", ""));
+                        double referenceValue = Double.parseDouble(referenceAttribute.getValue()
+                            .replace(referenceAttribute.getUnit(), "")
+                            .replace(" ", ""));
                         double difference = Math.abs(baseValue - referenceValue);
                         vector.add(baseValue == 0 ? 1.0 : difference / Math.abs(baseValue));
                     } catch (Exception e) {
-                        //
+                        vector.add(1.0);
                     }
                     continue;
                 }
@@ -182,4 +202,14 @@ public class AnalogFinderService {
             .collect(Collectors.toList());
     }
 
+    public Map<String, List<String>> getAttributeGroups(String productUrl) {
+        Category productCategory = productRepository.getProductCategory(productUrl);
+        List<AttributeEntity> attributes = attributeRepository.findAllByGroupContains(productCategory.name());
+        return attributes.stream()
+            .filter(item -> item.getGroup().contains(productCategory.name()))
+            .collect(Collectors.groupingBy(
+                AttributeEntity::getGroup,
+                Collectors.mapping(AttributeEntity::getName, Collectors.toList())
+            ));
+    }
 }

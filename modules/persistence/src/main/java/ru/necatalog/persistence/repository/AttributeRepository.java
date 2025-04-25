@@ -17,4 +17,5 @@ public interface AttributeRepository extends JpaRepository<AttributeEntity, Long
 
     List<AttributeEntity> findAllByGroupIn(Collection<String> groups);
 
+    List<AttributeEntity> findAllByNameIn(Collection<String> names);
 }

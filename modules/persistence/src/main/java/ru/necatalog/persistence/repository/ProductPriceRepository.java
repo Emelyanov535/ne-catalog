@@ -1,8 +1,10 @@
 package ru.necatalog.persistence.repository;
 
+import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import ru.necatalog.persistence.entity.PriceHistoryEntity;
 import ru.necatalog.persistence.entity.id.PriceHistoryId;
@@ -52,4 +54,13 @@ public interface ProductPriceRepository extends JpaRepository<PriceHistoryEntity
 			""", nativeQuery = true)
 	List<PriceValueData> getPriceValueDataByProductUrl(@Param("productUrl") String productUrl);
 
+	@Query(value = """
+			        select
+			            ph.price			
+			        from price_history ph
+			        where ph.product_url = :productUrl
+			        order by ph.date desc
+					limit 1
+			""", nativeQuery = true)
+    Long getPrice(@Param("productUrl") String productUrl);
 }

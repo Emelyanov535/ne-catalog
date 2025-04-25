@@ -1,4 +1,4 @@
-interface ProductDto {
+interface AnalogDto {
     marketplace: string,
     category: string,
     brand: string,
@@ -6,8 +6,6 @@ interface ProductDto {
     createdAt: string,
     url: string,
     imageUrl: string,
-    percentChange: number,
-    shopPrices: ShopPriceDto[];
     percentChange: number,
     price: number,
 }
