@@ -1,5 +1,9 @@
 package ru.necatalog.notifications.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -8,10 +12,6 @@ import ru.necatalog.persistence.entity.PriceChangeMessage;
 import ru.necatalog.persistence.entity.UserEntity;
 import ru.necatalog.persistence.repository.PriceChangeMessageRepository;
 import ru.necatalog.persistence.repository.UserRepository;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

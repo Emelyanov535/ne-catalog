@@ -1,5 +1,5 @@
 import axiosInstance from "@/services/AxiosInstance.ts";
-import { toast } from "sonner";
+import {toast} from "sonner";
 
 class FavouriteService {
     async addToFavorites(productUrl: string) {

@@ -1,5 +1,7 @@
 package ru.necatalog.app.config;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +21,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.necatalog.auth.service.AuthService;
 import ru.necatalog.auth.utils.jwt.JwtFilter;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity

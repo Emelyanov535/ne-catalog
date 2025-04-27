@@ -13,7 +13,6 @@ import ru.necatalog.ozonparser.parser.pool.WebDriverPool;
 import ru.necatalog.ozonparser.parser.service.page.AccessDeniedPage;
 import ru.necatalog.ozonparser.parser.service.page.CategoryPage;
 import ru.necatalog.ozonparser.parser.service.page.NoContentPage;
-import ru.necatalog.ozonparser.utils.OzonConsts;
 
 @Slf4j
 public class OzonHtmlFetcher {

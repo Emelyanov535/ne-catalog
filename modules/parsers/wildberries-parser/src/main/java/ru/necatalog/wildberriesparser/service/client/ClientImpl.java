@@ -1,5 +1,10 @@
 package ru.necatalog.wildberriesparser.service.client;
 
+import java.util.Map;
+import java.util.Random;
+
+import static ru.necatalog.wildberriesparser.config.RestTemplateFactory.createRestTemplateWithDynamicProxy;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -9,11 +14,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.necatalog.wildberriesparser.config.properties.WildberriesConfigProperties;
-
-import java.util.Map;
-import java.util.Random;
-
-import static ru.necatalog.wildberriesparser.config.RestTemplateFactory.createRestTemplateWithDynamicProxy;
 
 @AllArgsConstructor
 @Service

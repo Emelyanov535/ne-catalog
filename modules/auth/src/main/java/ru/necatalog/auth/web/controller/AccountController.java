@@ -15,8 +15,6 @@ import ru.necatalog.auth.service.AccountService;
 import ru.necatalog.auth.web.dto.RegisterDto;
 import ru.necatalog.auth.web.dto.UserInfo;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor

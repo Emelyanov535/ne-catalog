@@ -1,15 +1,14 @@
 package ru.necatalog.wildberriesparser.config;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
-
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.List;
 import java.util.Random;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @AllArgsConstructor

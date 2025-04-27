@@ -1,14 +1,14 @@
 package ru.necatalog.wildberriesparser.config;
 
+import java.io.IOException;
+import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-
-import java.io.IOException;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { favouriteService } from "@/services/FavouriteService.ts";
+import {useCallback, useEffect, useState} from "react";
+import {favouriteService} from "@/services/FavouriteService.ts";
 
 export function useFavorites() {
     const [favorites, setFavorites] = useState<Set<string>>(new Set());

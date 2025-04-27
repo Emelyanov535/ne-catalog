@@ -1,10 +1,10 @@
 package ru.necatalog.analytics.web.dto;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 import ru.necatalog.analytics.service.dto.ValueDto;
-
-import java.util.List;
 
 @Data
 @Builder

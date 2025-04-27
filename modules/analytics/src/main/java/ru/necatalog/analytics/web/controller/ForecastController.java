@@ -1,5 +1,7 @@
 package ru.necatalog.analytics.web.controller;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +14,6 @@ import ru.necatalog.analytics.service.ForecastService;
 import ru.necatalog.analytics.service.ProductFinderService;
 import ru.necatalog.analytics.web.dto.ForecastWithHistoricalAndPredData;
 import ru.necatalog.persistence.entity.ProductEntity;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/forecast")

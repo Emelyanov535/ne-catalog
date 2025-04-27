@@ -1,5 +1,11 @@
 package ru.necatalog.wildberriesparser.service;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -12,12 +18,6 @@ import ru.necatalog.persistence.entity.id.PriceHistoryId;
 import ru.necatalog.wildberriesparser.config.properties.WildberriesConfigProperties;
 import ru.necatalog.wildberriesparser.service.client.Client;
 import ru.necatalog.wildberriesparser.service.dto.ProductInfoDto;
-
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service("wildberriesParsingService")

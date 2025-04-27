@@ -2,7 +2,6 @@ package ru.necatalog.ozonparser.service;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

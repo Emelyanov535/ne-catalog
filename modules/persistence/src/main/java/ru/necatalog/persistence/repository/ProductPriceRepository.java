@@ -1,17 +1,15 @@
 package ru.necatalog.persistence.repository;
 
-import org.springframework.data.domain.Limit;
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import ru.necatalog.persistence.entity.PriceHistoryEntity;
 import ru.necatalog.persistence.entity.id.PriceHistoryId;
 import ru.necatalog.persistence.repository.projection.PriceValueData;
-
-import java.time.ZonedDateTime;
-import java.util.List;
 
 @Repository
 public interface ProductPriceRepository extends JpaRepository<PriceHistoryEntity, PriceHistoryId> {

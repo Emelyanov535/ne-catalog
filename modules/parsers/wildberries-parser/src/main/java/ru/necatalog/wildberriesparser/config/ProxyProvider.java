@@ -1,9 +1,9 @@
 package ru.necatalog.wildberriesparser.config;
 
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Random;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProxyProvider {
