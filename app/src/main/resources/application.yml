@@ -36,19 +36,21 @@ server:
   port: 8080
 
 notification:
-  status: true
+  status: false
 
 wildberries:
-  status: false
-  base-url: "https://static-basket-01.wbbasket.ru"
-  catalog-url: "/vol0/data/main-menu-ru-ru-v3.json"
-  user-agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0)"
+  status: true
   catalog-wb-url: "https://catalog.wb.ru/catalog/"
-  retry-attempts: 5
-  retry-delay: 1000
-  shard: "electronic41/v2"
-  laptop-url: "/catalog"
-
+  laptop-url: "catalog"
+  shard: "electronic43/v2"
+  app-type: 1
+  dest: -1257786
+  subject: 2290
+  ab_testing: false
+  curr: "rub"
+  hide_dtype: 13
+  lang: "ru"
+  spp: 30
 
 jwt:
   secret:

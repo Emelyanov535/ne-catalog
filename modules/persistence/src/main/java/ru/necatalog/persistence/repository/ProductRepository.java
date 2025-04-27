@@ -60,4 +60,14 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
         select p.category from ProductEntity p where p.url = :productUrl
         """)
     Category getProductCategory(@Param("productUrl") String productUrl);
+
+    @Query(value = """
+        SELECT p.*
+        FROM product p
+        LEFT JOIN product_attribute pa ON p.url = pa.product_url
+        WHERE pa.product_url IS NULL
+        LIMIT 10
+""", nativeQuery = true)
+    List<ProductEntity> getProductsWithoutAttributes();
+
 }

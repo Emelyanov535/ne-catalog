@@ -14,11 +14,12 @@ public class WildberriesProductUpdater {
 
     private final ParsingService parsingService;
 
-    //@Scheduled(cron = "0 0 * * * *")
+//    @Scheduled(cron = "0 0 * * * *")
     @Scheduled(fixedRate = 3600000)
     public void updateWildberriesProducts() {
         log.info("Начинаем отладку...");
         parsingService.parse();
         log.info("Заканчиваем отладку...");
+//        parsingService.parseAttributes();
     }
 }
