@@ -1,4 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: 20250413_full_text_search.xml
-      relativeToChangelogFile: true

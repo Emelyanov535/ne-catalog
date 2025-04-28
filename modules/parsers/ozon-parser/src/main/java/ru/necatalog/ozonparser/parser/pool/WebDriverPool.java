@@ -8,7 +8,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.ObjectFactory;
 import ru.necatalog.ozonparser.config.properties.OzonParserProperties;
 import ru.necatalog.ozonparser.utils.OzonConsts;
@@ -35,7 +37,6 @@ public class WebDriverPool {
     private WebDriver createNewDriver() {
         WebDriver wd = webDriverFactory.getObject();
         wd.manage().timeouts().pageLoadTimeout(Duration.of(10, ChronoUnit.SECONDS));
-        wd.get(OzonConsts.OZON_MAIN_LINK);
         return wd;
     }
 

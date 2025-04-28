@@ -5,6 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="20250308_001_crate_user_table.xml" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_user" />
+            </not>
+        </preConditions>
         <createTable tableName="t_user">
             <column name="id" type="bigint" autoIncrement="true" remarks="Идентификатор пользователя">
                 <constraints primaryKey="true" />

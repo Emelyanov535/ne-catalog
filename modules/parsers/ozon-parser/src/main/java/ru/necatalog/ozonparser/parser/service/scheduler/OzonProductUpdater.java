@@ -12,11 +12,10 @@ public class OzonProductUpdater {
 
     private final ProductRepository productRepository;
 
-    @Scheduled(fixedDelay = 6000000)
+    //@Scheduled(cron = "0 0 */6 * * *")
+    @Scheduled(fixedRate = 60000000)
     public void updateOzonProducts() {
         ozonParsingService.startProcessing();
-        //ozonParsingService.processAttributePage(
-            //productRepository.findAll(Pageable.ofSize(1)).get().findFirst().orElse(null));
     }
 
 }

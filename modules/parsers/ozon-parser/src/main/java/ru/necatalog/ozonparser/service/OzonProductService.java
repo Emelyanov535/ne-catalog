@@ -39,6 +39,7 @@ public class OzonProductService {
         productEntity.setUrl(product.getUrl());
         productEntity.setMarketplace(product.getMarketplace());
         productEntity.setImageUrl(product.getImageUrl());
+        productEntity.setLastPrice(product.getPrice());
         return productEntity;
     }
 

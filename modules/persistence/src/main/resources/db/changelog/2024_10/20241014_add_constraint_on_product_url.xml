@@ -4,10 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
-    <changeSet id="20250223_0_change_product_pk" author="danil">
-        <dropPrimaryKey tableName="product"/>
-        <addPrimaryKey tableName="product" columnNames="url" constraintName="product_pkey"/>
-        <dropColumn tableName="product" columnName="id"/>
-        <renameColumn tableName="product" oldColumnName="image-url" newColumnName="image_url" />
+    <changeSet id="20241014_add_constraint_on_product_url.xml" author="Emelyanov535">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <uniqueConstraintExists tableName="product" columnNames="url" />
+            </not>
+        </preConditions>
+        <addUniqueConstraint tableName="product" columnNames="url"/>
     </changeSet>
 </databaseChangeLog>

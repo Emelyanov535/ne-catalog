@@ -5,6 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="20250323_001_add_column_percent_change_to_product_table" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="product" columnName="percent_change" />
+            </not>
+        </preConditions>
         <addColumn tableName="product">
             <column name="percent_change" type="double precision" defaultValueNumeric="0.0" remarks="Процент изменения цены">
                 <constraints nullable="false" />

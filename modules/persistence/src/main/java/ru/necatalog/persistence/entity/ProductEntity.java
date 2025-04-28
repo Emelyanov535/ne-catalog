@@ -1,5 +1,6 @@
 package ru.necatalog.persistence.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -54,6 +55,9 @@ public class ProductEntity {
 
     @Column(name = "percent_change")
     private Double percentChange;
+
+    @Column(name = "last_price")
+    private BigDecimal lastPrice;
 
     @Override
     public final boolean equals(Object o) {

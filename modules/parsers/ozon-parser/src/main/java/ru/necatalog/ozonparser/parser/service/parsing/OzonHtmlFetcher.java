@@ -13,6 +13,7 @@ import ru.necatalog.ozonparser.parser.pool.WebDriverPool;
 import ru.necatalog.ozonparser.parser.service.page.AccessDeniedPage;
 import ru.necatalog.ozonparser.parser.service.page.CategoryPage;
 import ru.necatalog.ozonparser.parser.service.page.NoContentPage;
+import ru.necatalog.persistence.entity.ProductEntity;
 
 @Slf4j
 public class OzonHtmlFetcher {
@@ -34,6 +35,8 @@ public class OzonHtmlFetcher {
         try {
             log.info("Приступаем к обработке страницы {}", pageUrl);
             driver.get(pageUrl);
+
+            Thread.sleep(100);
             WebDriverWait wait = new WebDriverWait(driver, Duration.of(10, ChronoUnit.SECONDS));
             var accessDeniedPage = new AccessDeniedPage(driver);
             var categoryPage = new CategoryPage(driver, wait);
@@ -41,7 +44,7 @@ public class OzonHtmlFetcher {
             wait.until(d -> checkForWaitingPageLoading(accessDeniedPage, categoryPage, noContentPage, lastPageInCategory));
             checkAceesDeniedAndResolve(accessDeniedPage);
 
-            if (!lastPageInCategory.get()) {
+            if (lastPageInCategory != null && !lastPageInCategory.get()) {
                 pageScroller.scrollToEndOfPage(driver);
             }
             return driver.getPageSource();
@@ -64,7 +67,7 @@ public class OzonHtmlFetcher {
         if (checkCategoryPage(categoryPage)) {
             return true;
         }
-        if (checkNoContentPage(noContentPage)) {
+        if (checkNoContentPage(noContentPage) && stopFlag != null) {
             stopFlag.set(true);
             return true;
         }
@@ -105,10 +108,11 @@ public class OzonHtmlFetcher {
         log.error("Все ретраи провалились");
     }
 
-    public String fetchPageJson(String pageUrl) {
+    public String fetchPageJson(ProductEntity product, String pageUrl) {
+        fetchCategoryPageHtml(product.getUrl(), null);
         var driver = webDriverPool.borrowDriver();
         try {
-            driver.get(pageUrl);
+            driver.navigate().to(pageUrl);
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
             return driver.getPageSource();

@@ -6,6 +6,12 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
 
     <changeSet id="20250321_002_create_price_change_message_table" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="price_change_message" />
+                <foreignKeyConstraintExists foreignKeyTableName="price_change_message" foreignKeyName="fk_price_change_message_product" />
+            </not>
+        </preConditions>
         <createTable tableName="price_change_message">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

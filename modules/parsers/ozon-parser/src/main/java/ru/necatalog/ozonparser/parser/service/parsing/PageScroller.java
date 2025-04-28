@@ -19,7 +19,8 @@ public class PageScroller {
 
     private static final String SCROLL_TO_PAGE_HEIGHT = "window.scrollTo(0, document.body.scrollHeight);";
 
-    public void scrollToEndOfPage(WebDriver driver) {
+    public void scrollToEndOfPage(WebDriver driver) throws InterruptedException {
+        log.info(driver.getPageSource());
         JavascriptExecutor js = (JavascriptExecutor) driver;
         AtomicLong lastHeight = new AtomicLong((long) js.executeScript(ALL_CONTENT_PAGE_HEIGHT));
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
