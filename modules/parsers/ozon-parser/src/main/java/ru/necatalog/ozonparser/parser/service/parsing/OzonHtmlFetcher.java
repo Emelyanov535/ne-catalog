@@ -2,10 +2,15 @@ package ru.necatalog.ozonparser.parser.service.parsing;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -13,7 +18,7 @@ import ru.necatalog.ozonparser.parser.pool.WebDriverPool;
 import ru.necatalog.ozonparser.parser.service.page.AccessDeniedPage;
 import ru.necatalog.ozonparser.parser.service.page.CategoryPage;
 import ru.necatalog.ozonparser.parser.service.page.NoContentPage;
-import ru.necatalog.ozonparser.utils.OzonConsts;
+import ru.necatalog.persistence.entity.ProductEntity;
 
 @Slf4j
 public class OzonHtmlFetcher {
@@ -35,6 +40,8 @@ public class OzonHtmlFetcher {
         try {
             log.info("Приступаем к обработке страницы {}", pageUrl);
             driver.get(pageUrl);
+
+            Thread.sleep(100);
             WebDriverWait wait = new WebDriverWait(driver, Duration.of(10, ChronoUnit.SECONDS));
             var accessDeniedPage = new AccessDeniedPage(driver);
             var categoryPage = new CategoryPage(driver, wait);
@@ -42,7 +49,7 @@ public class OzonHtmlFetcher {
             wait.until(d -> checkForWaitingPageLoading(accessDeniedPage, categoryPage, noContentPage, lastPageInCategory));
             checkAceesDeniedAndResolve(accessDeniedPage);
 
-            if (!lastPageInCategory.get()) {
+            if (lastPageInCategory != null && !lastPageInCategory.get()) {
                 pageScroller.scrollToEndOfPage(driver);
             }
             return driver.getPageSource();
@@ -65,7 +72,7 @@ public class OzonHtmlFetcher {
         if (checkCategoryPage(categoryPage)) {
             return true;
         }
-        if (checkNoContentPage(noContentPage)) {
+        if (checkNoContentPage(noContentPage) && stopFlag != null) {
             stopFlag.set(true);
             return true;
         }
@@ -106,17 +113,21 @@ public class OzonHtmlFetcher {
         log.error("Все ретраи провалились");
     }
 
-    public String fetchPageJson(String pageUrl) {
-        var driver = webDriverPool.borrowDriver();
+    public String fetchPageJson(ProductEntity product, String pageUrl) {
+        WebDriver driver = null;
         try {
-            driver.get(pageUrl);
+            driver = webDriverPool.borrowDriver();
+            driver.navigate().to(pageUrl);
+            Thread.sleep(100);
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
             return driver.getPageSource();
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            webDriverPool.returnDriver(driver);
+            if (driver != null) {
+                webDriverPool.returnDriver(driver);
+            }
         }
     }
 }

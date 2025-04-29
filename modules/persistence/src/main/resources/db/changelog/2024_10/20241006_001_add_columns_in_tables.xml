@@ -5,6 +5,14 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="20240926_create_product_table.xml" author="danil">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="product" columnName="url" />
+                <columnExists tableName="product" columnName="image-url" />
+                <foreignKeyConstraintExists foreignKeyName="fk_product_price_history" />
+            </not>
+            <tableExists tableName="price_history" />
+        </preConditions>
         <addColumn tableName="product">
             <column name="url" type="varchar" remarks="Ссылка на товар">
                 <constraints nullable="false" unique="true" />

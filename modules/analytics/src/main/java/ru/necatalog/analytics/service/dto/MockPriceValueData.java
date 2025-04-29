@@ -1,9 +1,9 @@
 package ru.necatalog.analytics.service.dto;
 
-import ru.necatalog.persistence.repository.projection.PriceValueData;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import ru.necatalog.persistence.repository.projection.PriceValueData;
 
 public class MockPriceValueData implements PriceValueData {
 	private final LocalDateTime date;

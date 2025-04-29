@@ -6,6 +6,13 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
 
     <changeSet id="0250308_002_create_favorite_products_table" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="favorite_products" />
+                <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_user" />
+                <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_product" />
+            </not>
+        </preConditions>
         <createTable tableName="favorite_products">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

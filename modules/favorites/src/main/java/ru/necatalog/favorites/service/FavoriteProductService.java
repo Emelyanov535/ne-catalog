@@ -1,5 +1,7 @@
 package ru.necatalog.favorites.service;
 
+import java.util.List;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,8 +15,6 @@ import ru.necatalog.persistence.entity.ProductEntity;
 import ru.necatalog.persistence.entity.UserEntity;
 import ru.necatalog.persistence.repository.FavoriteProductRepository;
 import ru.necatalog.persistence.repository.ProductRepository;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

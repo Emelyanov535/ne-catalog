@@ -1,13 +1,13 @@
 package ru.necatalog.notifications.configuration;
 
+import java.util.Properties;
+
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import ru.necatalog.notifications.configuration.properties.MailConfigProperties;
-
-import java.util.Properties;
 
 @Configuration
 @AllArgsConstructor

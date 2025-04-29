@@ -5,6 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="20240926_create_product_table.xml" author="danil">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="product" />
+            </not>
+        </preConditions>
         <createTable tableName="product">
             <column name="id" type="bigint" autoIncrement="true" remarks="Идентификатор товара">
                 <constraints primaryKey="true" />

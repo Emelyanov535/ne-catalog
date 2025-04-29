@@ -1,5 +1,7 @@
 package ru.necatalog.persistence.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -20,8 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.necatalog.persistence.enumeration.Role;
-
-import java.util.Set;
 
 @Entity
 @Table(name = "t_user")

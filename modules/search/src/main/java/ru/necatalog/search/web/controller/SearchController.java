@@ -1,14 +1,10 @@
 package ru.necatalog.search.web.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RestController;
 import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.search.dto.FilterData;
-import ru.necatalog.search.dto.SearchResult;
 import ru.necatalog.search.dto.SearchResults;
 import ru.necatalog.search.service.SearchService;
 import ru.necatalog.search.web.api.SearchApi;

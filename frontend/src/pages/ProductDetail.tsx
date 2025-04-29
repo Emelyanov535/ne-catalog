@@ -4,11 +4,9 @@ import {analogService} from "@/services/AnalogService.ts"
 import {catalogService} from "@/services/CatalogService.ts";
 import {FavoriteButton} from "@/components/FavoriteButton.tsx";
 import {useFavorites} from "@/services/useFavorites.ts";
-import {Component} from "@/components/ui/line-chart.tsx";
 import {Separator} from "@radix-ui/react-dropdown-menu";
 import {Button} from "@/components/ui/button.tsx";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@radix-ui/react-tabs";
-import {Carousel, CarouselContent} from "@/components/ui/carousel.tsx";
 import {Accordion, AccordionContent, AccordionTrigger} from "@/components/ui/accordion.tsx";
 import {AccordionItem} from "@radix-ui/react-accordion";
 import {LaptopFiltersTranslations} from "@/types/LaptopFiltersTranslations.ts";

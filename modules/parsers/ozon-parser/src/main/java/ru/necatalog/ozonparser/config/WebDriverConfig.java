@@ -1,10 +1,13 @@
 package ru.necatalog.ozonparser.config;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.valensas.undetected.chrome.driver.ChromeDriverBuilder;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -26,8 +29,8 @@ public class WebDriverConfig {
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver webDriverVisible() {
         Map<String, Object> prefs = new HashMap<>();
-        prefs.put("profile.managed_default_content_settings.images", 2);
-        prefs.put("profile.managed_default_content_settings.geolocation", 2);
+        //prefs.put("profile.managed_default_content_settings.images", 2);
+        //prefs.put("profile.managed_default_content_settings.geolocation", 2);
 
         var options = new ChromeOptions();
         options.setExperimentalOption("prefs", prefs);
@@ -39,8 +42,10 @@ public class WebDriverConfig {
     @ConditionalOnProperty(prefix = "ozon-parser", name = "mode", havingValue = "headless")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver webDriverHeadless(ChromeOptions options) {
-        WebDriverManager.chromedriver().setup();
-        return new ChromeDriver(options);
+        WebDriverManager manager = new ChromeDriverManager();
+        manager.setup();
+        String temp = manager.getDownloadedDriverPath();
+        return new ChromeDriverBuilder().build(options, temp);
     }
 
     @Bean
@@ -51,13 +56,13 @@ public class WebDriverConfig {
         prefs.put("profile.managed_default_content_settings.stylesheets", 2);
 
         var options = new ChromeOptions();
-        options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
-        options.setExperimentalOption("useAutomationExtension", false);
+        //options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
+        //options.setExperimentalOption("useAutomationExtension", false);
         options.setExperimentalOption("prefs", prefs);
-        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36");
-        //options.addArguments("--window-size=1920,2000");
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.7049.114 Safari/537.36");
         options.addArguments("--disable-blink-features=AutomationControlled");
-        options.addArguments("--headless=new");
+        options.addArguments("--start-maximized");
+        //options.addArguments("--headless=new");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");

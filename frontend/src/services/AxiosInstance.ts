@@ -1,5 +1,5 @@
 import axios from "axios";
-import { localStorageService } from "./LocalStorageService";
+import {localStorageService} from "./LocalStorageService";
 
 const axiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_BACKEND_API_URL,

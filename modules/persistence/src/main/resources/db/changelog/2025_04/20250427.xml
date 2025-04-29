@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="20250427_delayed_task_table" author="danil.markov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="delayed_task" />
+            </not>
+        </preConditions>
+        <createTable tableName="delayed_task">
+            <column name="id" type="bigint" remarks="Идентификатор">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="status" type="tinyint" remarks="Статус задания">
+                <constraints nullable="false" />
+            </column>
+            <column name="type" type="tinyint" remarks="Тип задания">
+                <constraints nullable="false" />
+            </column>
+            <column name="payload" type="jsonb" remarks="Данные для задания">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="timestamptz" remarks="Дата создания">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20250427_product_last_price_column" author="danil.markov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="product" columnName="last_price" />
+            </not>
+        </preConditions>
+        <addColumn tableName="product">
+            <column name="last_price" type="numeric(10,2)" remarks="Актуальная цена" />
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

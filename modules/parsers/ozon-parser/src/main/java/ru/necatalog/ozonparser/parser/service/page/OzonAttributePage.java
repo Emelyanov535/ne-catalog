@@ -7,10 +7,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import ru.necatalog.ozonparser.parser.service.dto.Characteristic;
 
+@Slf4j
 public class OzonAttributePage {
 
     private final String jsonData;
@@ -20,7 +22,8 @@ public class OzonAttributePage {
     public OzonAttributePage(String pageHtml) {
         Element jsonBlock = Jsoup.parse(pageHtml).select("pre").first();
         if (jsonBlock == null) {
-            throw new RuntimeException("Переданный html не содержит данных с атрибутами");
+            log.warn(pageHtml);
+            log.error("Переданный html не содержит данных с атрибутами");
         }
         this.jsonData = jsonBlock.text();
     }

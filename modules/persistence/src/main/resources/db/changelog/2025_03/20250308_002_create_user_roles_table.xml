@@ -6,6 +6,13 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
 
     <changeSet id="0250308_001_create_user_roles_table.xml" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_roles" />
+                <primaryKeyExists tableName="user_roles" primaryKeyName="pk_user_roles" />
+                <foreignKeyConstraintExists foreignKeyTableName="user_roles" foreignKeyName="fk_user_roles_user" />
+            </not>
+        </preConditions>
         <createTable tableName="user_roles">
             <column name="user_id" type="BIGINT" />
             <column name="role" type="VARCHAR(255)" />

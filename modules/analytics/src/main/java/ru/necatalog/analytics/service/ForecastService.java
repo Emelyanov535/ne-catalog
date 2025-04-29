@@ -1,5 +1,7 @@
 package ru.necatalog.analytics.service;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpEntity;
@@ -12,8 +14,6 @@ import ru.necatalog.analytics.service.dto.ValueDto;
 import ru.necatalog.analytics.web.dto.ForecastWithHistoricalAndPredData;
 import ru.necatalog.persistence.repository.ProductPriceRepository;
 import ru.necatalog.persistence.repository.projection.PriceValueData;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

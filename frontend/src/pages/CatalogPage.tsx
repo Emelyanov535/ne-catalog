@@ -6,24 +6,17 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {ItemCard} from "@/components/ItemCard.tsx";
 import {Slider} from "@/components/ui/slider.tsx";
-import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area.tsx";
+import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue
-} from "@/components/ui/select.tsx";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {
     Pagination,
     PaginationContent,
     PaginationEllipsis,
     PaginationItem,
-    PaginationLink, PaginationNext,
+    PaginationLink,
+    PaginationNext,
     PaginationPrevious
 } from "@/components/ui/pagination.tsx";
 

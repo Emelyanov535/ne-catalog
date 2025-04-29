@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {TrendingUp} from "lucide-react";
-import {CartesianGrid, Line, LineChart, XAxis, YAxis} from "recharts";
+import {CartesianGrid, Line, LineChart, XAxis} from "recharts";
 import {toast} from "sonner";
 
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
