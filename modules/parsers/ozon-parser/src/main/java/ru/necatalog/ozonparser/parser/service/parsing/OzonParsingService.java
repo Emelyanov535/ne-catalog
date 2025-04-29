@@ -118,14 +118,14 @@ public class OzonParsingService {
 
     public void processAttributePage(ProductEntity product) throws JsonProcessingException {
         String pageUrl = OzonConsts.OZON_API_LINK
-            + "/entrypoint-api.bx/page/json/v2?url="
+            + "/entrypoint-api.bx/page/json/v2?abt_att=1&url="
             + product.getUrl().replace(OzonConsts.OZON_MAIN_LINK, "")
             + "?layout_container=pdpPage2column&layout_page_index=2";
         log.info("Запрашиваем json");
         String json = ozonHtmlFetcher.fetchPageJson(product, pageUrl);
         log.info("Получили json");
         List<Characteristic> characteristics = ozonPageParser.parseAttributesPage(json);
-        List<ProductAttributeEntity> attributeEntities = attributeProcessorsMap.get(product.getCategory())
+        List<ProductAttributeEntity> attributeEntities = attributeProcessorsMap.get(OzonCategory.valueOf(product.getCategory().name()))
             .process(characteristics, product.getUrl());
         log.info("Сохраняем атрибуты");
         productAttributeRepository.saveAll(attributeEntities);

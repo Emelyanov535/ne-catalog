@@ -2,10 +2,15 @@ package ru.necatalog.ozonparser.parser.service.parsing;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -109,17 +114,20 @@ public class OzonHtmlFetcher {
     }
 
     public String fetchPageJson(ProductEntity product, String pageUrl) {
-        fetchCategoryPageHtml(product.getUrl(), null);
-        var driver = webDriverPool.borrowDriver();
+        WebDriver driver = null;
         try {
+            driver = webDriverPool.borrowDriver();
             driver.navigate().to(pageUrl);
+            Thread.sleep(100);
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
             return driver.getPageSource();
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            webDriverPool.returnDriver(driver);
+            if (driver != null) {
+                webDriverPool.returnDriver(driver);
+            }
         }
     }
 }

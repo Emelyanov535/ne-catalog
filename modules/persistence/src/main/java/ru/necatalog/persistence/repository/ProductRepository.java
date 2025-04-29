@@ -47,4 +47,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
         select p.category from ProductEntity p where p.url = :productUrl
         """)
     Category getProductCategory(@Param("productUrl") String productUrl);
+
+    @Query("""
+        select p from ProductEntity p where p.url not in (select distinct pa.id.productUrl from ProductAttributeEntity pa)
+                """)
+    List<ProductEntity> findWithoutCharacteristics();
 }

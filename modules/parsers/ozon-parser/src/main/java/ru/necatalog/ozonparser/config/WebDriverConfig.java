@@ -59,7 +59,7 @@ public class WebDriverConfig {
         //options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
         //options.setExperimentalOption("useAutomationExtension", false);
         options.setExperimentalOption("prefs", prefs);
-        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36");
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.7049.114 Safari/537.36");
         options.addArguments("--disable-blink-features=AutomationControlled");
         options.addArguments("--start-maximized");
         //options.addArguments("--headless=new");

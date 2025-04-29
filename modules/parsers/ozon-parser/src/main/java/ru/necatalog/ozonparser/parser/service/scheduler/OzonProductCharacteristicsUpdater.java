@@ -17,15 +17,18 @@ public class OzonProductCharacteristicsUpdater {
     private final ProductRepository productRepository;
 
     //@Scheduled(cron = "0 0 */6 * * *")
-    //@Scheduled(fixedRate = 60000000)
+    @Scheduled(fixedRate = 60000000)
     public void updateOzonProducts() {
-        productRepository.findAll().forEach(product -> {
+        productRepository.findWithoutCharacteristics().forEach(product -> {
             if (product.getCategory() == Category.SMARTPHONE) return;
-            try {
-                log.info("Получаем характеристик для {}", product.getUrl());
-                ozonParsingService.processAttributePage(product);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+            for (int i = 0; i < 5; ++i) {
+                try {
+                    log.info("Получаем характеристик для {}", product.getUrl());
+                    ozonParsingService.processAttributePage(product);
+                    break;
+                } catch (Exception e) {
+                    log.error("Не удалось получить характеристики {}", product.getUrl());
+                }
             }
         });
     }
