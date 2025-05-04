@@ -48,7 +48,8 @@ public class LaptopAttributeProcessor implements AttributeProcessor {
     public List<ProductAttributeEntity> process(List<Characteristic> characteristics,
                                                 String productUrl) {
         List<ProductAttributeEntity> attributes = new ArrayList<>();
-        characteristics.forEach(characteristic -> characteristic.getAttributes().forEach(attribute -> {
+        characteristics.stream().filter(characteristic -> characteristic.getAttributes() != null)
+            .forEach(characteristic -> characteristic.getAttributes().forEach(attribute -> {
             Optional<AttributeGroup> group = definder.define(characteristic.getTitle(), attribute.getKey());
             if (group.isPresent()) {
                 AttributeGroup attributeGroup = group.get();
@@ -156,8 +157,8 @@ public class LaptopAttributeProcessor implements AttributeProcessor {
 
     private String getValueType(String value) {
         try {
-            Integer.parseInt(value);
-            return ValueType.INTEGER.name();
+            Double.parseDouble(value);
+            return ValueType.NUMBER.name();
         } catch (NumberFormatException e) {
             return ValueType.STRING.name();
         }

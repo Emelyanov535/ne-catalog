@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/pagination";
 import {catalogService} from "@/services/CatalogService.ts";
 import {useFavorites} from "@/services/useFavorites.ts";
+import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@/components/ui/carousel.tsx";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 
 const Home: React.FC = () => {
     const [items, setItems] = useState<any[]>([]);
@@ -55,24 +57,63 @@ const Home: React.FC = () => {
         return range;
     };
 
+    const firstPart = items.slice(0, 8);
+    const secondPart = items.slice(8);
+
     return (
-        <div className="flex flex-col items-center p-6 md:p-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-6xl">
-                {items.length > 0 ? (
-                    items.map((item) => (
-                        <ItemCard
-                            key={item.url}
-                            product={item}
-                            isFavorite={favorites.has(item.url)}
-                            onToggleFavorite={toggleFavorite}
-                        />
-                    ))
-                ) : (
-                    <p>Загрузка товаров...</p>
-                )}
+        <div className="flex flex-col items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-6xl p-10">
+                {firstPart.map((item) => (
+                    <ItemCard
+                        key={item.url}
+                        product={item}
+                        isFavorite={favorites.has(item.url)}
+                        onToggleFavorite={toggleFavorite}
+                    />
+                ))}
+
+                <Card className="w-full max-w-6xl col-span-full border-yellow-400">
+                    <CardHeader>
+                        <CardTitle className="text-2xl font-bold">Best deals</CardTitle>
+                        <CardDescription className="text-lg text-muted-foreground">
+                            The best deals for the week
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="px-20">
+                        <Carousel opts={{align: "start"}}>
+                            <CarouselContent>
+                                {items.map((item) => (
+                                    <CarouselItem
+                                        key={item.url}
+                                        className="basis-1/1 sm:basis-1/2 md:basis-1/3"
+                                    >
+                                        <div>
+                                            <ItemCard
+                                                product={item}
+                                                isFavorite={favorites.has(item.url)}
+                                                onToggleFavorite={toggleFavorite}
+                                            />
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious/>
+                            <CarouselNext/>
+                        </Carousel>
+                    </CardContent>
+                </Card>
+
+                {secondPart.map((item) => (
+                    <ItemCard
+                        key={item.url}
+                        product={item}
+                        isFavorite={favorites.has(item.url)}
+                        onToggleFavorite={toggleFavorite}
+                    />
+                ))}
             </div>
 
-            <Pagination className="p-10">
+            <Pagination className="pb-10">
                 <PaginationContent>
                     <PaginationItem>
                         <PaginationPrevious

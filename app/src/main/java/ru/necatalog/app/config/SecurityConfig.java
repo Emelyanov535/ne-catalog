@@ -1,5 +1,7 @@
 package ru.necatalog.app.config;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +21,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.necatalog.auth.service.AuthService;
 import ru.necatalog.auth.utils.jwt.JwtFilter;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -68,9 +68,12 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://127.0.0.1:3000")); // Разрешенные фронты
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешенные методы
-		configuration.setAllowedHeaders(List.of("*")); // Разрешенные заголовки
+		configuration.setAllowedOrigins(
+			List.of("http://localhost:5173", "http://127.0.0.1:3000", "http://localhost:3000")); // Разрешенные фронты
+		configuration.setAllowedMethods(
+			List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешенные методы
+		configuration.setAllowedHeaders(
+			List.of("*")); // Разрешенные заголовки
 		configuration.setAllowCredentials(true); // Разрешаем куки и токены
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

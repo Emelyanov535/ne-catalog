@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="20250223_add_product_attribute_tables_01" author="danil">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="attribute" />
+                <tableExists tableName="product_attribute" />
+            </not>
+        </preConditions>
+        <createTable tableName="attribute">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="product_attribute">
+            <column name="product_url" type="varchar">
+                <constraints primaryKey="true"
+                             nullable="false"
+                             foreignKeyName="fk_product_attribute_product_url"
+                             referencedTableName="product"
+                             referencedColumnNames="url"/>
+            </column>
+            <column name="attribute_id" type="bigint">
+                <constraints primaryKey="true"
+                             nullable="false"
+                             foreignKeyName="fk_product_attribute_attribute_id"
+                             referencedTableName="attribute"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="value_type" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar">
+                <constraints nullable="false" />
+            </column>
+            <column name="unit" type="varchar" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20250223_add_product_attribute_tables_02" author="danil">
+        <addAutoIncrement tableName="attribute" columnName="id" />
+    </changeSet>
+
+    <changeSet id="20250223_add_product_attribute_tables_03" author="danil">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <uniqueConstraintExists tableName="attribute" columnNames="name, group"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint tableName="attribute" columnNames="name, group" />
+    </changeSet>
+
+</databaseChangeLog>

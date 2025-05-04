@@ -17,10 +17,9 @@ class CatalogService {
         }
     }
 
-    async getProductById(id: bigint) {
+    async getProductByUrl(url: string) {
         try {
-            const response = await axiosInstance.get(`/catalog/${id}`);
-            console.log("asdfsdfsdf", response)
+            const response = await axiosInstance.get(`/catalog/getByUrl?url=${url}`);
             if (response.status !== 200) {
                 toast.error("Ошибка при загрузке данных");
             }
@@ -31,6 +30,35 @@ class CatalogService {
             throw error;
         }
     }
+
+    async getSimilarProductsByUrl(url: string) {
+        try {
+            const response = await axiosInstance.get(`/catalog/identicalProducts?url=${url}`);
+            if (response.status !== 200) {
+                toast.error("Ошибка при загрузке данных");
+            }
+
+            return response.data;
+        } catch (error) {
+            toast.error("Ошибка:" + error);
+            throw error;
+        }
+    }
+
+    async getCategories() {
+        try {
+            const response = await axiosInstance.get(`/catalog/categories`);
+            if (response.status !== 200) {
+                toast.error("Ошибка при загрузке данных");
+            }
+
+            return response.data;
+        } catch (error) {
+            toast.error("Ошибка:" + error);
+            throw error;
+        }
+    }
+
 }
 
 

@@ -13,6 +13,7 @@ import ru.necatalog.ozonparser.parser.service.parsing.OzonPageParser;
 import ru.necatalog.ozonparser.parser.service.parsing.OzonParsingService;
 import ru.necatalog.ozonparser.parser.service.parsing.PageScroller;
 import ru.necatalog.ozonparser.parser.service.processor.AttributeProcessor;
+import ru.necatalog.ozonparser.parser.service.scheduler.OzonProductCharacteristicsUpdater;
 import ru.necatalog.ozonparser.parser.service.scheduler.OzonProductUpdater;
 import ru.necatalog.ozonparser.service.OzonProductService;
 import ru.necatalog.ozonparser.service.mapper.OzonPriceHistoryMapper;
@@ -91,6 +92,13 @@ public class OzonParserConfig {
     public OzonProductUpdater ozonProductUpdater(OzonParsingService ozonParsingService,
                                                  ProductRepository productRepository) {
         return new OzonProductUpdater(ozonParsingService, productRepository);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
+    public OzonProductCharacteristicsUpdater ozonProductCharacteristicsUpdater(OzonParsingService ozonParsingService,
+                                                                               ProductRepository productRepository) {
+        return new OzonProductCharacteristicsUpdater(ozonParsingService, productRepository);
     }
 
 }

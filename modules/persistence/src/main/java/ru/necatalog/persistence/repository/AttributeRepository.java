@@ -1,5 +1,6 @@
 package ru.necatalog.persistence.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,7 @@ public interface AttributeRepository extends JpaRepository<AttributeEntity, Long
 
     List<AttributeEntity> findAllByGroupContains(String category);
 
+    List<AttributeEntity> findAllByGroupIn(Collection<String> groups);
+
+    List<AttributeEntity> findAllByNameIn(Collection<String> names);
 }

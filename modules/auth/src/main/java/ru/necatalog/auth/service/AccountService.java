@@ -1,5 +1,7 @@
 package ru.necatalog.auth.service;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,8 +12,6 @@ import ru.necatalog.auth.web.dto.UserInfo;
 import ru.necatalog.persistence.entity.UserEntity;
 import ru.necatalog.persistence.enumeration.Role;
 import ru.necatalog.persistence.repository.UserRepository;
-
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +25,7 @@ public class AccountService {
 				.username(registerDto.getUsername())
 				.password(passwordEncoder.encode(registerDto.getPassword()))
 				.roles(Set.of(Role.USER))
+				.isNotification(true)
 				.build();
 
 		return userRepository.save(userEntity).getId();

@@ -6,5 +6,7 @@ interface ProductDto {
     createdAt: string,
     url: string,
     imageUrl: string,
-    percentChange: number
+    percentChange: number,
+    shopPrices: ShopPriceDto[];
+    lastPrice: number,
 }

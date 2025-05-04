@@ -1,13 +1,13 @@
 package ru.necatalog.auth.utils.jwt;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.necatalog.persistence.enumeration.Role;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtUtils {

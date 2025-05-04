@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
+
+    <changeSet id="0250308_002_create_favorite_products_table" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="favorite_products" />
+                <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_user" />
+                <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_product" />
+            </not>
+        </preConditions>
+        <createTable tableName="favorite_products">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_url" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="favorite_products" baseColumnNames="user_id"
+                                 referencedTableName="t_user" referencedColumnNames="id"
+                                 constraintName="fk_favorite_products_user" onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="favorite_products" baseColumnNames="product_url"
+                                 referencedTableName="product" referencedColumnNames="url"
+                                 constraintName="fk_favorite_products_product" onDelete="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,13 +1,11 @@
 package ru.necatalog.analytics.service.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter
@@ -23,20 +21,10 @@ public class ForecastResponse {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class TimeSeries {
-		private List<Value> values;
+		private List<ValueDto> values;
 		private String name;
 		private int length;
 		private boolean empty;
-	}
-
-	@Getter
-	@Setter
-	@Builder
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class Value {
-		private String date;
-		private BigDecimal value;
 	}
 
 	@Getter

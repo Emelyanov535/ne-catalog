@@ -8,6 +8,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import {Toaster} from "@/components/ui/sonner"
 import ProductDetail from "@/pages/ProductDetail.tsx";
 import FavouritePage from "@/pages/FavouritePage.tsx";
+import CatalogPage from "@/pages/CatalogPage.tsx";
 
 
 const App: React.FC = () => {
@@ -19,8 +20,8 @@ const App: React.FC = () => {
                     <Route path="/signUp" element={<SignUp/>}/>
                     <Route path="/signIn" element={<SignIn/>}/>
                     <Route path="/" element={<Home/>}/>
-                    <Route path="/product/:id" element={<ProductDetail/>}/>
-
+                    <Route path="/product/:url" element={<ProductDetail/>}/>
+                    <Route path="/catalog/:category" element={<CatalogPage/>}/>
                     {/* Защищенные маршруты */}
                     <Route element={<PrivateRoute/>}>
                         <Route path="/favorites" element={<FavouritePage/>}/>

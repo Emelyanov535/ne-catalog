@@ -1,3 +1,5 @@
 dependencies {
-
+    implementation project(':modules:config')
+    implementation project(':modules:persistence')
+    implementation project(':modules:common')
 }

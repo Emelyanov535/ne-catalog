@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
+
+    <changeSet id="20250321_002_create_price_change_message_table" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="price_change_message" />
+                <foreignKeyConstraintExists foreignKeyTableName="price_change_message" foreignKeyName="fk_price_change_message_product" />
+            </not>
+        </preConditions>
+        <createTable tableName="price_change_message">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_url" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="old_price" type="numeric(10,2)" remarks="Старая цена товара">
+                <constraints nullable="false" />
+            </column>
+            <column name="new_price" type="numeric(10,2)" remarks="Новая цена товара">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="timestamptz" remarks="Время добавления товара в базу">
+                <constraints nullable="false" />
+            </column>
+            <column name="processed" type="boolean" defaultValueBoolean="false" remarks="Статус обработки">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="price_change_message" baseColumnNames="product_url"
+                                 referencedTableName="product" referencedColumnNames="url"
+                                 constraintName="fk_price_change_message_product" onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

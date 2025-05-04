@@ -1,5 +1,7 @@
 package ru.necatalog.auth.utils.jwt;
 
+import java.io.IOException;
+
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,8 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-
-import java.io.IOException;
 
 @Slf4j
 @Component

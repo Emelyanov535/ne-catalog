@@ -1,7 +1,10 @@
 package ru.necatalog.wildberriesparser.service.client;
 
-import java.util.Map;
+import ru.necatalog.wildberriesparser.service.dto.ProductAttributesResponse;
+import ru.necatalog.wildberriesparser.service.dto.ProductListDto;
 
 public interface Client {
-    Map<String, Object> scrapPage(int page, String shard, String query);
+	ProductListDto scrapPage(int page);
+
+	ProductAttributesResponse scrapAttributes(String url);
 }

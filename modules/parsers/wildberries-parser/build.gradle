@@ -1,7 +1,10 @@
 dependencies {
     implementation project(':modules:persistence')
-    implementation project(':modules:notifications')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation "org.springframework.retry:spring-retry:${spring_retry_version}"
+
+    implementation "org.seleniumhq.selenium:selenium-java:4.25.0"
+    implementation "io.github.bonigarcia:webdrivermanager:5.6.3"
+    implementation("org.seleniumhq.selenium:selenium-devtools-v135:4.31.0")
 }

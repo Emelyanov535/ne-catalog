@@ -1,5 +1,8 @@
 package ru.necatalog.auth.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.AllArgsConstructor;
@@ -17,9 +20,6 @@ import ru.necatalog.auth.web.dto.JwtRequest;
 import ru.necatalog.auth.web.dto.JwtResponse;
 import ru.necatalog.persistence.entity.UserEntity;
 import ru.necatalog.persistence.repository.UserRepository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor
