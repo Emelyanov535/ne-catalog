@@ -36,15 +36,13 @@ public class AttributeSaver {
     @Transactional
     public void init() {
         attributeGroups.stream()
-            .flatMap(Arrays::stream)
-            .map(AttributeEntity::new)
-            .forEach(ag -> {
-                try {
-                    attributeRepository.save(ag);
-                } catch (Exception ignored) {
-                    //
-                }
-            });
+                .flatMap(Arrays::stream)
+                .map(AttributeEntity::new)
+                .forEach(attribute -> {
+                    boolean exists = attributeRepository.existsByNameAndGroup(attribute.getName(), attribute.getGroup());
+                    if (!exists) {
+                        attributeRepository.save(attribute);
+                    }
+                });
     }
-
 }
