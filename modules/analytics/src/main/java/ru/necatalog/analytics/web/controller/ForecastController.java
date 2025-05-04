@@ -9,13 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.necatalog.analytics.service.ForecastService;
-import ru.necatalog.analytics.service.ProductFinderService;
-import ru.necatalog.analytics.service.impl.ProductFinderServiceImpl;
 import ru.necatalog.analytics.web.dto.ForecastWithHistoricalAndPredData;
-import ru.necatalog.persistence.entity.ProductEntity;
-import ru.necatalog.persistence.repository.projection.SimilarProductData;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/forecast")
@@ -23,16 +17,10 @@ import java.util.List;
 @Tag(name = "Прогноз", description = "Прогнозирование цен с помощью временных рядов")
 public class ForecastController {
 	private final ForecastService forecastService;
-	private final ProductFinderService productFinderService;
 
 	@GetMapping
 	@Operation(summary = "Получить прогноз временного ряда")
 	public ResponseEntity<ForecastWithHistoricalAndPredData> getForecast(@RequestParam("url") String url) {
 		return ResponseEntity.ok(forecastService.getForecast(url));
-	}
-
-	@GetMapping("/test")
-	public ResponseEntity<List<SimilarProductData>> test(@RequestParam("url") String url) {
-		return ResponseEntity.ok(productFinderService.getProductsInfo(url));
 	}
 }

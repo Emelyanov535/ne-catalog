@@ -1,12 +1,16 @@
 import {useCallback, useEffect, useState} from "react";
 import {favouriteService} from "@/services/FavouriteService.ts";
+import {localStorageService} from "@/services/LocalStorageService.ts";
 
 export function useFavorites() {
     const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
     // Загружаем избранные товары при монтировании
     useEffect(() => {
-        loadFavorites();
+        const hasToken = !!localStorageService.getAccessToken();
+        if (hasToken) {
+            loadFavorites();
+        }
     }, []);
 
     const loadFavorites = async () => {

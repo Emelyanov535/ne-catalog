@@ -14,7 +14,11 @@ import ru.necatalog.wildberriesparser.service.client.Client;
 import ru.necatalog.wildberriesparser.service.dto.ProductAttributesResponse;
 import ru.necatalog.wildberriesparser.service.dto.ProductListDto;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +26,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service("wildberriesParsingService")
+@Service
 @AllArgsConstructor
-public class ParsingService {
+public class WildberriesParsingService {
 	private static final int ELEMENTS_IN_PAGE = 100;
 
 	private final Client client;
 	private final ConversionService conversionService;
-	private final ProductService productService;
+	private final WildberriesProductService wildberriesProductService;
 	private final ProductAttributeRepository productAttributeRepository;
 	private final AttributeProcessor attributeProcessor;
 
@@ -73,8 +77,8 @@ public class ParsingService {
 			}
 		}
 
-		productService.saveData(productEntities, priceHistories);
-		productService.addMessageToDb(priceHistories);
+		wildberriesProductService.saveData(productEntities, priceHistories);
+		wildberriesProductService.addMessageToDb(priceHistories);
 	}
 
 	private PriceHistoryEntity buildPriceHistory(String productUrl, ProductListDto.Data.ProductInfoDto dto) {
@@ -98,7 +102,7 @@ public class ParsingService {
 
 	public void parseAttributes() {
 		// Получаем товары, у которых нет записи в таблице аттрибутов
-		List<ProductEntity> productList = productService.getProductWithoutAttributes();
+		List<ProductEntity> productList = wildberriesProductService.getProductWithoutAttributes();
 
 		Map<String, String> mapProductUrlAndAttributesUrl = productList.stream()
 				.collect(Collectors.toMap(
@@ -108,6 +112,24 @@ public class ParsingService {
 
 		mapProductUrlAndAttributesUrl.forEach((key, value) -> {
 			ProductAttributesResponse productData = client.scrapAttributes(value);
+
+			if (productData == null) {
+				log.warn("Skipping product with URL: {} due to failed attribute fetch.", key);
+
+				// Пишем в файл
+				try {
+					Files.writeString(
+							Paths.get("skipped_products.txt"),
+							key + System.lineSeparator(),
+							StandardOpenOption.CREATE, StandardOpenOption.APPEND
+					);
+				} catch (IOException e) {
+					log.error("Failed to write skipped URL to file for product: {}", key, e);
+				}
+
+				return; // пропускаем
+			}
+
 
 			List<ProductAttributeEntity> attributeEntities = attributeProcessor.process(productData, key);
 

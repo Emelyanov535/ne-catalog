@@ -33,7 +33,7 @@ class CatalogService {
 
     async getSimilarProductsByUrl(url: string) {
         try {
-            const response = await axiosInstance.get(`/forecast/test?url=${url}`);
+            const response = await axiosInstance.get(`/catalog/identicalProducts?url=${url}`);
             if (response.status !== 200) {
                 toast.error("Ошибка при загрузке данных");
             }

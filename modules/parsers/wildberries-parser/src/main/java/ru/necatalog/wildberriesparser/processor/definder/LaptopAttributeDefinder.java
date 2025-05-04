@@ -2,6 +2,7 @@ package ru.necatalog.wildberriesparser.processor.definder;
 
 import org.springframework.stereotype.Service;
 import ru.necatalog.persistence.enumeration.AttributeGroup;
+import ru.necatalog.persistence.enumeration.attribute.laptop.LaptopAdditionalInfoAttribute;
 import ru.necatalog.persistence.enumeration.attribute.laptop.LaptopDisplayAttribute;
 import ru.necatalog.persistence.enumeration.attribute.laptop.LaptopGpuAttribute;
 import ru.necatalog.persistence.enumeration.attribute.laptop.LaptopProcessorAttribute;
@@ -21,6 +22,15 @@ public class LaptopAttributeDefinder implements AttributeDefinder {
 			case "Экран" -> defineDisplayAttribute(key);
 			case "Видеокарта" -> defineGpuAttribute(key);
 			case "Накопители данных" -> defineStorageAttribute(key);
+			case "Дополнительная информация", "Общие характеристики" -> defineAdditionalInformation(key);
+			default -> Optional.empty();
+		};
+	}
+
+	private Optional<AttributeGroup> defineAdditionalInformation(String key) {
+		return switch (key) {
+			case "Код производителя" -> Optional.of(LaptopAdditionalInfoAttribute.VENDOR_CODE);
+			case "Партномер" -> Optional.of(LaptopAdditionalInfoAttribute.PART_NUMBER);
 			default -> Optional.empty();
 		};
 	}
@@ -39,6 +49,7 @@ public class LaptopAttributeDefinder implements AttributeDefinder {
 		return switch (key) {
 			case "Объем оперативной памяти (Гб)" -> Optional.of(LaptopRamAttribute.RAM);
 			case "Тип оперативной памяти" -> Optional.of(LaptopRamAttribute.RAM_TYPE);
+			case "Расширение оперативной памяти, до" -> Optional.of(LaptopRamAttribute.UPGRADE_CAPABILITY);
 			default -> Optional.empty();
 		};
 	}
@@ -57,6 +68,8 @@ public class LaptopAttributeDefinder implements AttributeDefinder {
 	private Optional<AttributeGroup> defineGpuAttribute(String key) {
 		return switch (key) {
 			case "Тип видеокарты" -> Optional.of(LaptopGpuAttribute.GPU_TYPE);
+			case "Видеокарта" -> Optional.of(LaptopGpuAttribute.GPU_NAME);
+			case "Объем памяти видеокарты" -> Optional.of(LaptopGpuAttribute.VIDEO_MEMORY);
 			default -> Optional.empty();
 		};
 	}

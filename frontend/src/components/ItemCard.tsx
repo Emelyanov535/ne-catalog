@@ -61,7 +61,7 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
             </CardHeader>
 
             <CardFooter className="mt-auto flex flex-col items-start gap-2 text-sm">
-                {product.price && (<div className="text-2xl font-semibold">{product.price} ₽</div>)}
+                {product.lastPrice && (<div className="text-2xl font-semibold">{product.lastPrice} ₽</div>)}
                 <Button type="button" className="w-full" onClick={() => navigate(`/product/${encodeURIComponent(product.url)}`)}>
                     Узнать подробнее
                 </Button>

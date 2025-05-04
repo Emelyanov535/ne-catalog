@@ -13,6 +13,10 @@ import {LaptopFiltersTranslations} from "@/types/LaptopFiltersTranslations.ts";
 import {ProductAttributeGroupsTranslations} from "@/types/ProductAttributeGroupsTranslations.ts";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {ItemCard} from "@/components/ItemCard.tsx";
+import {Collapsible, CollapsibleContent, CollapsibleTrigger,} from "@/components/ui/collapsible"
+import {ProductCard} from "@/components/ProductCard.tsx";
+import {Card} from "@/components/ui/card.tsx";
+import MarketplaceLogo from "@/components/MarketplaceLogo.tsx";
 
 const ProductDetail: React.FC = () => {
     const {url} = useParams<{ url: string }>();
@@ -23,7 +27,7 @@ const ProductDetail: React.FC = () => {
     const [analogAttributes, setAnalogAttributes] = useState<Record<string, string[]>>();
     const [choosedAnalogAttributes, setChoosedAnalogAttributes] = useState<string[]>([]);
     const [isAnalogsFetched, setIsAnalogsFetched] = useState<boolean>(false);
-    const [similarProducts, setSimilarProducts] = useState<ShopPriceDto[]>([]);
+    const [similarProducts, setSimilarProducts] = useState<ProductDto[]>([]);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -68,7 +72,6 @@ const ProductDetail: React.FC = () => {
                 <div className="flex justify-between items-center">
                     <div>
                         <p className="text-lg font-semibold">{product.productName}</p>
-                        <p className="text-gray-500 text-sm">57 000 ₽ — 82 770 ₽</p>
                     </div>
                     <FavoriteButton
                         productUrl={product.url}
@@ -81,8 +84,15 @@ const ProductDetail: React.FC = () => {
                 {/* Нижний блок с фото, характеристиками и ценами */}
                 <div className="flex gap-6">
                     {/* Фото */}
-                    <div className="w-1/4 flex justify-center">
-                        <img src={product.imageUrl} alt={product.productName} className="w-90 h-90 object-contain"/>
+                    <div className="w-1/4 flex justify-center relative overflow-hidden">
+                        <img
+                            src={product.imageUrl}
+                            alt={product.productName}
+                            className="w-full h-full object-contain"
+                        />
+                        {/* Блюр на пустое место */}
+                        <div className="absolute inset-0 bg-cover bg-center filter blur-lg"
+                             style={{backgroundImage: `url(${product.imageUrl})`, zIndex: -1}}></div>
                     </div>
 
                     {/* Характеристики */}
@@ -106,31 +116,61 @@ const ProductDetail: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Цены в магазинах */}
-                    <div className="w-1/3 space-y-3">
-                        {[
-                            ...similarProducts.filter(p => p.url === decodedUrl),
-                            ...similarProducts.filter(p => p.url !== decodedUrl)
-                        ].map((product, index) => {
-                            const isCurrent = product.url === decodedUrl;
+                    <Card
+                        className="w-1/3 rounded-xl shadow-sm p-4 flex flex-col items-center gap-3 text-center self-start">
+                        <div className="flex items-center">
+                            <p className="text-xs text-muted-foreground uppercase tracking-wide">{product.marketplace}</p>
+                            <MarketplaceLogo marketplace={product.marketplace}/>
+                        </div>
 
-                            return (
-                                <div
-                                    key={index}
-                                    className={`p-3 border rounded-lg shadow-sm bg-white ${
-                                        isCurrent ? "border-blue-500 bg-blue-50 shadow-md" : ""
-                                    }`}
-                                >
-                                    <p className="text-sm font-semibold">{product.marketplace}</p>
-                                    <p className="text-lg font-bold">{product.price.toLocaleString("ru-RU")} ₽</p>
-                                    <a href={product.url} target="_blank" rel="noopener noreferrer">
-                                        <Button className="w-full p-5">Перейти на сайт</Button>
-                                    </a>
-                                </div>
-                            );
-                        })}
-                    </div>
+                        <p className="text-2xl font-extrabold">
+                            {product.lastPrice && product.lastPrice !== 0
+                                ? product.lastPrice.toLocaleString("ru-RU")
+                                : "Цена не указана"}
+                            {product.lastPrice && product.lastPrice !== 0 &&
+                                <span className="text-base font-semibold"> ₽</span>
+                            }
+                        </p>
+
+                        <a href={product.url} target="_blank" rel="noopener noreferrer" className="w-full">
+                            <Button className="w-full text-sm font-semibold py-2 rounded-md">
+                                Перейти на сайт
+                            </Button>
+                        </a>
+                    </Card>
                 </div>
+
+                {similarProducts.length > 0 && (
+                    <div className="w-full">
+                        <p className="text-lg font-semibold p-4">Другие предложения:</p>
+
+                        {/* Всегда показываем первые 2 */}
+                        <div className="space-y-3">
+                            {similarProducts.slice(0, 2).map((product, index) => (
+                                <ProductCard key={index} product={product}/>
+                            ))}
+                        </div>
+
+                        {/* Остальные — по кнопке */}
+                        {similarProducts.length > 2 && (
+                            <Collapsible>
+                                <CollapsibleContent>
+                                    <div className="space-y-3 mt-4">
+                                        {similarProducts.slice(2).map((product, index) => (
+                                            <ProductCard key={index + 2} product={product}/>
+                                        ))}
+                                    </div>
+                                </CollapsibleContent>
+                                <CollapsibleTrigger asChild>
+                                    <Button variant="outline" className="w-full mt-4">
+                                        Показать ещё {similarProducts.length - 2}
+                                    </Button>
+                                </CollapsibleTrigger>
+                            </Collapsible>
+                        )}
+                    </div>
+                )}
+
 
                 <Tabs defaultValue="about" className="w-[800px] pt-10">
                     <TabsList className="grid w-full grid-cols-5">
@@ -156,26 +196,32 @@ const ProductDetail: React.FC = () => {
                                             <Checkbox onCheckedChange={(checked) => {
                                                 setChoosedAnalogAttributes(choosedAnalogAttributes.filter(attr => !values.includes(attr)));
                                                 if (checked) {
-                                                    setChoosedAnalogAttributes(prev => {return [...prev, ...values];})
+                                                    setChoosedAnalogAttributes(prev => {
+                                                        return [...prev, ...values];
+                                                    })
                                                 }
-                                            }} />
+                                            }}/>
                                             <h4 className="font-semibold mb-2">{ProductAttributeGroupsTranslations[key]}</h4>
                                         </AccordionTrigger>
                                         <AccordionContent>
                                             <ul className="space-y-1 max-h-50 overflow-y-auto">
                                                 {values.map(value => (
-                                                    <li onClick={() => {setChoosedAnalogAttributes(prev => {
-                                                        console.log("click")
-                                                        const current = prev ?? [];
-                                                        if (!current.includes(value)) {
-                                                            return [...current, value];
-                                                        } else {
-                                                            return current.filter(a => a !== value);
-                                                        }
-                                                    })}}
-                                                        key={value} className="bg-white rounded px-2 py-1 border text-sm">
+                                                    <li onClick={() => {
+                                                        setChoosedAnalogAttributes(prev => {
+                                                            console.log("click")
+                                                            const current = prev ?? [];
+                                                            if (!current.includes(value)) {
+                                                                return [...current, value];
+                                                            } else {
+                                                                return current.filter(a => a !== value);
+                                                            }
+                                                        })
+                                                    }}
+                                                        key={value}
+                                                        className="bg-white rounded px-2 py-1 border text-sm">
                                                         {choosedAnalogAttributes!.includes(value) ?
-                                                            (<b>{LaptopFiltersTranslations[value]}</b>) : LaptopFiltersTranslations[value]}
+                                                            (
+                                                                <b>{LaptopFiltersTranslations[value]}</b>) : LaptopFiltersTranslations[value]}
                                                     </li>
                                                 ))}
                                             </ul>

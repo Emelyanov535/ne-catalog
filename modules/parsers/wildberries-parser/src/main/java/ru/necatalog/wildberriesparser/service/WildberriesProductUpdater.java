@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 @ConditionalOnProperty(prefix = "wildberries", name = "status", havingValue = "true")
 public class WildberriesProductUpdater {
 
-    private final ParsingService parsingService;
+    private final WildberriesParsingService wildberriesParsingService;
 
 //    @Scheduled(cron = "0 0 * * * *")
     @Scheduled(fixedRate = 3600000)
     public void updateWildberriesProducts() {
         log.info("Начинаем отладку...");
-        parsingService.parse();
+//        parsingService.parse();
         log.info("Заканчиваем отладку...");
-//        parsingService.parseAttributes();
+        wildberriesParsingService.parseAttributes();
     }
 }

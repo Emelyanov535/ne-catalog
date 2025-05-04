@@ -7,9 +7,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import ru.necatalog.wildberriesparser.config.properties.WildberriesConfigProperties;
 import ru.necatalog.wildberriesparser.service.dto.ProductAttributesResponse;
@@ -25,7 +28,6 @@ public class ClientImpl implements Client {
 
 	private final WildberriesConfigProperties wildberriesConfigProperties;
 	private final RestTemplate restTemplateScrapping;
-	private final Random random = new Random();
 	private final CaptchaTokenProvider captchaTokenProvider;
 
 	@Override
@@ -57,23 +59,40 @@ public class ClientImpl implements Client {
 
 	@Override
 	@SneakyThrows
-	@Retryable(maxAttempts = 5)
 	public ProductAttributesResponse scrapAttributes(String url) {
 		log.info("Requesting URL: {}", url);
 
-		int randomDelay = 1000 + random.nextInt(2000);
-		Thread.sleep(randomDelay);
-
 		RestTemplate restTemplate = new RestTemplate();
 
-		return restTemplate.exchange(
-				url,
-				HttpMethod.GET,
-				HttpEntity.EMPTY,
-				new ParameterizedTypeReference<ProductAttributesResponse>() {
-				}
-		).getBody();
+		try {
+			ResponseEntity<ProductAttributesResponse> response = restTemplate.exchange(
+					url,
+					HttpMethod.GET,
+					HttpEntity.EMPTY,
+					new ParameterizedTypeReference<>() {
+					}
+			);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				return response.getBody();
+			} else {
+				log.warn("Failed to fetch attributes for URL: {}. Status code: {}", url, response.getStatusCode());
+				return null;
+			}
+		} catch (HttpClientErrorException e) {
+			log.warn("Client error when fetching URL {}: {} {}", url, e.getStatusCode(), e.getStatusText());
+		} catch (HttpServerErrorException e) {
+			log.warn("Server error when fetching URL {}: {} {}", url, e.getStatusCode(), e.getStatusText());
+		} catch (ResourceAccessException e) {
+			log.warn("Connection error when fetching URL {}: {}", url, e.getMessage());
+		} catch (Exception e) {
+			log.error("Unexpected error when fetching URL {}: {}", url, e.getMessage(), e);
+		}
+
+		return null;
 	}
+
+
 
 	private HttpHeaders createCommonHeaders() {
 		HttpHeaders headers = new HttpHeaders();

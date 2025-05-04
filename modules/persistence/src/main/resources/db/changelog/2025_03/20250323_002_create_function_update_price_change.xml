@@ -12,11 +12,11 @@
 
             CREATE FUNCTION calculate_percent_change() RETURNS TRIGGER AS '
             DECLARE
-            last_price NUMERIC;
+            last_priceq NUMERIC;
                 prev_price NUMERIC;
             BEGIN
                 -- Получаем последние две цены для данного продукта
-            SELECT price INTO last_price
+            SELECT price INTO last_priceq
             FROM price_history
             WHERE product_url = NEW.product_url
             ORDER BY date DESC
@@ -31,7 +31,7 @@
             -- Если есть предыдущая цена, обновляем процент изменения
             IF prev_price IS NOT NULL AND prev_price > 0 THEN
             UPDATE product
-            SET percent_change = ((last_price - prev_price) / prev_price) * 100
+            SET percent_change = ((last_priceq - prev_price) / prev_price) * 100
             WHERE url = NEW.product_url;
             END IF;
 

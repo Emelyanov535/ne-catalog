@@ -8,6 +8,5 @@ interface ProductDto {
     imageUrl: string,
     percentChange: number,
     shopPrices: ShopPriceDto[];
-    percentChange: number,
-    price: number,
+    lastPrice: number,
 }

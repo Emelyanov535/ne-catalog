@@ -39,7 +39,7 @@ notification:
   status: false
 
 wildberries:
-  status: true
+  status: false
   catalog-wb-url: "https://catalog.wb.ru/catalog/"
   laptop-url: "catalog"
   shard: "electronic43/v2"

@@ -1,5 +1,6 @@
 package ru.necatalog.wildberriesparser.converter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.core.convert.converter.Converter;
@@ -26,6 +27,7 @@ public class ProductInfoDto2ProductEntity implements Converter<ProductListDto.Da
                 .imageUrl(getImageUrl(source.getId()))
                 .url(String.format(URL_FORMAT, source.getId()))
                 .percentChange(0.0)
+                .lastPrice(BigDecimal.valueOf(source.getSizes().getFirst().getPrice().getTotal() / 100.0))
                 .build();
     }
 
@@ -51,14 +53,15 @@ public class ProductInfoDto2ProductEntity implements Converter<ProductListDto.Da
         if (vol <= 1655) return "11";
         if (vol <= 1919) return "12";
         if (vol <= 2045) return "13";
-        if (vol <= 2191) return "14";
-        if (vol <= 2403) return "15";
+        if (vol <= 2189) return "14";
+        if (vol <= 2405) return "15";
         if (vol <= 2620) return "16";
         if (vol <= 2837) return "17";
-        if (vol <= 3051) return "18";
-        if (vol <= 3267) return "19";
+        if (vol <= 3053) return "18";
+        if (vol <= 3269) return "19";
         if (vol <= 3485) return "20";
-
-        return "21";
+        if (vol <= 3701) return "21";
+        if (vol <= 3982) return "22";
+        return "23";
     }
 }
