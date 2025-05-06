@@ -4,6 +4,7 @@ import {Button} from "@/components/ui/button";
 import React from "react";
 import {Card} from "./ui/card";
 import MarketplaceLogo from "@/components/MarketplaceLogo.tsx";
+import {ChevronDownIcon, ChevronUpIcon} from "lucide-react";
 
 const fallbackImage = "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-10615.jpg";
 
@@ -42,10 +43,34 @@ export const ProductCard: React.FC<{ product: ProductDto }> = ({product}) => {
                         <span className="text-base font-semibold"> ₽</span>
                     }
                 </p>
+
+                {product.percentChange !== 0 && product.percentChange !== undefined ?
+                    <div
+                        className={`flex items-center gap-1 text-xs ${
+                            product.percentChange > 0 ? "text-red-600" : "text-green-600"
+                        }`}
+                    >
+                        {product.percentChange > 0 ? (
+                            <ChevronUpIcon className="w-4 h-4"/>
+                        ) : (
+                            <ChevronDownIcon className="w-4 h-4"/>
+                        )}
+                        <span>
+                            {product.percentChange > 0
+                                ? `+${product.percentChange}`
+                                : `${Math.abs(product.percentChange)}`} ₽
+                        </span>
+                    </div> : null
+                }
+
+
             </div>
 
             <div className="flex flex-col items-end gap-2 shrink-0 w-full sm:w-auto">
-                <a href={product.url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                <a
+                    href={`/product/${encodeURIComponent(product.url)}`}
+                    className="w-full sm:w-auto"
+                >
                     <Button className="w-full sm:w-auto text-sm px-4 py-2">Узнать подробнее</Button>
                 </a>
             </div>

@@ -3,44 +3,42 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="20250323_002_add_trigger_update_percent_change" author="artem">
+    <changeSet id="20250504_001_update_trigger_for_price_difference" author="artem">
         <sql>
             DROP TRIGGER IF EXISTS update_percent_change ON price_history;
             DROP FUNCTION IF EXISTS calculate_percent_change;
 
             CREATE FUNCTION calculate_percent_change() RETURNS TRIGGER AS '
             DECLARE
-            last_priceq NUMERIC;
-                prev_price NUMERIC;
+                current_price NUMERIC;
+                max_price_last_7_days NUMERIC;
             BEGIN
-                -- Получаем последние две цены для данного продукта
-            SELECT price INTO last_priceq
-            FROM price_history
-            WHERE product_url = NEW.product_url
-            ORDER BY date DESC
-                LIMIT 1 OFFSET 0;
+                current_price := NEW.price;
 
-            SELECT price INTO prev_price
-            FROM price_history
-            WHERE product_url = NEW.product_url
-            ORDER BY date DESC
-                LIMIT 1 OFFSET 1;
+                -- Получаем максимальную цену за последние 7 дней, исключая текущую вставленную цену
+                SELECT MAX(price) INTO max_price_last_7_days
+                FROM price_history
+                WHERE product_url = NEW.product_url
+                  AND date >= NOW() - INTERVAL ''7 days''
+                  AND date &lt; NEW.date; -- Исключаем текущую вставленную цену
 
-            -- Если есть предыдущая цена, обновляем процент изменения
-            IF prev_price IS NOT NULL AND prev_price > 0 THEN
-            UPDATE product
-            SET percent_change = ((last_priceq - prev_price) / prev_price) * 100
-            WHERE url = NEW.product_url;
-            END IF;
+        IF max_price_last_7_days IS NOT NULL THEN
+        UPDATE product
+        SET
+            percent_change = current_price - max_price_last_7_days, -- Разница с максимальной ценой за 7 дней
+            last_price = current_price
+        WHERE url = NEW.product_url;
+        END IF;
 
-            RETURN NEW;
-            END;
-            ' LANGUAGE plpgsql;
+        RETURN NEW;
+        END;
+        ' LANGUAGE plpgsql;
 
             CREATE TRIGGER update_percent_change
-                AFTER INSERT ON price_history
+                AFTER INSERT
+                ON price_history
                 FOR EACH ROW EXECUTE FUNCTION calculate_percent_change();
         </sql>
 

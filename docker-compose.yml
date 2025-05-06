@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: ./app
+    container_name: ne-parser
+    ports:
+      - "8081:8081"
+    environment:
+      POSTGRES_JDBC_URL: host.docker.internal:5432/test-3
+      POSTGRES_JDBC_USERNAME: postgres
+      POSTGRES_JDBC_PASSWORD: postgres
+      SERVER_PORT: 8080
+      OZON_ENABLED: false

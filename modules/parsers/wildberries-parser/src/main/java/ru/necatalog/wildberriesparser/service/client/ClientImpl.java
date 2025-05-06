@@ -1,8 +1,8 @@
 package ru.necatalog.wildberriesparser.service.client;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,9 +19,6 @@ import ru.necatalog.wildberriesparser.service.dto.ProductAttributesResponse;
 import ru.necatalog.wildberriesparser.service.dto.ProductListDto;
 import ru.necatalog.wildberriesparser.util.CaptchaTokenProvider;
 
-import java.util.Random;
-
-@RequiredArgsConstructor
 @Service
 @Slf4j
 public class ClientImpl implements Client {
@@ -29,6 +26,16 @@ public class ClientImpl implements Client {
 	private final WildberriesConfigProperties wildberriesConfigProperties;
 	private final RestTemplate restTemplateScrapping;
 	private final CaptchaTokenProvider captchaTokenProvider;
+
+	public ClientImpl(
+			WildberriesConfigProperties wildberriesConfigProperties,
+			@Qualifier("restTemplateScrapping") RestTemplate restTemplateScrapping,
+			CaptchaTokenProvider captchaTokenProvider
+	) {
+		this.wildberriesConfigProperties = wildberriesConfigProperties;
+		this.restTemplateScrapping = restTemplateScrapping;
+		this.captchaTokenProvider = captchaTokenProvider;
+	}
 
 	@Override
 	@SneakyThrows
@@ -38,7 +45,7 @@ public class ClientImpl implements Client {
 		log.info("Requesting URL: {}", url);
 
 		HttpHeaders headers = createCommonHeaders();
-		headers.add("X-captcha-id", captchaTokenProvider.getCurrentCaptchaId());
+//		headers.add("X-captcha-id", captchaTokenProvider.getCurrentCaptchaId());
 
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -52,7 +59,7 @@ public class ClientImpl implements Client {
 			).getBody();
 		} catch (HttpClientErrorException.TooManyRequests e) {
 			log.warn("Request failed (429 Too Many Requests)");
-			captchaTokenProvider.requestFailed();
+//			captchaTokenProvider.requestFailed();
 			throw e;
 		}
 	}
@@ -91,7 +98,6 @@ public class ClientImpl implements Client {
 
 		return null;
 	}
-
 
 
 	private HttpHeaders createCommonHeaders() {

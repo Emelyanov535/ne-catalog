@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 	private final RestConfig restConfig;
 
-	@Bean
+	@Bean(name = "restTemplateForecast")
 	public RestTemplate restTemplateForecast() {
 		return new RestTemplateBuilder()
 				.rootUri(restConfig.getForecastService().getHost())
