@@ -1,15 +1,16 @@
 package ru.necatalog.persistence.repository;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.necatalog.persistence.entity.PriceHistoryEntity;
 import ru.necatalog.persistence.entity.id.PriceHistoryId;
+import ru.necatalog.persistence.repository.projection.PriceStatsData;
 import ru.necatalog.persistence.repository.projection.PriceValueData;
+
+import java.time.ZonedDateTime;
+import java.util.List;
 
 @Repository
 public interface ProductPriceRepository extends JpaRepository<PriceHistoryEntity, PriceHistoryId> {
@@ -60,5 +61,27 @@ public interface ProductPriceRepository extends JpaRepository<PriceHistoryEntity
 			        order by ph.date desc
 					limit 1
 			""", nativeQuery = true)
-    Long getPrice(@Param("productUrl") String productUrl);
+	Long getPrice(@Param("productUrl") String productUrl);
+
+
+	@Query(value = """
+			WITH last_14_days AS (
+			    SELECT generate_series(CURRENT_DATE - INTERVAL '13 days', CURRENT_DATE, INTERVAL '1 day')::date AS date
+			)
+			SELECT
+			    d.date AS date,
+			    MIN(ph.price) AS min_price,
+			    MAX(ph.price) AS max_price,
+			    ROUND(AVG(ph.price), 2) AS avg_price
+			FROM last_14_days d
+			LEFT JOIN price_history ph
+			    ON DATE(ph.date) = d.date AND ph.product_url IN (:productUrls)
+			GROUP BY d.date
+			ORDER BY d.date
+			""", nativeQuery = true)
+	List<PriceStatsData> getDailyPriceStatsByProductUrls(@Param("productUrls") List<String> productUrls);
+
+
+	List<PriceHistoryEntity> findAllByIdProductUrlAndIdDateAfter(String productUrl, ZonedDateTime date);
+
 }

@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {analogService} from "@/services/AnalogService.ts"
 import {catalogService} from "@/services/CatalogService.ts";
 import {FavoriteButton} from "@/components/FavoriteButton.tsx";
@@ -17,17 +17,25 @@ import {Collapsible, CollapsibleContent, CollapsibleTrigger,} from "@/components
 import {ProductCard} from "@/components/ProductCard.tsx";
 import {Card} from "@/components/ui/card.tsx";
 import MarketplaceLogo from "@/components/MarketplaceLogo.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
+import {ProductPriceChange} from "@/components/ProductPriceChange.tsx";
+import {analysisService} from "@/services/AnalysisService.ts";
+import {AnalysisDataDto} from "@/types/AnalysisDataDto.tsx";
+import {TestComponent} from "@/components/TestComponent.tsx";
 
 const ProductDetail: React.FC = () => {
     const {url} = useParams<{ url: string }>();
     const [product, setProduct] = useState<ProductDto | null>(null);
     const decodedUrl = decodeURIComponent(url as string);
     const {favorites, toggleFavorite} = useFavorites();
-    const [analogs, setAnalogs] = useState<AnalogDto[]>([]);
+    const [analogs, setAnalogs] = useState<ProductDto[]>([]);
     const [analogAttributes, setAnalogAttributes] = useState<Record<string, string[]>>();
     const [choosedAnalogAttributes, setChoosedAnalogAttributes] = useState<string[]>([]);
     const [isAnalogsFetched, setIsAnalogsFetched] = useState<boolean>(false);
     const [similarProducts, setSimilarProducts] = useState<ProductDto[]>([]);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+    const [analysisData, setAnalysisData] = useState<AnalysisDataDto | null>(null);
+    const [identProdStats, setIdentProdStats] = useState<any | null>(null);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -49,9 +57,36 @@ const ProductDetail: React.FC = () => {
                 console.error("Ошибка при загрузке данных", error);
             }
         };
+        const fetchAnalytics = async () => {
+            try {
+                const data = await analysisService.getAnalysis(decodedUrl);
+                setAnalysisData(data);
+            } catch (error) {
+                console.error("Ошибка при загрузке данных", error);
+            }
+        }
+        const fetchIdentProdStats = async () => {
+            try {
+                const data = await analysisService.getIdenticalProductStats(decodedUrl);
+                setIdentProdStats(data);
+            } catch (error) {
+                console.error("Ошибка при загрузке данных", error);
+            }
+        }
+        fetchIdentProdStats()
         fetchProduct();
-        fetchAnalogAttributes()
+        fetchAnalogAttributes();
+        fetchAnalytics()
     }, [decodedUrl]);
+
+    const sortedProducts = useMemo(() => {
+        if (sortOrder === 'asc') {
+            return [...similarProducts].sort((a, b) => a.lastPrice - b.lastPrice);
+        } else if (sortOrder === 'desc') {
+            return [...similarProducts].sort((a, b) => b.lastPrice - a.lastPrice);
+        }
+        return similarProducts;
+    }, [similarProducts, sortOrder]);
 
     if (!product) return <p>Загрузка...</p>;
 
@@ -132,6 +167,11 @@ const ProductDetail: React.FC = () => {
                             }
                         </p>
 
+                        <ProductPriceChange
+                            product={product}
+                            analysisData={analysisData}
+                        />
+
                         <a href={product.url} target="_blank" rel="noopener noreferrer" className="w-full">
                             <Button className="w-full text-sm font-semibold py-2 rounded-md">
                                 Перейти на сайт
@@ -142,28 +182,43 @@ const ProductDetail: React.FC = () => {
 
                 {similarProducts.length > 0 && (
                     <div className="w-full">
-                        <p className="text-lg font-semibold p-4">Другие предложения:</p>
+                        <p className="text-lg font-semibold py-4">Другие предложения:</p>
+
+                        <div className="pb-4">
+                            <Select onValueChange={(value) => {
+                                if (value === 'asc') setSortOrder('asc');
+                                else if (value === 'desc') setSortOrder('desc');
+                            }}>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Сортировка"/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="asc">По возрастанию цены</SelectItem>
+                                    <SelectItem value="desc">По убыванию цены</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
                         {/* Всегда показываем первые 2 */}
                         <div className="space-y-3">
-                            {similarProducts.slice(0, 2).map((product, index) => (
+                            {sortedProducts.slice(0, 2).map((product, index) => (
                                 <ProductCard key={index} product={product}/>
                             ))}
                         </div>
 
                         {/* Остальные — по кнопке */}
-                        {similarProducts.length > 2 && (
+                        {sortedProducts.length > 2 && (
                             <Collapsible>
                                 <CollapsibleContent>
                                     <div className="space-y-3 mt-4">
-                                        {similarProducts.slice(2).map((product, index) => (
+                                        {sortedProducts.slice(2).map((product, index) => (
                                             <ProductCard key={index + 2} product={product}/>
                                         ))}
                                     </div>
                                 </CollapsibleContent>
                                 <CollapsibleTrigger asChild>
                                     <Button variant="outline" className="w-full mt-4">
-                                        Показать ещё {similarProducts.length - 2}
+                                        Показать ещё {sortedProducts.length - 2}
                                     </Button>
                                 </CollapsibleTrigger>
                             </Collapsible>
@@ -172,8 +227,8 @@ const ProductDetail: React.FC = () => {
                 )}
 
 
-                <Tabs defaultValue="about" className="w-[800px] pt-10">
-                    <TabsList className="grid w-full grid-cols-5">
+                <Tabs defaultValue="analyse" className="w-full pt-10">
+                    <TabsList className="flex flex-row space-x-10">
                         <TabsTrigger value="about">О товаре</TabsTrigger>
                         <TabsTrigger value="price">Цены</TabsTrigger>
                         <TabsTrigger value="analog">Аналоги</TabsTrigger>
@@ -182,7 +237,6 @@ const ProductDetail: React.FC = () => {
                     </TabsList>
                     <Separator className="my-4 border-t border-gray-300"></Separator>
                     <TabsContent value="about">
-
                     </TabsContent>
                     <TabsContent value="price">
 
@@ -235,7 +289,12 @@ const ProductDetail: React.FC = () => {
                         {isAnalogsFetched && (<p>Поиск аналогов</p>)}
                         <div className={"flex mt-4 h-150 overflow-x-auto"}>
                             {analogs && analogs.map(analog => (
-                                <ItemCard product={analog}/>
+                                <ItemCard
+                                    product={analog}
+                                    isFavorite={false}
+                                    onToggleFavorite={toggleFavorite}
+                                />
+
                             ))}
                         </div>
                     </TabsContent>
@@ -243,38 +302,11 @@ const ProductDetail: React.FC = () => {
 
                     </TabsContent>
                     <TabsContent value="analyse">
-
+                        <TestComponent chartData={identProdStats}></TestComponent>
                     </TabsContent>
                 </Tabs>
             </div>
         </div>
-
-        // {product.percentChange !== 0 && product.percentChange !== undefined && (
-        //     <div>
-        //         <TooltipProvider>
-        //             <Tooltip>
-        //                 <TooltipTrigger asChild>
-        //                     <Badge
-        //                         variant="outline"
-        //                         className={`flex gap-1 rounded-lg text-xs ${
-        //                             product.percentChange > 0 ? "text-red-600 border-red-600" : "text-green-600 border-green-600"
-        //                         }`}
-        //                     >
-        //                         {product.percentChange > 0 ? (
-        //                             <TrendingUpIcon className="size-3 text-red-600" />
-        //                         ) : (
-        //                             <TrendingDownIcon className="size-3 text-green-600" />
-        //                         )}
-        //                         {product.percentChange > 0 ? `+${product.percentChange.toFixed(2)}%` : `${product.percentChange.toFixed(2)}%`}
-        //                     </Badge>
-        //                 </TooltipTrigger>
-        //                 <TooltipContent>
-        //                     <p>The price has changed by {product.percentChange.toFixed(2)}% since the last collection</p>
-        //                 </TooltipContent>
-        //             </Tooltip>
-        //         </TooltipProvider>
-        //     </div>
-        // )}
     );
 };
 

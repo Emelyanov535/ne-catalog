@@ -3,7 +3,7 @@ import {toast} from "sonner";
 import qs from 'qs';
 
 class AnalogService {
-    async findAnalogs(url: string, choosedAnalogAttributes: string[]): Promise<AnalogDto[]> {
+    async findAnalogs(url: string, choosedAnalogAttributes: string[]): Promise<ProductDto[]> {
         try {
             const response = await axiosInstance.get(`/find-analog`,
                 {
