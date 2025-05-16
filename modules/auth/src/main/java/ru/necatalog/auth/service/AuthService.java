@@ -33,14 +33,14 @@ public class AuthService implements UserDetailsService {
 	@SneakyThrows
 	public JwtResponse login(@NonNull JwtRequest authRequest) {
 		final UserEntity user = userRepository.findByUsername(authRequest.getUsername())
-				.orElseThrow(() -> new AuthException("User not found"));
+				.orElseThrow(() -> new AuthException("Пользователь не существует"));
 		if (passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
 			final String accessToken = jwtProvider.generateAccessToken(user);
 			final String refreshToken = jwtProvider.generateRefreshToken(user);
 			refreshStorage.put(user.getUsername(), refreshToken);
 			return new JwtResponse(accessToken, refreshToken);
 		} else {
-			throw new AuthException("Incorrect password");
+			throw new AuthException("Неверные учетные данные");
 		}
 	}
 

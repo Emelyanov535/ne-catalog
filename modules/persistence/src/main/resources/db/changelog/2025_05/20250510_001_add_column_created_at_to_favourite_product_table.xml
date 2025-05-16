@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="20250510_001_add_column_created_at_to_favourite_product_table" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="favorite_products" columnName="created_at" />
+                <columnExists tableName="favorite_products" columnName="added_price" />
+                <columnExists tableName="favorite_products" columnName="last_notified_price" />
+            </not>
+        </preConditions>
+        <addColumn tableName="favorite_products">
+            <column name="created_at" type="timestamptz" remarks="Время добавления товара в избранное">
+                <constraints nullable="false" />
+            </column>
+            <column name="added_price" type="numeric(10,2)" remarks="Цена товара в момент добавления">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_notified_price" type="numeric(10,2)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

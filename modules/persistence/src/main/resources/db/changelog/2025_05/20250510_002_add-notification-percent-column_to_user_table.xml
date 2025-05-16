@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="20250510_002_add-notification-percent-column_to_user_table" author="artem">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="t_user" columnName="notification_percent" />
+            </not>
+        </preConditions>
+        <addColumn tableName="t_user">
+            <column name="notification_percent" type="INT" defaultValue="10">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

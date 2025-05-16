@@ -44,4 +44,11 @@ public class PriceChangeMessage {
 
 	@Column(name = "processed")
 	private boolean processed;
+
+	@Column(name = "drop_percent")
+	private double dropPercent;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
 }

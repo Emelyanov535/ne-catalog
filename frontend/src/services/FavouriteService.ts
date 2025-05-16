@@ -32,10 +32,9 @@ class FavouriteService {
         }
     }
 
-    async getFavoriteProductsWithPaging(page: number, size: number) {
+    async getFavoriteProductsWithPaging(page: number, size: number, sort: "ASC" | "DESC") {
         try {
-            console.log(size)
-            const response = await axiosInstance.get(`/favorite/paging?page=${page}&size=${size}`);
+            const response = await axiosInstance.get(`/favorite/paging?page=${page}&size=${size}&sort=${sort}`);
             return response.data;
         } catch (error) {
             console.error("Ошибка при получении списка избранного:", error);

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.necatalog.auth.service.AccountService;
 import ru.necatalog.auth.web.dto.RegisterDto;
@@ -40,5 +41,11 @@ public class AccountController {
 	@Operation(summary = "Изменение статуса отправки уведомлений", security = @SecurityRequirement(name = "bearerAuth"))
 	public void changeNotificationStatus() {
 		accountService.changeNotificationStatus();
+	}
+
+	@GetMapping("/changeNotificationPercent")
+	@Operation(summary = "Изменение процента отправки уведомлений", security = @SecurityRequirement(name = "bearerAuth"))
+	public void changeNotificationPercent(@RequestParam("percent") int percent) {
+		accountService.changeNotificationPercent(percent);
 	}
 }

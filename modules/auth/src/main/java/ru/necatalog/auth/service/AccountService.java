@@ -1,5 +1,6 @@
 package ru.necatalog.auth.service;
 
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.necatalog.auth.exception.EmailAlreadyUsedException;
 import ru.necatalog.auth.web.dto.RegisterDto;
 import ru.necatalog.auth.web.dto.UserInfo;
 import ru.necatalog.persistence.entity.UserEntity;
@@ -21,6 +23,12 @@ public class AccountService {
 	private final PasswordEncoder passwordEncoder;
 
 	public Long register(RegisterDto registerDto) {
+		Optional<UserEntity> user = userRepository.findByUsername(registerDto.getUsername());
+
+		if (user.isPresent()) {
+			throw new EmailAlreadyUsedException("Email уже используется");
+		}
+
 		UserEntity userEntity = UserEntity.builder()
 				.username(registerDto.getUsername())
 				.password(passwordEncoder.encode(registerDto.getPassword()))
@@ -44,6 +52,7 @@ public class AccountService {
 		return UserInfo.builder()
 				.username(userEntity.getUsername())
 				.isNotification(userEntity.getIsNotification())
+				.notificationPercent(userEntity.getNotificationPercent())
 				.build();
 	}
 
@@ -52,6 +61,14 @@ public class AccountService {
 		UserEntity userEntity = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 		userEntity.setIsNotification(!userEntity.getIsNotification());
+		userRepository.save(userEntity);
+	}
+
+	public void changeNotificationPercent(Integer percent) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		UserEntity userEntity = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+		userEntity.setNotificationPercent(percent);
 		userRepository.save(userEntity);
 	}
 }

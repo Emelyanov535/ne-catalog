@@ -78,7 +78,6 @@ public class WildberriesParsingService {
 		}
 
 		wildberriesProductService.saveData(productEntities, priceHistories);
-		wildberriesProductService.addMessageToDb(priceHistories);
 	}
 
 	private PriceHistoryEntity buildPriceHistory(String productUrl, ProductListDto.Data.ProductInfoDto dto) {

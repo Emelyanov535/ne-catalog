@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserInfo {
 	private String username;
 	private Boolean isNotification;
+	private Integer notificationPercent;
 }

@@ -2,15 +2,29 @@ package ru.necatalog.app.config;
 
 import java.util.stream.Collectors;
 
+import jakarta.security.auth.message.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.necatalog.auth.exception.EmailAlreadyUsedException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+	@ExceptionHandler(AuthException.class)
+	public ResponseEntity<ExceptionResponse> handleAuthException(AuthException ex){
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+	}
+
+	@ExceptionHandler(EmailAlreadyUsedException.class)
+	public ResponseEntity<ExceptionResponse> handleEmailAlreadyUsedException(EmailAlreadyUsedException ex){
+		ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.CONFLICT.value(), ex.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(exceptionResponse);
+	}
 
 	@ExceptionHandler(AuthorizationDeniedException.class)
 	public ResponseEntity<ExceptionResponse> handleAuthorizationDeniedException(AuthorizationDeniedException ex){
