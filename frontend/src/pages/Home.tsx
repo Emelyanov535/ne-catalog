@@ -13,18 +13,20 @@ import {catalogService} from "@/services/CatalogService.ts";
 import {useFavorites} from "@/services/useFavorites.ts";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@/components/ui/carousel.tsx";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import { useSearchParams } from "react-router-dom";
 
 const Home: React.FC = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = parseInt(searchParams.get("page") || "1", 10);
     const [items, setItems] = useState<any[]>([]);
     const [totalItems, setTotalItems] = useState<number>(0);
-    const [page, setPage] = useState(1);
     const itemsPerPage = 60;
-    const {favorites, toggleFavorite} = useFavorites();
+    const { favorites, toggleFavorite } = useFavorites();
 
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const adjustedPage = page <= 0 ? 1 : page;
+                const adjustedPage = Math.max(page, 1);
                 const data = await catalogService.getProductList(adjustedPage - 1, itemsPerPage);
                 setItems(data.content || []);
                 setTotalItems(data.page.totalElements || 0);
@@ -34,6 +36,7 @@ const Home: React.FC = () => {
         };
         fetchItems();
     }, [page]);
+
 
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -55,6 +58,10 @@ const Home: React.FC = () => {
         }
 
         return range;
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setSearchParams({ page: String(newPage) });
     };
 
     const firstPart = items.slice(0, 8);
@@ -80,28 +87,32 @@ const Home: React.FC = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="px-20">
-                        <Carousel opts={{align: "start"}}>
+                        <Carousel opts={{ align: "start" }}>
                             <CarouselContent>
                                 {items.map((item) => (
                                     <CarouselItem
                                         key={item.url}
                                         className="basis-1/1 sm:basis-1/2 md:basis-1/3"
                                     >
-                                        <div>
-                                            <ItemCard
-                                                product={item}
-                                                isFavorite={favorites.has(item.url)}
-                                                onToggleFavorite={toggleFavorite}
-                                            />
+                                        <div className="h-full flex">
+                                            <div className="w-full h-full flex flex-col">
+                                                <ItemCard
+                                                    product={item}
+                                                    isFavorite={favorites.has(item.url)}
+                                                    onToggleFavorite={toggleFavorite}
+                                                    className="flex-1 flex flex-col h-full"
+                                                />
+                                            </div>
                                         </div>
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>
-                            <CarouselPrevious/>
-                            <CarouselNext/>
+                            <CarouselPrevious />
+                            <CarouselNext />
                         </Carousel>
                     </CardContent>
                 </Card>
+
 
                 {secondPart.map((item) => (
                     <ItemCard
@@ -118,7 +129,7 @@ const Home: React.FC = () => {
                     <PaginationItem>
                         <PaginationPrevious
                             href="#"
-                            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                            onClick={() => handlePageChange(Math.max(page - 1, 1))}
                         />
                     </PaginationItem>
 
@@ -127,19 +138,21 @@ const Home: React.FC = () => {
                             <PaginationLink
                                 href="#"
                                 isActive={page === pageNum}
-                                onClick={() => setPage(pageNum)}
+                                onClick={() => handlePageChange(pageNum)}
                             >
                                 {pageNum}
                             </PaginationLink>
                         </PaginationItem>
                     ))}
 
-                    {totalPages > 5 && page < totalPages - 2 && <PaginationItem><PaginationEllipsis/></PaginationItem>}
+                    {totalPages > 5 && page < totalPages - 2 && (
+                        <PaginationItem><PaginationEllipsis /></PaginationItem>
+                    )}
 
                     <PaginationItem>
                         <PaginationNext
                             href="#"
-                            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                            onClick={() => handlePageChange(Math.min(page + 1, totalPages))}
                         />
                     </PaginationItem>
                 </PaginationContent>

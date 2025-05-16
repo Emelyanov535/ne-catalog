@@ -23,8 +23,10 @@ export function LoginForm({
             await authService.authorization(dto);
             toast.success("Authorization successful!");
             navigate("/");
-        } catch (error) {
-            toast.error("Authorization failed!");
+        } catch (error: any) {
+            const errorMessage =
+                error.response?.data?.message || "Authorization failed!";
+            toast.error(errorMessage);
         }
     };
 

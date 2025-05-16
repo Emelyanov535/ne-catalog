@@ -46,7 +46,8 @@ public class FavouriteProductController {
 	@Operation(summary = "Получение списка избранных товаров с пагинацией")
 	public ResponseEntity<Page<ProductEntity>> getProductList(
 			@RequestParam(defaultValue = "0", value = "page") int page,
-			@RequestParam(defaultValue = "10", value = "size") int size) {
-		return ResponseEntity.ok(favoriteProductService.getFavoriteProductsWithPaging(page, size));
+			@RequestParam(defaultValue = "10", value = "size") int size,
+			@RequestParam(defaultValue = "ASC", value = "sort") String sort) {
+		return ResponseEntity.ok(favoriteProductService.getFavoriteProductsWithPaging(page, size, sort));
 	}
 }

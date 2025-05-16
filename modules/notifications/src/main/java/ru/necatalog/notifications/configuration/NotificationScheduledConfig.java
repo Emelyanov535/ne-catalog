@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import ru.necatalog.notifications.service.PriceChangeMessageProcessor;
+import ru.necatalog.notifications.service.PriceDropNotificationService;
 
 @Configuration
 @RequiredArgsConstructor
@@ -12,9 +13,11 @@ import ru.necatalog.notifications.service.PriceChangeMessageProcessor;
 public class NotificationScheduledConfig {
 
 	private final PriceChangeMessageProcessor processor;
+	private final PriceDropNotificationService priceDropService;
 
-	@Scheduled(fixedRate = 10000)
+	@Scheduled(fixedRate = 60000)
 	public void processPriceChangeMessages() {
+		priceDropService.checkPriceDrops();
 		processor.processMessages();
 	}
 }

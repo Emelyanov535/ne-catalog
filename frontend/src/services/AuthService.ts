@@ -21,6 +21,7 @@ class AuthService {
             return response.data;
         } catch (error) {
             console.error("Error during authorization:", error);
+            throw error;
         }
     }
 
@@ -45,6 +46,14 @@ class AuthService {
     async changeNotificationStatus() {
         try {
             await axiosInstance.get(`/account/changeNotificationStatus`)
+        } catch (error) {
+            console.error("Error during whoami:", error);
+        }
+    }
+
+    async setNotificationThreshold(notifiacationPercent: number) {
+        try {
+            await axiosInstance.get(`/account/changeNotificationPercent?percent=${notifiacationPercent}`)
         } catch (error) {
             console.error("Error during whoami:", error);
         }

@@ -1,13 +1,16 @@
 package ru.necatalog.favorites.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.necatalog.auth.service.AccountService;
 import ru.necatalog.persistence.entity.FavoriteProductEntity;
@@ -31,9 +34,14 @@ public class FavoriteProductService {
 			return;
 		}
 
+		ProductEntity product = productRepository.findByUrl(productUrl)
+				.orElseThrow(() -> new EntityNotFoundException("Product not found"));
+
 		FavoriteProductEntity favoriteProductEntity = FavoriteProductEntity.builder()
 				.user(userEntity)
-				.product(productRepository.findById(productUrl).orElseThrow())
+				.product(product)
+				.createdAt(LocalDateTime.now())
+				.addedPrice(product.getLastPrice())
 				.build();
 
 		favoriteProductRepository.save(favoriteProductEntity);
@@ -56,22 +64,22 @@ public class FavoriteProductService {
 	}
 
 	@Transactional
-	public Page<ProductEntity> getFavoriteProductsWithPaging(int page, int size) {
+	public Page<ProductEntity> getFavoriteProductsWithPaging(int page, int size, String sort) {
+		Pageable pageable = PageRequest.of(
+				page, size,
+				sort.equals("DESC")
+						? Sort.by(Sort.Direction.DESC, "createdAt")
+						: Sort.by(Sort.Direction.ASC, "createdAt")
+		);
 
-		Pageable pageable = PageRequest.of(page, size);
+		UserEntity userEntity = accountService.getCurrentUser();
 
-		final UserEntity userEntity = accountService.getCurrentUser();
+		Page<FavoriteProductEntity> favoritePage = favoriteProductRepository.findAllByUser(userEntity, pageable);
 
-		List<ProductEntity> favoriteProducts = userEntity.getFavoriteProducts().stream()
+		List<ProductEntity> products = favoritePage
 				.map(FavoriteProductEntity::getProduct)
-				.toList();
+				.getContent();
 
-		int start = (int) pageable.getOffset();
-		int end = Math.min((start + pageable.getPageSize()), favoriteProducts.size());
-
-		List<ProductEntity> pagedList = favoriteProducts.subList(start, end);
-
-		return new PageImpl<>(pagedList, pageable, favoriteProducts.size());
+		return new PageImpl<>(products, pageable, favoritePage.getTotalElements());
 	}
-
 }
