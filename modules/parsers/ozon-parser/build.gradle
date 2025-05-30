@@ -8,6 +8,7 @@ dependencies {
     implementation "org.springframework.retry:spring-retry:${spring_retry_version}"
     implementation "org.jsoup:jsoup:${jsoup_vesion}"
     implementation("com.valensas:undetected-chrome-driver:0.0.1")
+    implementation("org.apache.commons:commons-text:1.13.1")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     implementation('org.springframework.boot:spring-boot-starter-test')

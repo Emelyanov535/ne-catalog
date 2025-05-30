@@ -11,7 +11,7 @@
             </not>
         </preConditions>
         <createTable tableName="delayed_task">
-            <column name="id" type="bigint" remarks="Идентификатор">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Идентификатор">
                 <constraints primaryKey="true" />
             </column>
             <column name="status" type="tinyint" remarks="Статус задания">

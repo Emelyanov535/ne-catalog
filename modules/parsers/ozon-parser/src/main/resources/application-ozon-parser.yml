@@ -1,5 +1,7 @@
 ozon-parser:
-  enabled: ${OZON_ENABLED:true}
-  max-threads: ${OZON_MAX_PROCESSING_THREADS:5}
-  max-num-of-pages-on-screen: ${OZON_MAX_NUM_OF_PAGES_ON_SCREEN:100}
+  enabled: ${OZON_PARSER_ENABLED:true}
+  max-threads: ${OZON_PARSER_MAX_PROCESSING_THREADS:1}
+  web-driver-url:
+    catalog: ${OZON_PARSER_WEB_DRIVER_URL_CATALOG}
+    characteristics: ${OZON_PARSER_WEB_DRIVER_URL_CHARACTERISTICS}
   mode: ${OZON_PARSER_MODE:headless} # visible|headless
