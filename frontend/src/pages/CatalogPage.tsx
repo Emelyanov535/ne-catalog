@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useParams, useSearchParams} from "react-router-dom";
 import {searchService} from "@/services/SearchService.ts"
 import {LaptopFiltersTranslations} from "@/types/LaptopFiltersTranslations.ts";
 import {Input} from "@/components/ui/input.tsx";
@@ -10,15 +10,8 @@ import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious
-} from "@/components/ui/pagination.tsx";
+import {useFavorites} from "@/services/useFavorites.ts";
+import {PaginationControls} from "@/components/PaginationControls.tsx";
 
 const CatalogPage: React.FC = () => {
     const {category} = useParams<string>();
@@ -32,10 +25,22 @@ const CatalogPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [maxPage, setMaxPage] = useState<number>();
     const [sortDir, setSortDir] = useState<string>();
+    const {favorites, toggleFavorite} = useFavorites();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = parseInt(searchParams.get("page") || "1", 10);
 
     useEffect(() => {
-        fetchFilters()
-    }, []);
+        fetchFilters();
+    }, [category]);
+
+    useEffect(() => {
+        setCurrentPage(page - 1);
+    }, [page]);
+
+    useEffect(() => {
+        search();
+    }, [category, searchQuery, currentPage, choosedFilters, sortDir, choosedStartPrice, choosedEndPrice]);
+
 
     const fetchFilters = async () => {
         setCategoryFilters(await searchService.getFilters(category || ""))
@@ -68,37 +73,21 @@ const CatalogPage: React.FC = () => {
 
     const search = async () => {
         const response = await searchService.search(category ?? '',
-            searchQuery, currentPage, 20, choosedFilters, sortDir!, choosedStartPrice, choosedEndPrice)
+            searchQuery, page - 1, 20, choosedFilters, sortDir!, choosedStartPrice, choosedEndPrice)
         setProducts(response.results)
         setMaxPage(response.maxPage)
     }
 
-    const getPaginationRange = () => {
-        const range = [];
-        let start = Math.max(currentPage - 2, 1);
-        let end = Math.min(currentPage + 2, maxPage);
-
-        if (start === 1) {
-            end = Math.min(5, maxPage);
-        }
-
-        if (end === maxPage) {
-            start = Math.max(maxPage - 4, 1);
-        }
-
-        for (let i = start; i <= end; i++) {
-            range.push(i);
-        }
-
-        return range;
+    const handlePageChange = (newPage: number) => {
+        setSearchParams({ page: String(newPage) });
     };
 
     return (
         <div className={"max-w-2/3 mx-auto"}>
-            <div className={"mx-auto my-2 max-w-1/3 flex justify-around"}>
-                <Input className={""} value={searchQuery} onChange={handleSearchQueryChange} />
-                <Button className={"mx-1"} onClick={() => {setCurrentPage(0); search()}}>Искать</Button>
-            </div>
+            {/*<div className={"mx-auto my-2 max-w-1/3 flex justify-around"}>*/}
+            {/*    <Input className={""} value={searchQuery} onChange={handleSearchQueryChange} />*/}
+            {/*    */}
+            {/*</div>*/}
             <div className={"flex"}>
                 <div className={"w-1/3"}>
                     <Accordion type={"multiple"} className="">
@@ -113,7 +102,7 @@ const CatalogPage: React.FC = () => {
                                             </p>
                                             <Select value={sortDir} onValueChange={setSortDir}>
                                                 <SelectTrigger className="w-[180px]">
-                                                    <SelectValue placeholder="..." />
+                                                    <SelectValue placeholder="..."/>
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
@@ -124,13 +113,18 @@ const CatalogPage: React.FC = () => {
                                             </Select>
                                         </div>
                                         <div className={"flex items-center justify-between"}>
-                                            <Input className={"border-none shadow-none m-3 text-center"} value={choosedStartPrice ?? categoryFilters?.priceStart} onChange={handleChoosedStartPriceInputChange}/>
-                                            <Input className={"border-none shadow-none m-3 text-center"} value={choosedEndPrice ?? categoryFilters?.priceEnd} onChange={handleChoosedEndPriceInputChange}/>
+                                            <Input className={"border-none shadow-none m-3 text-center"}
+                                                   value={choosedStartPrice ?? categoryFilters?.priceStart}
+                                                   onChange={handleChoosedStartPriceInputChange}/>
+                                            <Input className={"border-none shadow-none m-3 text-center"}
+                                                   value={choosedEndPrice ?? categoryFilters?.priceEnd}
+                                                   onChange={handleChoosedEndPriceInputChange}/>
                                         </div>
-                                        <Slider value={[choosedStartPrice ?? categoryFilters.priceStart, choosedEndPrice ?? categoryFilters.priceEnd]}
-                                                onValueChange={handleChoosedPriceChange}
-                                                min={categoryFilters?.priceStart}
-                                                max={categoryFilters?.priceEnd}  />
+                                        <Slider
+                                            value={[choosedStartPrice ?? categoryFilters.priceStart, choosedEndPrice ?? categoryFilters.priceEnd]}
+                                            onValueChange={handleChoosedPriceChange}
+                                            min={categoryFilters?.priceStart}
+                                            max={categoryFilters?.priceEnd}/>
                                     </AccordionContent>
                                 </>
                             )}
@@ -156,7 +150,7 @@ const CatalogPage: React.FC = () => {
                                                             choosedFilters[name] = choosedFilters[name].filter((v) => v !== value)
                                                         }
                                                         console.log(choosedFilters)
-                                                    }} />
+                                                    }}/>
                                                     <p className={"ml-2"}>{value}</p>
                                                 </div>
                                             ))}
@@ -166,6 +160,10 @@ const CatalogPage: React.FC = () => {
                             </AccordionItem>
                         ))}
                     </Accordion>
+                    <Button className={"mx-1"} onClick={() => {
+                        setCurrentPage(0);
+                        search()
+                    }}>Искать</Button>
                 </div>
                 <div className={"w-full flex flex-col"}>
                     <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mx-10">
@@ -173,42 +171,16 @@ const CatalogPage: React.FC = () => {
                             <ItemCard
                                 key={product.url}
                                 product={product}
-                                isFavorite={false} //TODO доделать
-                                onToggleFavorite={() => ""} //TODO доделать
+                                isFavorite={favorites.has(product.url)}
+                                onToggleFavorite={toggleFavorite}
                             />
                         ))}
                     </div>
-                    {maxPage && <Pagination className="my-10">
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    href="#"
-                                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                />
-                            </PaginationItem>
-
-                            {getPaginationRange().map((pageNum) => (
-                                <PaginationItem key={pageNum}>
-                                    <PaginationLink
-                                        href="#"
-                                        isActive={currentPage + 1 === pageNum}
-                                        onClick={() => {setCurrentPage(pageNum - 1); search()}}
-                                    >
-                                        {pageNum}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            ))}
-
-                            {maxPage > 5 && currentPage < maxPage - 2 && <PaginationItem><PaginationEllipsis/></PaginationItem>}
-
-                            <PaginationItem>
-                                <PaginationNext
-                                    href="#"
-                                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, maxPage))}
-                                />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>}
+                    <PaginationControls
+                        currentPage={page}
+                        maxPage={maxPage ?? 1}
+                        onPageChange={handlePageChange}
+                    />
                 </div>
             </div>
         </div>

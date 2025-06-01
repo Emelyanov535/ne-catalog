@@ -15,16 +15,15 @@ import {
 import {Label} from "@/components/ui/label.tsx";
 import {Switch} from "@/components/ui/switch.tsx";
 import {ModeToggle} from "@/components/mode-toggle.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {catalogService} from "@/services/CatalogService.ts";
-import {CategoryTranslations} from "@/types/CategoryTranslations.ts";
+import {NavActions} from "@/components/nav-actions.tsx";
+import {Search} from "lucide-react";
+import {Input} from "@/components/ui/input.tsx";
 
 const Navbar: React.FC = () => {
     const [isNotificationsEnabled, setIsNotificationsEnabled] = useState<boolean>(false);
     const navigate = useNavigate();
     const isAuthenticated = Boolean(localStorageService.getAccessToken());
     const [username, setUsername] = useState<string>("");
-    const [categories, setCategories] = useState<string[]>([""]);
 
     const fetchUserData = async () => {
         try {
@@ -46,7 +45,6 @@ const Navbar: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchCategories();
         if (isAuthenticated) {
             fetchUserData();
         }
@@ -60,16 +58,9 @@ const Navbar: React.FC = () => {
         navigate("/favorites");
     };
 
-    const fetchCategories = async () => {
-        setCategories(await catalogService.getCategories());
-    }
-
-    const goToCatalog = (category: string) => {
-        navigate("/catalog/" + category);
-    }
-
     return (
-        <header className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header
+            className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex justify-between container mx-auto flex h-14 items-center px-4 md:px-6">
                 <div className="flex items-center gap-4">
                     <a href="/" className="flex items-center gap-2 font-bold">
@@ -79,24 +70,24 @@ const Navbar: React.FC = () => {
                         </svg>
                         <span className="hidden lg:inline">ne-catalog</span>
                     </a>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">
-                                Выбрать категорию
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            {categories.map((category, index) => (
-                                <DropdownMenuItem key={index.toString()} onClick={() => goToCatalog(category)}>
-                                    {CategoryTranslations[category] || category}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="ml-auto px-3">
+                        <NavActions/>
+                    </div>
                 </div>
 
-                <div className="">
-
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
+                    <Input
+                        type="search"
+                        placeholder="Поиск товаров..."
+                        className={`
+                        pl-10 pr-4 py-2 text-sm border rounded-xl shadow-sm
+                        w-48
+                        transition-all duration-300 ease-in-out
+                        focus:w-80 focus:outline-none focus:ring-2 focus:ring-primary
+                      `}
+                        style={{transformOrigin: 'center'}}
+                    />
                 </div>
 
                 <div className="flex items-center gap-2">

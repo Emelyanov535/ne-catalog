@@ -86,7 +86,7 @@ public class SearchService {
 
         if ("price".equalsIgnoreCase(sortAttribute) &&
             ("asc".equalsIgnoreCase(sortDir) || "desc".equalsIgnoreCase(sortDir))) {
-            query.append(" order by ph.price ").append(sortDir);
+            query.append(" order by p.last_price ").append(sortDir);
         }
 
         int safePage = page != null ? page : 0;
@@ -137,7 +137,7 @@ public class SearchService {
                                       Integer startPrice,
                                       Integer endPrice) {
         List<AttributeEntity> categoryAttributes = attributes.values().stream()
-            .filter(attr -> attr.getGroup().contains(category.name()))
+            .filter(attr -> category != null && attr.getGroup().contains(category.name()))
             .toList();
         Map<String, AttributeEntity> attributes = categoryAttributes.stream()
             .collect(Collectors.toMap(AttributeEntity::getName, Function.identity()));
@@ -146,7 +146,6 @@ public class SearchService {
             new StringBuilder("""
                 select count(*)
                 from product p
-                join price_history ph on ph.product_url = p.url and ph.date = (select max(ph2.date) from price_history ph2 where ph2.product_url = p.url)
                 join product_ts_vector ptv on ptv.url = p.url
                 where 1=1
                 """) :
@@ -156,10 +155,9 @@ public class SearchService {
                        p.brand,
                        p.marketplace,
                        p.image_url,
-                       ph.price,
+                       p.last_price,
                        p.percent_change
                 from product p
-                join price_history ph on ph.product_url = p.url and ph.date = (select max(ph2.date) from price_history ph2 where ph2.product_url = p.url)
                 join product_ts_vector ptv on ptv.url = p.url
                 where 1=1
                 """);
@@ -169,11 +167,11 @@ public class SearchService {
         }
 
         if (startPrice != null) {
-            query.append(" and ph.price >= ").append(startPrice).append(" ");
+            query.append(" and p.last_price >= ").append(startPrice).append(" ");
         }
 
         if (endPrice != null) {
-            query.append(" and ph.price <= ").append(endPrice).append(" ");
+            query.append(" and p.last_price <= ").append(endPrice).append(" ");
         }
 
         boolean hasFilters = attributeValues != null && !attributeValues.isEmpty();

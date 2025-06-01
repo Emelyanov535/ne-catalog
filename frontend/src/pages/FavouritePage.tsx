@@ -1,21 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {useFavorites} from "@/services/useFavorites.ts";
 import {ItemCard} from "@/components/ItemCard.tsx";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious
-} from "@/components/ui/pagination.tsx";
 import {favouriteService} from "@/services/FavouriteService.ts";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import { Button } from "@/components/ui/button";
 import {Slider} from "@/components/ui/slider.tsx";
 import {authService} from "@/services/AuthService.ts";
+import {PaginationControls} from "@/components/PaginationControls.tsx";
 
 const FavouritePage: React.FC = () => {
     const [items, setItems] = useState<any[]>([]);
@@ -63,26 +55,6 @@ const FavouritePage: React.FC = () => {
     }, [page, sortOrder]);
 
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    const getPaginationRange = () => {
-        const range = [];
-        let start = Math.max(page - 2, 1);
-        let end = Math.min(page + 2, totalPages);
-
-        if (start === 1) {
-            end = Math.min(5, totalPages);
-        }
-
-        if (end === totalPages) {
-            start = Math.max(totalPages - 4, 1);
-        }
-
-        for (let i = start; i <= end; i++) {
-            range.push(i);
-        }
-
-        return range;
-    };
 
     return (
         <div className="flex flex-col items-center p-6 md:p-10">
@@ -149,37 +121,11 @@ const FavouritePage: React.FC = () => {
                 )}
             </div>
 
-            <Pagination className="p-10">
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious
-                            href="#"
-                            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                        />
-                    </PaginationItem>
-
-                    {getPaginationRange().map((pageNum) => (
-                        <PaginationItem key={pageNum}>
-                            <PaginationLink
-                                href="#"
-                                isActive={page === pageNum}
-                                onClick={() => setPage(pageNum)}
-                            >
-                                {pageNum}
-                            </PaginationLink>
-                        </PaginationItem>
-                    ))}
-
-                    {totalPages > 5 && page < totalPages - 2 && <PaginationItem><PaginationEllipsis/></PaginationItem>}
-
-                    <PaginationItem>
-                        <PaginationNext
-                            href="#"
-                            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                        />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+            <PaginationControls
+                currentPage={page}
+                maxPage={totalPages}
+                onPageChange={(newPage) => setPage(newPage)}
+            />
         </div>
     );
 }

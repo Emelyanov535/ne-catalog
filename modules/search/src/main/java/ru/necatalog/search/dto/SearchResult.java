@@ -17,7 +17,7 @@ public class SearchResult {
     private String brand;
     private Marketplace marketplace;
     private String imageUrl;
-    private BigDecimal price;
+    private BigDecimal lastPrice;
     private Double percentChange;
 
 }

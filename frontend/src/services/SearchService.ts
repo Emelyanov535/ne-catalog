@@ -27,7 +27,7 @@ class SearchService {
                  startPrice: number,
                  endPrice: number): Promise<SearchResults> {
         try {
-            const response = await axiosInstance.get(`/search/${category}`, {
+            const response = await axiosInstance.get(`/search`, {
                 params: {
                     category: category,
                     searchQuery: searchQuery,

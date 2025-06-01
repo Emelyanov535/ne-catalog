@@ -19,9 +19,9 @@ public interface SearchApi {
     @Operation(summary = "Получить доступные фильтры для категории")
     FilterData getAvailableFilters(@PathVariable("category") Category category);
 
-    @GetMapping("/{category}")
+    @GetMapping
     @Operation(summary = "Найти товары")
-    SearchResults search(@PathVariable("category") Category category,
+    SearchResults search(@RequestParam(value = "category", required = false) Category category,
                          @RequestParam("searchQuery") String searchQuery,
                          @RequestParam(value = "sortBy", required = false) String sortAttribute,
                          @RequestParam(value = "sortDir", required = false) String sortDir,

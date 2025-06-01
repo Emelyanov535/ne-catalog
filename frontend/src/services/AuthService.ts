@@ -51,7 +51,7 @@ class AuthService {
         }
     }
 
-    async setNotificationThreshold(notifiacationPercent: number) {
+    async setNotificationThreshold(notifiacationPercent: number | null) {
         try {
             await axiosInstance.get(`/account/changeNotificationPercent?percent=${notifiacationPercent}`)
         } catch (error) {

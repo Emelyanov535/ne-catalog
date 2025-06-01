@@ -10,6 +10,8 @@ import ProductDetail from "@/pages/ProductDetail.tsx";
 import FavouritePage from "@/pages/FavouritePage.tsx";
 import CatalogPage from "@/pages/CatalogPage.tsx";
 import NotFound from "@/pages/NotFound.tsx";
+import MainPage from "@/pages/MainPage.tsx";
+import Footer from "@/components/Footer.tsx";
 
 
 const App: React.FC = () => {
@@ -20,7 +22,8 @@ const App: React.FC = () => {
                 <Routes>
                     <Route path="/signUp" element={<SignUp/>}/>
                     <Route path="/signIn" element={<SignIn/>}/>
-                    <Route path="/" element={<Home/>}/>
+                    <Route path="/" element={<MainPage/>}/>
+                    <Route path="home" element={<Home/>}/>
                     <Route path="/product/:url" element={<ProductDetail/>}/>
                     <Route path="/catalog/:category" element={<CatalogPage/>}/>
                     {/* Защищенные маршруты */}
@@ -31,6 +34,7 @@ const App: React.FC = () => {
                 </Routes>
                 <Toaster/>
             </main>
+            <Footer/>
         </Router>
     );
 };
