@@ -13,7 +13,6 @@ import ru.necatalog.ozon.parser.parsing.creator.OzonCharacteristicsPageDataCreat
 import ru.necatalog.ozon.parser.parsing.dto.characteristics.CharacteristicsHolder;
 import ru.necatalog.ozon.parser.parsing.dto.characteristics.OzonCharacteristicsPageData;
 import ru.necatalog.ozon.parser.parsing.enumeration.OzonCategory;
-import ru.necatalog.ozon.parser.parsing.pool.WebDriverPoolDestination;
 import ru.necatalog.ozon.parser.parsing.processor.AttributeProcessor;
 import ru.necatalog.ozon.parser.service.dto.ParseOzonCharacteristicPayload;
 import ru.necatalog.ozon.parser.utils.OzonConsts;

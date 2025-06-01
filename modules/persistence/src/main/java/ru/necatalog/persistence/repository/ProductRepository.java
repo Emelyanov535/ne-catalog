@@ -31,8 +31,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 	Page<ProductEntity> findAll(Pageable pageable);
 
 	@Query(nativeQuery = true,
-			value = "select max(ph.price) as priceEnd, min(ph.price) as priceStart from product p " +
-					"join price_history ph on p.url = ph.product_url " +
+			value = "select max(p.last_price) as priceEnd, min(p.last_price) as priceStart from product p " +
 					"where p.category = :category")
 	PriceFilterDto findPriceFilterData(@Param("category") String category);
 

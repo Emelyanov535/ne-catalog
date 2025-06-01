@@ -1,78 +1,98 @@
 package ru.necatalog.ozon.parser.parsing.pool;
 
-import java.net.URI;
-import java.net.URL;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
 
 import com.valensas.undetected.chrome.driver.ChromeDriverBuilder;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
 import jakarta.annotation.PreDestroy;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.ObjectFactory;
 import ru.necatalog.ozon.parser.config.properties.OzonParserProperties;
+import ru.necatalog.ozon.parser.parsing.dto.KeyValue;
 
 @Slf4j
 public class WebDriverPool {
 
-    private final Queue<WebDriver> availableDrivers = new ConcurrentLinkedQueue<>();
+    private final Queue<KeyValue<Integer, WebDriver>> availableDrivers = new ConcurrentLinkedQueue<>();
 
-    private final Queue<WebDriver> busyDrivers = new ConcurrentLinkedQueue<>();
-
-    private final OzonParserProperties properties;
+    private final Queue<KeyValue<Integer, WebDriver>> busyDrivers = new ConcurrentLinkedQueue<>();
 
     private final ObjectFactory<WebDriver> webDriverFactory;
 
+    private static final ChromeOptions chromeOptions = new ChromeOptions();
+
     public WebDriverPool(ObjectFactory<WebDriver> webDriverFactory,
                          OzonParserProperties ozonConfigProperties) {
-        this.properties = ozonConfigProperties;
         this.webDriverFactory = webDriverFactory;
         int poolSize = ozonConfigProperties.getMaxThreads();
 
         for (int i = 0; i < poolSize + 1; i++) {
-            availableDrivers.add(createNewDriver());
+            availableDrivers.add(new KeyValue<>(i, createNewDriver(i)));
         }
+
+        chromeOptions();
     }
 
-    private WebDriver createNewDriver() {
-        return webDriverFactory.getObject();
+    private WebDriver createNewDriver(Integer i) {
+        return webDriverHeadless(i);
     }
 
-    public WebDriver borrowDriver() {
-        WebDriver driver = availableDrivers.poll();
+    public WebDriver webDriverHeadless(Integer i) {
+        WebDriverManager manager = new ChromeDriverManager();
+        manager.cachePath("chromedrivers/" + i);
+        manager.setup();
+        WebDriver driver = new ChromeDriverBuilder().build(chromeOptions(), manager.getDownloadedDriverPath());
+        driver.switchTo().newWindow(WindowType.TAB);
+        ((JavascriptExecutor) driver).executeScript(
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+        );
+        return driver;
+    }
+
+    public ChromeOptions chromeOptions() {
+        return new ChromeOptions().addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.7049.114 Safari/537.36")
+            .addArguments("--disable-blink-features=AutomationControlled")
+            .addArguments("--disable-gpu")
+            .addArguments("--no-sandbox")
+            .addArguments("--disable-dev-shm-usage")
+            .addArguments("--remote-allow-origins=*")
+            .addArguments("--disable-infobars")
+            .addArguments("--enable-javascript");
+    }
+
+    public synchronized KeyValue<Integer, WebDriver> borrowDriver() {
+        KeyValue<Integer, WebDriver> driver = availableDrivers.poll();
         if (driver != null) {
-            ((JavascriptExecutor) driver).executeScript(
-                "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
-            );
             busyDrivers.add(driver);
-            driver.manage().timeouts().pageLoadTimeout(Duration.of(10, ChronoUnit.SECONDS));
-            driver.switchTo().newWindow(WindowType.TAB);
+            driver.getValue().manage().timeouts().pageLoadTimeout(Duration.of(10, ChronoUnit.SECONDS));
             return driver;
         }
         throw new NoSuchElementException("No available driver found");
     }
 
-    public void returnDriver(WebDriver driver) {
-        busyDrivers.remove(driver);
-        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+    public synchronized void returnDriver(KeyValue<Integer, WebDriver> driver) {
+        try {
+            busyDrivers.remove(driver);
+            /*driver.getValue().close();
+            driver.setValue(webDriverHeadless(driver.getKey()));*/
+            availableDrivers.add(driver);
+        } catch (Exception ex) {
+            log.info(ex.getMessage());
+        }
+        /*ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
         for (int i = 0; i < tabs.size();) {
             if (tabs.size() == 1) {
                 break;
@@ -80,29 +100,27 @@ public class WebDriverPool {
             driver.switchTo().window(tabs.get(i));
             driver.close();
             tabs.remove(i);
-        }
-        driver.switchTo().window(tabs.getFirst());
-        availableDrivers.add(driver);
+        }*/
     }
 
     @PreDestroy
     public void shutdownPool() {
-        for (WebDriver driver : availableDrivers) {
-            driver.quit();
+        for (KeyValue<Integer, WebDriver> driver : availableDrivers) {
+            driver.getValue().quit();
         }
 
-        for (WebDriver driver : busyDrivers) {
-            driver.quit();
+        for (KeyValue<Integer, WebDriver> driver : busyDrivers) {
+            driver.getValue().quit();
         }
         availableDrivers.clear();
         busyDrivers.clear();
     }
 
-    public WebDriver recreate(WebDriver driver) {
-        driver.quit();
+    public synchronized KeyValue<Integer, WebDriver> recreate(KeyValue<Integer, WebDriver> driver) {
         availableDrivers.remove(driver);
         busyDrivers.remove(driver);
-        driver = createNewDriver();
+        driver.getValue().quit();
+        driver.setValue(webDriverHeadless(driver.getKey()));
         availableDrivers.add(driver);
 
         return borrowDriver();

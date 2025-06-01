@@ -12,8 +12,7 @@ public class OzonCharacteristicParsingScheduler {
 
     private final OzonParsingService ozonParsingService;
 
-    //@Scheduled(cron = "0 30 * * * *")
-    //@PostConstruct
+    @Scheduled(cron = "${ozon-parser.characteristics.cron}")
     public void updateOzonProducts() {
         ozonParsingService.parseCharacteristics();
     }

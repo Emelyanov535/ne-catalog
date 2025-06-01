@@ -39,4 +39,88 @@
             <column name="last_price" type="numeric(10,2)" remarks="Актуальная цена" />
         </addColumn>
     </changeSet>
+    
+    <changeSet id="20250427_product_ts_vector" author="danil.markov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="product_ts_vector" />
+            </not>
+        </preConditions>
+        <createTable tableName="product_ts_vector">
+            <column name="url" type="varchar">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="product_name" type="tsvector" />
+        </createTable>
+        <sql>
+            create index if not exists product_name_gin_idx on product_ts_vector using GIN (product_name);
+        </sql>
+        <sql>
+            CREATE OR REPLACE FUNCTION update_product_ts_vector()
+            RETURNS TRIGGER AS '
+            BEGIN
+                INSERT INTO product_ts_vector (url, product_name)
+                VALUES (
+                    NEW.url,
+                    to_tsvector(NEW.product_name)
+                )
+                ON CONFLICT (url) DO UPDATE
+                SET product_name = EXCLUDED.product_name;
+
+                RETURN NEW;
+            END;
+            ' LANGUAGE plpgsql;
+
+            CREATE TRIGGER trg_update_product_ts_vector
+            AFTER INSERT OR UPDATE ON product
+            FOR EACH ROW
+            EXECUTE FUNCTION update_product_ts_vector();
+        </sql>
+    </changeSet>
+
+    <changeSet id="20250427_product_attribute_product_url_idx" author="danil.markov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <indexExists tableName="product_attribute" indexName="product_attribute_product_url_idx" />
+            </not>
+        </preConditions>
+        <createIndex tableName="product_attribute" indexName="product_attribute_product_url_idx">
+            <column name="product_url" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20250427_price_history_product_url_idx" author="danil.markov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <indexExists tableName="price_history" indexName="price_history_product_url_idx" />
+            </not>
+        </preConditions>
+        <createIndex tableName="price_history" indexName="price_history_product_url_idx">
+            <column name="product_url" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20250427_product_last_price_idx" author="danil.markov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <indexExists tableName="product" indexName="product_last_price_idx" />
+            </not>
+        </preConditions>
+        <createIndex tableName="product" indexName="product_last_price_idx">
+            <column name="last_price" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20250427_product_attribute_filters_idx" author="danil.markov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <indexExists tableName="product_attribute" indexName="product_attribute_filters_idx" />
+            </not>
+        </preConditions>
+        <createIndex tableName="product_attribute" indexName="product_attribute_filters_idx">
+            <column name="attribute_id" />
+            <column name="value" />
+            <column name="unit" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

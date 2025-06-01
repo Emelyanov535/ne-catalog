@@ -7,8 +7,10 @@
     <changeSet id="20250223_add_product_attribute_tables_01" author="danil">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="attribute" />
-                <tableExists tableName="product_attribute" />
+                <and>
+                    <tableExists tableName="attribute" />
+                    <tableExists tableName="product_attribute" />
+                </and>
             </not>
         </preConditions>
         <createTable tableName="attribute">

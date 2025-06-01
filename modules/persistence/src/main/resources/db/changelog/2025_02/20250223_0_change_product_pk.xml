@@ -7,8 +7,10 @@
     <changeSet id="20250223_0_change_product_pk" author="danil">
         <preConditions onFail="MARK_RAN">
             <not>
-                <primaryKeyExists tableName="product" primaryKeyName="product_pkey" />
-                <columnExists tableName="product" columnName="image_url" />
+                <and>
+                    <primaryKeyExists tableName="product" primaryKeyName="product_pkey" />
+                    <columnExists tableName="product" columnName="image_url" />
+                </and>
             </not>
         </preConditions>
         <dropPrimaryKey tableName="product"/>

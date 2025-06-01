@@ -7,9 +7,11 @@
     <changeSet id="20240926_create_product_table.xml" author="danil">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="product" columnName="url" />
-                <columnExists tableName="product" columnName="image-url" />
-                <foreignKeyConstraintExists foreignKeyName="fk_product_price_history" />
+                <and>
+                    <columnExists tableName="product" columnName="url" />
+                    <columnExists tableName="product" columnName="image-url" />
+                    <foreignKeyConstraintExists foreignKeyName="fk_product_price_history" />
+                </and>
             </not>
             <tableExists tableName="price_history" />
         </preConditions>

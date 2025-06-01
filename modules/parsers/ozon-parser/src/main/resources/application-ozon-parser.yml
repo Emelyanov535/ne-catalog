@@ -1,7 +1,7 @@
 ozon-parser:
   enabled: ${OZON_PARSER_ENABLED:true}
   max-threads: ${OZON_PARSER_MAX_PROCESSING_THREADS:1}
-  web-driver-url:
-    catalog: ${OZON_PARSER_WEB_DRIVER_URL_CATALOG}
-    characteristics: ${OZON_PARSER_WEB_DRIVER_URL_CHARACTERISTICS}
-  mode: ${OZON_PARSER_MODE:headless} # visible|headless
+  catalog:
+    cron: ${OZON_PARSER_CATALOG_CRON:0 0 * * * *}
+  characteristics:
+    cron: ${OZON_PARSER_CHARACTERISTICS_CRON:0 30 * * * *}

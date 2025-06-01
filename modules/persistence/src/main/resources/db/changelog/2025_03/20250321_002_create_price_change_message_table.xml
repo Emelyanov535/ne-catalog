@@ -8,8 +8,10 @@
     <changeSet id="20250321_002_create_price_change_message_table" author="artem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="price_change_message" />
-                <foreignKeyConstraintExists foreignKeyTableName="price_change_message" foreignKeyName="fk_price_change_message_product" />
+                <and>
+                    <tableExists tableName="price_change_message" />
+                    <foreignKeyConstraintExists foreignKeyTableName="price_change_message" foreignKeyName="fk_price_change_message_product" />
+                </and>
             </not>
         </preConditions>
         <createTable tableName="price_change_message">

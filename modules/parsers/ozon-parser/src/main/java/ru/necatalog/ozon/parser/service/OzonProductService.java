@@ -92,7 +92,6 @@ public class OzonProductService {
         List<DelayedTaskEntity> delayedTaskToSave = new ArrayList<>();
         for (ProductEntity p : products) {
             if (!productRepository.existsById(p.getUrl())) {
-                productsToSave.add(p);
                 delayedTaskToSave.add(new DelayedTaskEntity(
                     null,
                     DelayedTaskStatus.NEW,
@@ -100,12 +99,13 @@ public class OzonProductService {
                     getJsonb(p),
                     LocalDateTime.now()));
             }
+            productsToSave.add(p);
             priceHistoriesToSave.add(getPriceHistory(p));
         }
         productRepository.saveAll(productsToSave);
         productPriceRepository.saveAll(priceHistoriesToSave);
         delayedTaskRepository.saveAll(delayedTaskToSave);
-        log.info("Сохранили {} продуктов", productsToSave.size());
+        log.info("Новых продуктов - {}; Всего нашли на странице уникальных товаров - {}", delayedTaskToSave.size(), productsToSave.size());
     }
 
     @SneakyThrows

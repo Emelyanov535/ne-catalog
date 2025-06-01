@@ -10,8 +10,7 @@ public class OzonCatalogParsingScheduler {
 
     private final OzonParsingService ozonParsingService;
 
-    //@Scheduled(cron = "0 0 */4 * * *")
-    //@PostConstruct
+    @Scheduled(cron = "${ozon-parser.catalog.cron}")
     public void updateOzonProducts() {
         ozonParsingService.parseCatalog();
     }
