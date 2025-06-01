@@ -15,6 +15,4 @@ public class OzonParserProperties {
 
     private String mode;
 
-    private WevDriverUrlProperties webDriverUrl;
-
 }

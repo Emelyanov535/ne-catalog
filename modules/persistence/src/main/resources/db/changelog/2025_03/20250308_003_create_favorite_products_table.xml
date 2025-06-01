@@ -8,9 +8,11 @@
     <changeSet id="0250308_002_create_favorite_products_table" author="artem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="favorite_products" />
-                <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_user" />
-                <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_product" />
+                <and>
+                    <tableExists tableName="favorite_products" />
+                    <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_user" />
+                    <foreignKeyConstraintExists foreignKeyTableName="favorite_products" foreignKeyName="fk_favorite_products_product" />
+                </and>
             </not>
         </preConditions>
         <createTable tableName="favorite_products">

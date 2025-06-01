@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,9 @@ public class SearchService {
 
     public FilterData getAvailableFilters(Category category) {
         PriceFilterDto price = productRepository.findPriceFilterData(category.name());
+        if (price == null) {
+            throw new EntityNotFoundException("Цена не найдена");
+        }
         List<Long> categoryAttributes = attributes.values().stream()
             .filter(attr -> attr.getGroup().contains(category.name()))
             .map(AttributeEntity::getId)
@@ -78,7 +82,7 @@ public class SearchService {
                                 Map<String, List<String>> attributeValues,
                                 Integer startPrice,
                                 Integer endPrice) {
-        StringBuilder query = getTemlapate(false, category, searchQuery, attributeValues, startPrice, endPrice);
+        StringBuilder query = getTemplate(false, category, searchQuery, attributeValues, startPrice, endPrice);
 
         if ("price".equalsIgnoreCase(sortAttribute) &&
             ("asc".equalsIgnoreCase(sortDir) || "desc".equalsIgnoreCase(sortDir))) {
@@ -116,7 +120,7 @@ public class SearchService {
 
     private long getMaxPage(Category category, String searchQuery, String sortAttribute, String sortDir, Integer page,
                            Integer size, Map<String, List<String>> attributeValues, Integer startPrice, Integer endPrice) {
-        String query = getTemlapate(true, category, searchQuery, attributeValues, startPrice, endPrice).toString();
+        String query = getTemplate(true, category, searchQuery, attributeValues, startPrice, endPrice).toString();
 
         Query nativeQuery = entityManager.createNativeQuery(query);
         if (searchQuery != null && !searchQuery.isBlank()) {
@@ -126,12 +130,12 @@ public class SearchService {
         return ((Long) nativeQuery.getSingleResult()) / size + 1;
     }
 
-    private StringBuilder getTemlapate(boolean isCountQuery,
-                                       Category category,
-                                       String searchQuery,
-                                       Map<String, List<String>> attributeValues,
-                                       Integer startPrice,
-                                       Integer endPrice) {
+    private StringBuilder getTemplate(boolean isCountQuery,
+                                      Category category,
+                                      String searchQuery,
+                                      Map<String, List<String>> attributeValues,
+                                      Integer startPrice,
+                                      Integer endPrice) {
         List<AttributeEntity> categoryAttributes = attributes.values().stream()
             .filter(attr -> attr.getGroup().contains(category.name()))
             .toList();

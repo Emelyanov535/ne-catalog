@@ -31,18 +31,16 @@ import smile.clustering.KMeans;
 @RequiredArgsConstructor
 public class AnalogFinderService {
 
-    private final ProductAttributeRepository productAttributeRepository;
-
     private final AttributeRepository attributeRepository;
 
     private final EntityManager em;
 
     private final ProductRepository productRepository;
+
     private final ProductPriceRepository productPriceRepository;
 
-    @Transactional(readOnly = true)
     public List<AnalogResult> findAnalogs(String productUrl,
-                                                 List<String> attributeGroups) {
+                                          List<String> attributeGroups) {
         List<AttributeEntity> attributes = attributeRepository.findAllByNameIn(attributeGroups);
         Long productPrice = productPriceRepository.getPrice(productUrl);
         Map<String, List<ProductAttributeEntity>> allProductsAttributes = findProductsWithAttributes(attributes, productPrice);
@@ -58,7 +56,8 @@ public class AnalogFinderService {
             vectors.put(productAttributes.getFirst().getId().getProductUrl(),
                 vectorize(baseProduct, productAttributes));
         }
-        Map<String, List<Double>> productUrlsVectors = findAnalogues(productUrl, vectors, 70, 5).stream()
+        // TODO вынести numAnalogues в env
+        Map<String, List<Double>> productUrlsVectors = findAnalogues(productUrl, vectors, Math.min(70, vectors.size()), 5).stream()
             .collect(Collectors.toMap(Function.identity(), vectors::get));
         return productRepository.findAllByUrlIn(productUrlsVectors.keySet().stream().toList()).stream()
             .map(prod -> new AnalogResult(prod.getProductName(), prod.getUrl(), prod.getBrand(),
@@ -75,8 +74,8 @@ public class AnalogFinderService {
                     pa.value,
                     pa.unit)
                 from ProductAttributeEntity pa
-                join PriceHistoryEntity ph on ph.id.productUrl = pa.id.productUrl
-                where pa.id.attributeId in :attributeIds and ph.price >= %s and ph.price <= %s
+                join ProductEntity p on p.url = pa.id.productUrl
+                where pa.id.attributeId in :attributeIds and p.lastPrice between %s and %s
             """;
         sb = sb.formatted(productPrice * 0.8, productPrice * 1.2);
         List<ProductAttributeEntity> productAttributeEntities = em.createQuery(sb, ProductAttributeEntity.class)
@@ -141,7 +140,7 @@ public class AnalogFinderService {
         return vector;
     }
 
-    public static List<String> findAnalogues(
+    private static List<String> findAnalogues(
         String productUrl,
         Map<String, List<Double>> productVectors,
         int numClusters,
@@ -201,7 +200,10 @@ public class AnalogFinderService {
 
     public Map<String, List<String>> getAttributeGroups(String productUrl) {
         Category productCategory = productRepository.getProductCategory(productUrl);
-        List<AttributeEntity> attributes = attributeRepository.findAllByGroupContains(productCategory.name());
+        if (productCategory == null) {
+            throw new EntityNotFoundException("Категория не найдена");
+        }
+        List<AttributeEntity> attributes = attributeRepository.findAll();
         return attributes.stream()
             .filter(item -> item.getGroup().contains(productCategory.name()))
             .collect(Collectors.groupingBy(

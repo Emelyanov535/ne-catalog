@@ -44,14 +44,15 @@ ENV SPRING_PROFILES_ACTIVE=prod \
 
 # Копируем заранее собранный JAR-файл
 # Предположим, что он лежит рядом с Dockerfile
-COPY build/libs/*.jar /opt/myapp/MyApp.jar
+COPY *.jar /opt/myapp/MyApp.jar
 
 # Запуск приложения с виртуальным дисплеем
 CMD (\
+    rm -f /tmp/.X99-lock && \
     Xvfb $DISPLAY -screen 0 1920x1080x24 -ac +extension GLX +render -noreset & \
     sleep 2 && \
     startxfce4 & \
     x11vnc -display $DISPLAY -forever -shared -passwd "$VNC_PASSWORD" & \
     google-chrome --no-sandbox --disable-dev-shm-usage --start-maximized "https://www.google.com" & \
-    java -jar /opt/myapp/MyApp.jar \
+    java -Xmx6096m -Xms3024m -jar /opt/myapp/MyApp.jar \
 )

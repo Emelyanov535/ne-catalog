@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.NotFoundException;
@@ -16,7 +17,6 @@ import ru.necatalog.ozon.parser.parsing.dto.catalog.OzonCatalogPaginator;
 import ru.necatalog.ozon.parser.parsing.dto.catalog.OzonProductEntityCreator;
 import ru.necatalog.ozon.parser.parsing.dto.catalog.ProductsInfo;
 import ru.necatalog.ozon.parser.parsing.enumeration.OzonCategory;
-import ru.necatalog.ozon.parser.parsing.pool.WebDriverPoolDestination;
 import ru.necatalog.ozon.parser.service.OzonProductService;
 import ru.necatalog.ozon.parser.utils.OzonConsts;
 import ru.necatalog.persistence.entity.ProductEntity;
@@ -65,7 +65,9 @@ public class OzonCatalogPageParsingService {
                     productsInfo = objectMapper.readValue(
                         categoryPageData.getWidgetStates().getProductsInfo(),
                         ProductsInfo.class);
-                    productService.save(productEntityCreator.createProductEntities(productsInfo, category).stream()
+                    var productEntities = productEntityCreator.createProductEntities(productsInfo, category);
+                    log.info("Обнаружено {} товаров на странице", productEntities.size());
+                    productService.save(productEntities.stream()
                         .filter(this::isNotDuplicate)
                         .collect(Collectors.toList()));
                 }
@@ -84,8 +86,9 @@ public class OzonCatalogPageParsingService {
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-        } while (true || needRetry || paginator != null && paginator.getNextPage() != null);
+        } while (needRetry || paginator != null && paginator.getNextPage() != null);
         log.info("Завершили обработку {}", category);
+        URL_CACHE.get(Category.valueOf(category.name())).clear();
     }
 
     private boolean isNotDuplicate(ProductEntity productEntity) {

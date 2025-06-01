@@ -8,9 +8,11 @@
     <changeSet id="0250308_001_create_user_roles_table.xml" author="artem">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="user_roles" />
-                <primaryKeyExists tableName="user_roles" primaryKeyName="pk_user_roles" />
-                <foreignKeyConstraintExists foreignKeyTableName="user_roles" foreignKeyName="fk_user_roles_user" />
+                <and>
+                    <tableExists tableName="user_roles" />
+                    <primaryKeyExists tableName="user_roles" primaryKeyName="pk_user_roles" />
+                    <foreignKeyConstraintExists foreignKeyTableName="user_roles" foreignKeyName="fk_user_roles_user" />
+                </and>
             </not>
         </preConditions>
         <createTable tableName="user_roles">

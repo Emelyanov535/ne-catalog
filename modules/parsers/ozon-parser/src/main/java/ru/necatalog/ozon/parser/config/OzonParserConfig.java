@@ -11,9 +11,7 @@ import ru.necatalog.ozon.parser.config.properties.OzonParserProperties;
 import ru.necatalog.ozon.parser.parsing.OzonCatalogPageParsingService;
 import ru.necatalog.ozon.parser.parsing.OzonCharacteristicsPageParsingService;
 import ru.necatalog.ozon.parser.parsing.OzonPageFetcher;
-import ru.necatalog.ozon.parser.parsing.OzonPageParser;
 import ru.necatalog.ozon.parser.parsing.OzonParsingService;
-import ru.necatalog.ozon.parser.parsing.PageScroller;
 import ru.necatalog.ozon.parser.parsing.creator.OzonCategoryPageDataCreator;
 import ru.necatalog.ozon.parser.parsing.creator.OzonCharacteristicsPageDataCreator;
 import ru.necatalog.ozon.parser.parsing.dto.catalog.OzonProductEntityCreator;
@@ -22,8 +20,6 @@ import ru.necatalog.ozon.parser.parsing.processor.AttributeProcessor;
 import ru.necatalog.ozon.parser.parsing.scheduler.OzonCatalogParsingScheduler;
 import ru.necatalog.ozon.parser.parsing.scheduler.OzonCharacteristicParsingScheduler;
 import ru.necatalog.ozon.parser.service.OzonProductService;
-import ru.necatalog.ozon.parser.service.mapper.OzonPriceHistoryMapper;
-import ru.necatalog.ozon.parser.service.mapper.OzonProductMapper;
 import ru.necatalog.persistence.repository.DelayedTaskRepository;
 import ru.necatalog.persistence.repository.ProductAttributeRepository;
 import ru.necatalog.persistence.repository.ProductPriceRepository;
@@ -35,45 +31,20 @@ public class OzonParserConfig {
 
     @Bean
     @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public WebDriverPool webDriverPool(ObjectFactory<WebDriver> webDriverFactory,
+    public WebDriverPool ozonWebDriverPool(ObjectFactory<WebDriver> webDriverFactory,
                                        OzonParserProperties ozonParserConfigProperties) {
         return new WebDriverPool(webDriverFactory, ozonParserConfigProperties);
     }
 
     @Bean
     @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public PageScroller pageScroller() {
-        return new PageScroller();
+    public OzonPageFetcher ozonHtmlFetcher(WebDriverPool webDriverPool) {
+        return new OzonPageFetcher(webDriverPool);
     }
 
     @Bean
     @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public OzonPageFetcher ozonHtmlFetcher(WebDriverPool webDriverPool,
-                                           PageScroller pageScroller) {
-        return new OzonPageFetcher(webDriverPool, pageScroller);
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public OzonPageParser ozonPageParser() {
-        return new OzonPageParser();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public OzonProductMapper ozonProductMapper() {
-        return new OzonProductMapper();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public OzonPriceHistoryMapper ozonPriceHistoryMapper() {
-        return new OzonPriceHistoryMapper();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public OzonProductService productService(ProductRepository productRepository,
+    public OzonProductService ozonProductService(ProductRepository productRepository,
                                              ProductPriceRepository productPriceRepository,
                                              DelayedTaskRepository delayedTaskRepository,
                                              ObjectMapper objectMapper) {
@@ -83,12 +54,7 @@ public class OzonParserConfig {
     @Bean
     @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
     public OzonParsingService ozonParsingService(OzonParserProperties ozonParserConfigProperties,
-                                                 OzonPageParser ozonPageParser,
-                                                 OzonProductService productService,
-                                                 ObjectProvider<AttributeProcessor> attributeProcessors,
-                                                 ProductAttributeRepository productAttributeRepository,
                                                  OzonCatalogPageParsingService categoryPageParsingService,
-                                                 DelayedTaskRepository delayedTaskRepository,
                                                  ObjectMapper objectMapper,
                                                  OzonCharacteristicsPageParsingService characteristicsPageParsingService,
                                                  DelayedTaskService delayedTaskService) {
@@ -102,16 +68,13 @@ public class OzonParserConfig {
 
     @Bean
     @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public OzonCatalogParsingScheduler ozonProductUpdater(OzonParsingService ozonParsingService,
-                                                          ProductRepository productRepository) {
+    public OzonCatalogParsingScheduler ozonProductUpdater(OzonParsingService ozonParsingService) {
         return new OzonCatalogParsingScheduler(ozonParsingService);
     }
 
     @Bean
     @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
-    public OzonCharacteristicParsingScheduler ozonProductCharacteristicsUpdater(OzonParsingService ozonParsingService,
-                                                                                DelayedTaskRepository delayedTaskRepository,
-                                                                                ObjectMapper objectMapper) {
+    public OzonCharacteristicParsingScheduler ozonProductCharacteristicsUpdater(OzonParsingService ozonParsingService) {
         return new OzonCharacteristicParsingScheduler(ozonParsingService);
     }
 
@@ -147,7 +110,6 @@ public class OzonParserConfig {
     @Bean
     @ConditionalOnProperty(name = "ozon-parser.enabled", havingValue = "true")
     public OzonCharacteristicsPageParsingService ozonCharacteristicsPageParsingService(
-        OzonPageParser pageParser,
         ProductAttributeRepository productAttributeRepository,
         ObjectProvider<AttributeProcessor> attributeProcessors,
         OzonPageFetcher pageFetcher,

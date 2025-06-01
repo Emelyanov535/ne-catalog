@@ -55,11 +55,8 @@ public interface ProductPriceRepository extends JpaRepository<PriceHistoryEntity
 
 	@Query(value = """
 			        select
-			            ph.price			
-			        from price_history ph
-			        where ph.product_url = :productUrl
-			        order by ph.date desc
-					limit 1
+			            last_price			
+			        from product where url = :productUrl
 			""", nativeQuery = true)
 	Long getPrice(@Param("productUrl") String productUrl);
 

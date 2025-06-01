@@ -1,19 +1,16 @@
 package ru.necatalog.ozon.parser.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.valensas.undetected.chrome.driver.ChromeDriverBuilder;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -23,44 +20,22 @@ import org.springframework.context.annotation.Scope;
 @RequiredArgsConstructor
 public class WebDriverConfig {
 
-    @Bean
-    @ConditionalOnProperty(prefix = "ozon-parser", name = "mode", havingValue = "visible")
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public WebDriver webDriverVisible() {
-        Map<String, Object> prefs = new HashMap<>();
-        //prefs.put("profile.managed_default_content_settings.images", 2);
-        //prefs.put("profile.managed_default_content_settings.geolocation", 2);
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
-        var options = new ChromeOptions();
-        options.setExperimentalOption("prefs", prefs);
-        WebDriverManager.chromedriver().setup();
-        return new ChromeDriver(options);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "ozon-parser", name = "mode", havingValue = "headless")
+    //@Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WebDriver webDriverHeadless(ChromeOptions options) {
         WebDriverManager manager = new ChromeDriverManager();
+        manager.cachePath("chromedrivers/" + COUNTER.getAndIncrement());
         manager.setup();
         return new ChromeDriverBuilder().build(options, manager.getDownloadedDriverPath());
     }
 
-    @Bean
-    @ConditionalOnProperty(prefix = "ozon-parser", name = "mode", havingValue = "headless")
+    //@Bean
     public ChromeOptions chromeOptions() {
-        Map<String, Object> prefs = new HashMap<>();
-        //prefs.put("profile.managed_default_content_settings.images", 2);
-        //prefs.put("profile.managed_default_content_settings.stylesheets", 2);
-
         var options = new ChromeOptions();
-        //options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
-        //options.setExperimentalOption("useAutomationExtension", false);
-        //options.setExperimentalOption("prefs", prefs);
         options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.7049.114 Safari/537.36");
         options.addArguments("--disable-blink-features=AutomationControlled");
-        //options.addArguments("--start-maximized");
-        //options.addArguments("--headless=new");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
