@@ -1,75 +1,47 @@
-"use client"
-
 import {useEffect, useState} from "react"
+import {useNavigate} from "react-router-dom"
 import {Menu} from "lucide-react"
-import {Button} from "@/components/ui/button"
-import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarProvider,
-} from "@/components/ui/sidebar"
 import {catalogService} from "@/services/CatalogService.ts"
-import {useNavigate} from "react-router-dom";
-import {CategoryTranslations} from "@/types/CategoryTranslations.ts";
+import {CategoryTranslations} from "@/types/CategoryTranslations.ts"
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 
-export function NavActions() {
-    const [isOpen, setIsOpen] = useState(false)
+export function CatalogDropdown() {
     const [categories, setCategories] = useState<string[]>([])
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const data = await catalogService.getCategories()
-            setCategories(data)
+            try {
+                const data = await catalogService.getCategories()
+                setCategories(data)
+            } catch (error) {
+                console.error("Ошибка при загрузке категорий:", error)
+            }
         }
 
         fetchCategories()
     }, [])
 
     const goToCatalog = (category: string) => {
-        navigate("/catalog/" + category);
+        navigate("/catalog/" + category)
     }
 
     return (
-        <SidebarProvider>
-            <div className="flex items-center gap-2 text-sm">
-                <Popover open={isOpen} onOpenChange={setIsOpen}>
-                    <PopoverTrigger asChild>
-                        <Button variant="ghost" className="flex items-center gap-2">
-                            <Menu className="w-7 h-7"/>
-                            Каталог
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                        className="w-56 overflow-hidden rounded-lg p-0"
-                        align="start"
-                    >
-                        <Sidebar collapsible="none" className="bg-transparent">
-                            <SidebarContent>
-                                <SidebarGroup>
-                                    <SidebarGroupContent>
-                                        <SidebarMenu>
-                                            {categories.map((item, index) => (
-                                                <SidebarMenuItem key={index} onClick={() => goToCatalog(item)}>
-                                                    <SidebarMenuButton>
-                                                        {CategoryTranslations[item] || item}
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuItem>
-                                            ))}
-                                        </SidebarMenu>
-                                    </SidebarGroupContent>
-                                </SidebarGroup>
-                            </SidebarContent>
-                        </Sidebar>
-                    </PopoverContent>
-                </Popover>
-            </div>
-        </SidebarProvider>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button
+                    className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium shadow-sm hover:bg-muted transition">
+                    <span>Каталог</span>
+                    <Menu className="w-4 h-4"/>
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="bottom" align="start" className="min-w-48">
+                {categories.map((item, index) => (
+                    <DropdownMenuItem key={index} onClick={() => goToCatalog(item)}>
+                        {CategoryTranslations[item] || item}
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
