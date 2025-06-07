@@ -15,7 +15,7 @@ import {
 import {Label} from "@/components/ui/label.tsx";
 import {Switch} from "@/components/ui/switch.tsx";
 import {ModeToggle} from "@/components/mode-toggle.tsx";
-import {NavActions} from "@/components/nav-actions.tsx";
+import {CatalogDropdown} from "@/components/nav-actions.tsx";
 import {Search} from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
 import {searchService} from "@/services/SearchService.ts";
@@ -110,9 +110,10 @@ const Navbar: React.FC = () => {
                         </svg>
                         <span className="hidden lg:inline">ne-catalog</span>
                     </a>
-                    <div className="ml-auto px-3">
-                        <NavActions/>
+                    <div className="px-3">
+                        <CatalogDropdown/>
                     </div>
+
                 </div>
 
                 <div className={""}>
