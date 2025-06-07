@@ -13,6 +13,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.necatalog.persistence.dto.PriceFilterDto;
 import ru.necatalog.persistence.dto.ProductAttributeFilter;
@@ -57,14 +58,21 @@ public class SearchService {
             .toList();
         List<ProductAttributeFilter> attributeValuePairs =
             productAttributeRepository.findDistinctById_attributeIdIn(categoryAttributes);
-        Map<String, List<String>> filters = attributeValuePairs.stream()
+        Map<String, Map<String, List<String>>> filters = attributeValuePairs.stream()
             .collect(Collectors.groupingBy(
-                pair -> attributes.get(pair.getAttributeId()).getName(),
-                Collectors.mapping(
-                    pair -> pair.getValue() + (pair.getUnit() == null ? "" : " " + pair.getUnit()),
-                    Collectors.toList())));
-        for (var value : filters.values()) {
-            Collections.sort(value);
+                pair -> attributes.get(pair.getAttributeId()).getGroup(),
+                Collectors.groupingBy(
+                    pair -> attributes.get(pair.getAttributeId()).getName(),
+                    Collectors.mapping(
+                        pair -> pair.getValue()
+                            + (pair.getUnit() == null || StringUtils.containsIgnoreCase(pair.getValue(), pair.getUnit()) ? "" : " " + pair.getUnit()),
+                        Collectors.toList()
+                    )
+                )));
+        for (var characteristics : filters.values()) {
+            for (var attribute : characteristics.values()) {
+                Collections.sort(attribute);
+            }
         }
         FilterData filterData = new FilterData();
         filterData.setFilters(filters);
@@ -206,6 +214,10 @@ public class SearchService {
         }
 
         return query;
+    }
+
+    public List<Category> getCategories(String searchQuery) {
+        return productRepository.getSearchCategories(searchQuery);
     }
 
 }

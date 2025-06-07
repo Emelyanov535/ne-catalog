@@ -17,6 +17,6 @@ public class FilterData {
 
     private BigDecimal priceEnd;
 
-    private Map<String, List<String>> filters;
+    private Map<String, Map<String, List<String>>> filters;
 
 }

@@ -1,28 +1,31 @@
 import {Button} from "@/components/ui/button.tsx";
 import {Card, CardContent} from "@/components/ui/card";
+import {useNavigate} from "react-router-dom";
 
 const MainPage = () => {
+    const navigate = useNavigate();
+
+    const goToCatalog = (category: string) => {
+        navigate("/catalog/" + category);
+    }
+
     return (
         <div className="p-6 space-y-8">
             {/* Hero Section */}
             <div className="text-center space-y-4">
                 <h1 className="text-4xl font-bold">🔍 Найдите лучшую цену на ноутбуки и смартфоны</h1>
                 <p className="text-gray-500 text-lg">Сравнение цен из магазинов ShopX и StoreY за секунды</p>
-                <div className="flex justify-center gap-4 mt-4">
-                    <Button>Каталог ноутбуков</Button>
-                    <Button variant="outline">Каталог смартфонов</Button>
-                </div>
             </div>
 
             {/* Быстрые категории */}
             <div className="grid grid-cols-2 gap-4">
-                <Card className="hover:shadow-lg cursor-pointer">
+                <Card className="hover:shadow-lg cursor-pointer" onClick={() => goToCatalog('LAPTOP')}>
                     <CardContent className="flex flex-col items-center p-6">
                         <div className="text-5xl">🖥️</div>
                         <h2 className="text-xl font-semibold mt-2">Ноутбуки</h2>
                     </CardContent>
                 </Card>
-                <Card className="hover:shadow-lg cursor-pointer">
+                <Card className="hover:shadow-lg cursor-pointer" onClick={() => goToCatalog('SMARTPHONE')}>
                     <CardContent className="flex flex-col items-center p-6">
                         <div className="text-5xl">📱</div>
                         <h2 className="text-xl font-semibold mt-2">Мобильные телефоны</h2>

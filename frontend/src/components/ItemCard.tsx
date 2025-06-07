@@ -34,10 +34,10 @@ export function ItemCard({product, isFavorite, onToggleFavorite}: ItemCardProps)
                     onToggle={() => onToggleFavorite(product.url)}
                     className="absolute top-4 left-4"
                 />
-                <CardDescription className="text-2xl font-semibold">
-                    {product.brand || "No Brand"}
+                <CardDescription className="text-l font-semibold">
+                    {product.brand || "No brand"}
                 </CardDescription>
-                <CardTitle className={"overflow-hidden"}>{product.productName}</CardTitle>
+                <CardTitle className={"overflow-hidden text-sm font-normal line-clamp-3"}>{product.productName}</CardTitle>
             </CardHeader>
 
             <CardFooter className="mt-auto flex flex-col items-start gap-2 text-sm">

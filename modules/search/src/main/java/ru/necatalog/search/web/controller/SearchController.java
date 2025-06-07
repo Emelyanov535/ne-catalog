@@ -1,5 +1,7 @@
 package ru.necatalog.search.web.controller;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,11 @@ public class SearchController implements SearchApi {
 	@Override
 	public FilterData getAvailableFilters(Category category) {
 		return searchService.getAvailableFilters(category);
+	}
+
+	@Override
+	public List<Category> getCategories(String searchQuery) {
+		return searchService.getCategories(searchQuery);
 	}
 
 	@Override

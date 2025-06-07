@@ -56,8 +56,7 @@ public class AnalogFinderService {
             vectors.put(productAttributes.getFirst().getId().getProductUrl(),
                 vectorize(baseProduct, productAttributes));
         }
-        // TODO вынести numAnalogues в env
-        Map<String, List<Double>> productUrlsVectors = findAnalogues(productUrl, vectors, Math.min(70, vectors.size()), 5).stream()
+        Map<String, List<Double>> productUrlsVectors = findAnalogues2(productUrl, vectors, 5).stream()
             .collect(Collectors.toMap(Function.identity(), vectors::get));
         return productRepository.findAllByUrlIn(productUrlsVectors.keySet().stream().toList()).stream()
             .map(prod -> new AnalogResult(prod.getProductName(), prod.getUrl(), prod.getBrand(),
@@ -172,6 +171,36 @@ public class AnalogFinderService {
         }
 
         return getTopNClosest(sameClusterUrls, sameClusterDistances, numAnalogues);
+    }
+
+    private static List<String> findAnalogues2(
+        String productUrl,
+        Map<String, List<Double>> productVectors,
+        int numAnalogues
+    ) {
+        List<String> urls = new ArrayList<>(productVectors.keySet());
+        double[][] vectors = new double[urls.size()][];
+
+        for (int i = 0; i < urls.size(); i++) {
+            List<Double> vec = productVectors.get(urls.get(i));
+            vectors[i] = vec.stream().mapToDouble(Double::doubleValue).toArray();
+        }
+
+        int targetIndex = urls.indexOf(productUrl);
+        double[] targetVector = vectors[targetIndex];
+
+        List<String> candidateUrls = new ArrayList<>();
+        List<Double> distances = new ArrayList<>();
+
+        for (int i = 0; i < urls.size(); i++) {
+            if (i != targetIndex) {
+                double distance = euclideanDistance(targetVector, vectors[i]);
+                candidateUrls.add(urls.get(i));
+                distances.add(distance);
+            }
+        }
+
+        return getTopNClosest(candidateUrls, distances, numAnalogues);
     }
 
     private static double euclideanDistance(double[] v1, double[] v2) {

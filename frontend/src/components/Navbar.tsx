@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {localStorageService} from "../services/LocalStorageService";
 import {authService} from "../services/AuthService";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
@@ -18,12 +18,52 @@ import {ModeToggle} from "@/components/mode-toggle.tsx";
 import {NavActions} from "@/components/nav-actions.tsx";
 import {Search} from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
+import {searchService} from "@/services/SearchService.ts";
+import {CategoryTranslations} from "@/types/CategoryTranslations.ts";
 
 const Navbar: React.FC = () => {
     const [isNotificationsEnabled, setIsNotificationsEnabled] = useState<boolean>(false);
     const navigate = useNavigate();
     const isAuthenticated = Boolean(localStorageService.getAccessToken());
     const [username, setUsername] = useState<string>("");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialQuery = searchParams.get('q') || '';
+
+    const [query, setQuery] = useState(initialQuery);
+    const [results, setResults] = useState<string[]>([]);
+    const [showResults, setShowResults] = useState(false);
+    const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        setSearchParams(q => {
+            if (query.trim()) q.set('q', query);
+            else q.delete('q');
+            return q;
+        });
+    }, [query, setSearchParams]);
+
+    useEffect(() => {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+
+        debounceRef.current = setTimeout(() => {
+            if (!query.trim()) {
+                setResults([]);
+                return;
+            }
+
+            searchService.fetchAvailableSearchCategories(query)
+                .then(data => {
+                    setResults(data);
+                    console.log(data)
+                })
+                .catch(console.error);
+
+        }, 300);
+
+        return () => {
+            if (debounceRef.current) clearTimeout(debounceRef.current);
+        };
+    }, [query]);
 
     const fetchUserData = async () => {
         try {
@@ -60,7 +100,7 @@ const Navbar: React.FC = () => {
 
     return (
         <header
-            className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            className="border-grid sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex justify-between container mx-auto flex h-14 items-center px-4 md:px-6">
                 <div className="flex items-center gap-4">
                     <a href="/" className="flex items-center gap-2 font-bold">
@@ -75,19 +115,41 @@ const Navbar: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
-                    <Input
-                        type="search"
-                        placeholder="Поиск товаров..."
-                        className={`
-                        pl-10 pr-4 py-2 text-sm border rounded-xl shadow-sm
-                        w-48
-                        transition-all duration-300 ease-in-out
-                        focus:w-80 focus:outline-none focus:ring-2 focus:ring-primary
-                      `}
-                        style={{transformOrigin: 'center'}}
-                    />
+                <div className={""}>
+                    <div className="relative">
+                        <Input
+                            type="search"
+                            placeholder="Поиск товаров..."
+                            className={`
+                            pl-4 pr-10 py-2 text-sm border rounded-xl shadow-sm
+                            w-48
+                            transition-all duration-300 ease-in-out
+                            focus:w-80 focus:outline-none focus:ring-2 focus:ring-primary`}
+                            onChange={e => setQuery(e.target.value)}
+                            onFocus={() => setShowResults(true)}
+                            onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                            style={{transformOrigin: 'center'}}
+                        />
+                        <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
+                    </div>
+                    {showResults && results.length > 0 && (
+                        <ul className="absolute z-10 w-48
+                            transition-all duration-300 ease-in-out
+                            focus:w-80 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                            {results.map((title, idx) => (
+                                <li
+                                    key={idx}
+                                    className="px-4 py-2 text-sm w-full text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors"
+                                    onMouseDown={() => {
+                                        setQuery(title);
+                                        setShowResults(false);
+                                    }}
+                                >
+                                    {CategoryTranslations[title]}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-2">

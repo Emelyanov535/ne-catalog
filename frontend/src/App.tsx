@@ -8,7 +8,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import {Toaster} from "@/components/ui/sonner"
 import ProductDetail from "@/pages/ProductDetail.tsx";
 import FavouritePage from "@/pages/FavouritePage.tsx";
-import CatalogPage from "@/pages/CatalogPage.tsx";
+import CatalogPage from "@/pages/SearchPage.tsx";
 import NotFound from "@/pages/NotFound.tsx";
 import MainPage from "@/pages/MainPage.tsx";
 import Footer from "@/components/Footer.tsx";

@@ -1,5 +1,7 @@
 package ru.necatalog.search.web.api;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.util.MultiValueMap;
@@ -18,6 +20,10 @@ public interface SearchApi {
     @GetMapping("/{category}/filters")
     @Operation(summary = "Получить доступные фильтры для категории")
     FilterData getAvailableFilters(@PathVariable("category") Category category);
+
+    @GetMapping("/category")
+    @Operation(summary = "Получить возможные категории")
+    List<Category> getCategories(@RequestParam("searchQuery") String searchQuery);
 
     @GetMapping
     @Operation(summary = "Найти товары")

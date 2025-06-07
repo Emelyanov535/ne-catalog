@@ -51,6 +51,20 @@ class SearchService {
             throw error;
         }
     }
+
+    async fetchAvailableSearchCategories(searchQuery: string): Promise<string[]> {
+        try {
+            const response = await axiosInstance.get<string[]>('/search/category', {
+                params: { searchQuery },
+            });
+
+            return response.data;
+        } catch (error) {
+            console.error('Ошибка при загрузке категорий:', error);
+            return [];
+        }
+    }
+
 }
 
 export const searchService = new SearchService();
