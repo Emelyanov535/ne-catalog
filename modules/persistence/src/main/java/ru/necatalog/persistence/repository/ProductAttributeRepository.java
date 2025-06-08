@@ -79,4 +79,5 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
 """)
 	List<ProductEntity> findByCode(@Param("code") String code);
 
+	List<ProductAttributeEntity> findById_ProductUrl(String productUrl);
 }

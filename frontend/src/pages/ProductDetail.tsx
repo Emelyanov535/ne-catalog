@@ -22,6 +22,9 @@ import {ProductPriceChange} from "@/components/ProductPriceChange.tsx";
 import {analysisService} from "@/services/AnalysisService.ts";
 import {AnalysisDataDto} from "@/types/AnalysisDataDto.tsx";
 import {TestComponent} from "@/components/TestComponent.tsx";
+import {Label} from "recharts";
+import {toast} from "sonner";
+import {searchService} from "@/services/SearchService.ts";
 
 const ProductDetail: React.FC = () => {
     const {url} = useParams<{ url: string }>();
@@ -36,8 +39,18 @@ const ProductDetail: React.FC = () => {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
     const [analysisData, setAnalysisData] = useState<AnalysisDataDto | null>(null);
     const [identProdStats, setIdentProdStats] = useState<any | null>(null);
+    const [attributes, setAttributes] = useState<Record<string, string>>({});
 
     useEffect(() => {
+        setAnalogs([])
+        const fetchProductCharacteristics = async () => {
+            try {
+                const data = await searchService.getProductCharacteristics(decodedUrl);
+                setAttributes(data);
+            } catch (error) {
+                console.error("Ошибка при загрузке данных", error);
+            }
+        };
         const fetchProduct = async () => {
             try {
                 const data = await catalogService.getProductByUrl(decodedUrl);
@@ -73,10 +86,11 @@ const ProductDetail: React.FC = () => {
                 console.error("Ошибка при загрузке данных", error);
             }
         }
+        fetchProductCharacteristics();
         fetchIdentProdStats()
         fetchProduct();
         fetchAnalogAttributes();
-        fetchAnalytics()
+        fetchAnalytics();
     }, [decodedUrl]);
 
     const sortedProducts = useMemo(() => {
@@ -90,9 +104,29 @@ const ProductDetail: React.FC = () => {
 
     if (!product) return <p>Загрузка...</p>;
 
-    const findAnalogs = () => {
+    const findSimilarAnalogs = () => {
         setIsAnalogsFetched(true)
-        analogService.findAnalogs(decodedUrl, choosedAnalogAttributes)
+        if (choosedAnalogAttributes.length == 0) {
+            setIsAnalogsFetched(false)
+            toast.error("Выберите необходимые характеристики");
+            return
+        }
+        analogService.findAnalogs(decodedUrl, choosedAnalogAttributes, false)
+            .then((response) => {
+                setIsAnalogsFetched(false);
+                setAnalogs(response)
+            })
+            .catch(() => setIsAnalogsFetched(false))
+    }
+
+    const findDifferentAnalogs = () => {
+        setIsAnalogsFetched(true)
+        if (choosedAnalogAttributes.length == 0) {
+            setIsAnalogsFetched(false)
+            toast.error("Выберите необходимые характеристики");
+            return
+        }
+        analogService.findAnalogs(decodedUrl, choosedAnalogAttributes, true)
             .then((response) => {
                 setIsAnalogsFetched(false);
                 setAnalogs(response)
@@ -135,6 +169,19 @@ const ProductDetail: React.FC = () => {
                         <p className="text-lg font-semibold">О товаре</p>
 
                         <div className="grid gap-2">
+                            {attributes && Object.entries(attributes).map((item, index) => (
+                                <div key={index} className="flex items-center">
+                                    <span className="text-gray-500 whitespace-nowrap">{LaptopFiltersTranslations[item[0]]}</span>
+                                    <span className="flex-grow border-b border-dotted border-gray-400 mx-2"></span>
+                                    <span className="whitespace-nowrap">{item[1]}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    {/*<div className="w-1/2 space-y-2"> По просьбе Артема
+                        <p className="text-lg font-semibold">О товаре</p>
+
+                        <div className="grid gap-2">
                             {[
                                 {label: "Экран", value: "6.1 дюйм, 2556x1179, OLED/POLED"},
                                 {label: "Процессор", value: "Apple A16 Bionic, 6-ядерный"},
@@ -149,7 +196,7 @@ const ProductDetail: React.FC = () => {
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </div>*/}
 
                     <Card
                         className="w-1/3 rounded-xl shadow-sm p-4 flex flex-col items-center gap-3 text-center self-start">
@@ -242,12 +289,12 @@ const ProductDetail: React.FC = () => {
 
                     </TabsContent>
                     <TabsContent value="analog">
-                        <div className={"flex overflow-x-auto"}>
-                            {analogAttributes && Object.entries(analogAttributes).map(([key, values]) => (
+                        <div key={"analog"} className={"flex overflow-x-auto"}>
+                            {analogAttributes && Object.entries(analogAttributes).map(([key, values]) => ProductAttributeGroupsTranslations[key] && (
                                 <Accordion key={key} type={"multiple"}>
                                     <AccordionItem className={"mx-2"} value={key}>
-                                        <AccordionTrigger className={"flex h-15"}>
-                                            <Checkbox onCheckedChange={(checked) => {
+                                        <div className={"flex items-center"}>
+                                            <Checkbox className={"mb-2"} onCheckedChange={(checked) => {
                                                 setChoosedAnalogAttributes(choosedAnalogAttributes.filter(attr => !values.includes(attr)));
                                                 if (checked) {
                                                     setChoosedAnalogAttributes(prev => {
@@ -255,12 +302,15 @@ const ProductDetail: React.FC = () => {
                                                     })
                                                 }
                                             }}/>
-                                            <h4 className="font-semibold mb-2">{ProductAttributeGroupsTranslations[key]}</h4>
-                                        </AccordionTrigger>
+                                            <AccordionTrigger className={"ml-2 h-15"}>
+                                                <p className={"font-semibold"}>{ProductAttributeGroupsTranslations[key]}</p>
+                                            </AccordionTrigger>
+                                        </div>
+
                                         <AccordionContent>
-                                            <ul className="space-y-1 max-h-50 overflow-y-auto">
+                                            <div className="space-y-1 max-h-50 overflow-y-auto">
                                                 {values.map(value => (
-                                                    <li onClick={() => {
+                                                    <p onClick={() => {
                                                         setChoosedAnalogAttributes(prev => {
                                                             console.log("click")
                                                             const current = prev ?? [];
@@ -272,29 +322,31 @@ const ProductDetail: React.FC = () => {
                                                         })
                                                     }}
                                                         key={value}
-                                                        className="bg-white rounded px-2 py-1 border text-sm">
-                                                        {choosedAnalogAttributes!.includes(value) ?
+                                                        className="rounded px-2 py-1 border text-sm">
+                                                        {choosedAnalogAttributes!.includes(value) && LaptopFiltersTranslations[value] ?
                                                             (
                                                                 <b>{LaptopFiltersTranslations[value]}</b>) : LaptopFiltersTranslations[value]}
-                                                    </li>
+                                                    </p>
                                                 ))}
-                                            </ul>
+                                            </div>
                                         </AccordionContent>
                                     </AccordionItem>
                                 </Accordion>
                             ))}
                         </div>
                         <Separator className="my-4 border-t border-gray-300"></Separator>
-                        <Button onClick={() => findAnalogs()}>Искать аналоги</Button>
+                        <Button key={"analog-button"} onClick={() => findSimilarAnalogs()}>Похожие по выбранным характеристикам</Button>
+                        <Button key={"analog-different-button"} className={"mx-2"} onClick={() => findDifferentAnalogs()}>Отличающиеся по выбранным характеристикам</Button>
                         {isAnalogsFetched && (<p>Поиск аналогов</p>)}
-                        <div className={"flex mt-4 h-150 overflow-x-auto"}>
-                            {analogs && analogs.map(analog => (
-                                <ItemCard
-                                    product={analog}
-                                    isFavorite={false}
-                                    onToggleFavorite={toggleFavorite}
-                                />
-
+                        <div className={"flex mt-4 justify-between overflow-x-auto"}>
+                            {analogs && analogs.map((analog) => (
+                                <div key={analog.url}>
+                                    <ItemCard
+                                        product={analog}
+                                        isFavorite={false}
+                                        onToggleFavorite={toggleFavorite}
+                                    />
+                                </div>
                             ))}
                         </div>
                     </TabsContent>

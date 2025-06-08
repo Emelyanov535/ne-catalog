@@ -1,6 +1,7 @@
 package ru.necatalog.search.web.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.MultiValueMap;
@@ -28,15 +29,15 @@ public class SearchController implements SearchApi {
 	}
 
 	@Override
-	public SearchResults search(Category category,
-								String searchQuery,
-								String sortAttribute,
-								String sortDir,
-								Integer page,
-								Integer size,
-								Integer startPrice,
-								Integer endPrice,
-								MultiValueMap<String, String> attributeValues) {
+	public SearchResults getProductCharacteristics(Category category,
+												   String searchQuery,
+												   String sortAttribute,
+												   String sortDir,
+												   Integer page,
+												   Integer size,
+												   Integer startPrice,
+												   Integer endPrice,
+												   MultiValueMap<String, String> attributeValues) {
 		attributeValues.remove("page");
 		attributeValues.remove("size");
 		attributeValues.remove("startPrice");
@@ -48,6 +49,11 @@ public class SearchController implements SearchApi {
 		attributeValues.remove("searchQuery");
 		attributeValues.remove("category");
 		return searchService.search(category, searchQuery, sortAttribute, sortDir, page, size, attributeValues, startPrice, endPrice);
+	}
+
+	@Override
+	public Map<String, String> getProductCharacteristics(String productUrl) {
+		return searchService.getProductCharacteristics(productUrl);
 	}
 
 }

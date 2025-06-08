@@ -58,7 +58,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 		select distinct p.category 
 		from product p 
 		join product_ts_vector ptv on ptv.url = p.url
-		where ptv.product_name @@ plainto_tsquery(:searchQuery)
+		where ptv.product_name @@ to_tsquery(:searchQuery)
 		""", nativeQuery = true)
 	List<Category> getSearchCategories(@Param("searchQuery") String searchQuery);
 }

@@ -1,6 +1,7 @@
 package ru.necatalog.search.web.api;
 
 import java.util.List;
+import java.util.Map;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,14 +28,18 @@ public interface SearchApi {
 
     @GetMapping
     @Operation(summary = "Найти товары")
-    SearchResults search(@RequestParam(value = "category", required = false) Category category,
-                         @RequestParam("searchQuery") String searchQuery,
-                         @RequestParam(value = "sortBy", required = false) String sortAttribute,
-                         @RequestParam(value = "sortDir", required = false) String sortDir,
-                         @RequestParam("page") Integer page,
-                         @RequestParam("size") Integer size,
-                         @RequestParam(value = "startPrice", required = false) Integer startPrice,
-                         @RequestParam(value = "endPrice", required = false) Integer endPrice,
-                         @RequestParam MultiValueMap<String, String> attributeValues);
+    SearchResults getProductCharacteristics(@RequestParam(value = "category", required = false) Category category,
+                                            @RequestParam("searchQuery") String searchQuery,
+                                            @RequestParam(value = "sortBy", required = false) String sortAttribute,
+                                            @RequestParam(value = "sortDir", required = false) String sortDir,
+                                            @RequestParam("page") Integer page,
+                                            @RequestParam("size") Integer size,
+                                            @RequestParam(value = "startPrice", required = false) Integer startPrice,
+                                            @RequestParam(value = "endPrice", required = false) Integer endPrice,
+                                            @RequestParam MultiValueMap<String, String> attributeValues);
+
+    @GetMapping("/characteristics")
+    @Operation(summary = "Найти характеристики товара")
+    Map<String, String> getProductCharacteristics(@RequestParam("productUrl") String productUrl);
 
 }

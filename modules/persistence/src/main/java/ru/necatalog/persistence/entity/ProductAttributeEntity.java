@@ -32,4 +32,11 @@ public class ProductAttributeEntity {
     @Column(name = "unit")
     private String unit;
 
+    public ProductAttributeEntity(String productUrl, Long attributeId, String valueType, String value, String unit) {
+        this.id = new ProductAttributeId(productUrl, attributeId);
+        this.value = value;
+        this.unit = unit;
+        this.valueType = valueType;
+    }
+
 }

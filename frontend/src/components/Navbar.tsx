@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {localStorageService} from "../services/LocalStorageService";
 import {authService} from "../services/AuthService";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
@@ -16,10 +16,13 @@ import {Label} from "@/components/ui/label.tsx";
 import {Switch} from "@/components/ui/switch.tsx";
 import {ModeToggle} from "@/components/mode-toggle.tsx";
 import {CatalogDropdown} from "@/components/nav-actions.tsx";
-import {Search} from "lucide-react";
+import {Menu, Search} from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
 import {searchService} from "@/services/SearchService.ts";
 import {CategoryTranslations} from "@/types/CategoryTranslations.ts";
+import {Button} from "@/components/ui/button.tsx";
+import {Card} from "@/components/ui/card.tsx";
+import {cn} from "@/lib/utils.ts";
 
 const Navbar: React.FC = () => {
     const [isNotificationsEnabled, setIsNotificationsEnabled] = useState<boolean>(false);
@@ -27,20 +30,12 @@ const Navbar: React.FC = () => {
     const isAuthenticated = Boolean(localStorageService.getAccessToken());
     const [username, setUsername] = useState<string>("");
     const [searchParams, setSearchParams] = useSearchParams();
-    const initialQuery = searchParams.get('q') || '';
+    const initialQuery = searchParams.get('searchQuery') || '';
 
     const [query, setQuery] = useState(initialQuery);
     const [results, setResults] = useState<string[]>([]);
     const [showResults, setShowResults] = useState(false);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
-
-    useEffect(() => {
-        setSearchParams(q => {
-            if (query.trim()) q.set('q', query);
-            else q.delete('q');
-            return q;
-        });
-    }, [query, setSearchParams]);
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -54,7 +49,6 @@ const Navbar: React.FC = () => {
             searchService.fetchAvailableSearchCategories(query)
                 .then(data => {
                     setResults(data);
-                    console.log(data)
                 })
                 .catch(console.error);
 
@@ -100,7 +94,7 @@ const Navbar: React.FC = () => {
 
     return (
         <header
-            className="border-grid sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            className="border-grid z-50 sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex justify-between container mx-auto flex h-14 items-center px-4 md:px-6">
                 <div className="flex items-center gap-4">
                     <a href="/" className="flex items-center gap-2 font-bold">
@@ -128,29 +122,43 @@ const Navbar: React.FC = () => {
                             focus:w-80 focus:outline-none focus:ring-2 focus:ring-primary`}
                             onChange={e => setQuery(e.target.value)}
                             onFocus={() => setShowResults(true)}
-                            onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                            onBlur={() => setTimeout(() => setShowResults(false), 100)}
                             style={{transformOrigin: 'center'}}
                         />
                         <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
                     </div>
-                    {showResults && results.length > 0 && (
-                        <ul className="absolute z-10 w-48
-                            transition-all duration-300 ease-in-out
-                            focus:w-80 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
-                            {results.map((title, idx) => (
-                                <li
-                                    key={idx}
-                                    className="px-4 py-2 text-sm w-full text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors"
-                                    onMouseDown={() => {
-                                        setQuery(title);
-                                        setShowResults(false);
-                                    }}
-                                >
-                                    {CategoryTranslations[title]}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    {/*{showResults && results.length > 0 && (*/}
+                        <>
+                            <Card className={cn(
+                                "absolute mt-2 p-2",
+                                "transition-all duration-300 ",
+                                "overflow-hidden",
+                                "origin-left", // Точка трансформации слева
+                                showResults && results.length > 0
+                                    ? "w-80 opacity-100 pointer-events-auto"
+                                    : "w-48 opacity-0 pointer-events-none"
+                            )}>
+                                <div className="py-2">
+                                    <Label className={"p-2 bold text-xl"}>Искать в</Label>
+                                    <div className="space-y-1 mt-1">
+                                        {results.map((title, idx) => (
+                                            <Button
+                                                key={idx}
+                                                variant="ghost"
+                                                className="w-full justify-start px-2 py-1 h-auto text-sm font-normal"
+                                                onMouseDown={() => {
+                                                    setShowResults(false);
+                                                    navigate(`/catalog/${title}?searchQuery=${encodeURIComponent(query)}`);
+                                                }}
+                                            >
+                                                {CategoryTranslations[title]}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </Card>
+                        </>
+                    {/*)}*/}
                 </div>
 
                 <div className="flex items-center gap-2">

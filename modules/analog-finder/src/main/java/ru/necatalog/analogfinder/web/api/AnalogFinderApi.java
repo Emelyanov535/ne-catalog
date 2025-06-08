@@ -17,7 +17,8 @@ public interface AnalogFinderApi {
     @GetMapping
     @Operation(summary = "Получить аналоги товара")
     List<AnalogResult> findAnalogs(@RequestParam("productUrl") String productUrl,
-                                   @RequestParam("attributeGroups") List<String> attributeGroups);
+                                   @RequestParam("attributeGroups") List<String> attributeGroups,
+                                   @RequestParam(value = "reverse", defaultValue = "false") boolean reverse);
 
     @GetMapping("/attributes")
     @Operation(summary = "Получить атрибуты для поиска аналогов")

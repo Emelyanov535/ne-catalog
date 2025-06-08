@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useParams, useSearchParams} from "react-router-dom";
+import {useLocation, useParams, useSearchParams} from "react-router-dom";
 import {searchService} from "@/services/SearchService.ts"
 import {LaptopFiltersTranslations} from "@/types/LaptopFiltersTranslations.ts";
 import {Input} from "@/components/ui/input.tsx";
@@ -15,7 +15,7 @@ import {PaginationControls} from "@/components/PaginationControls.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 
 const SearchPage: React.FC = () => {
-    const {category} = useParams<string>();
+    const {category} = useParams<{ category: string}>();
     const [choosedStartPrice, setChoosedStartPrice] = useState<number>();
     const [choosedEndPrice, setChoosedEndPrice] = useState<number>();
     const [categoryFilters, setCategoryFilters] = useState<Filters>({});
@@ -29,6 +29,23 @@ const SearchPage: React.FC = () => {
     const {favorites, toggleFavorite} = useFavorites();
     const [searchParams, setSearchParams] = useSearchParams();
     const page = parseInt(searchParams.get("page") || "1", 10);
+    const location = useLocation();
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const query = params.get('searchQuery');
+
+        console.log(query)
+        if (query !== searchQuery) {
+            const performSearch = async () => {
+                await fetchFilters();
+                await search(query);
+            };
+
+            setSearchQuery(query || '');
+            performSearch();
+        }
+    }, [location.search]);
 
     useEffect(() => {
         fetchFilters();
@@ -37,11 +54,6 @@ const SearchPage: React.FC = () => {
     useEffect(() => {
         setCurrentPage(page - 1);
     }, [page]);
-
-    useEffect(() => {
-        search();
-    }, [category, searchQuery, currentPage, choosedFilters, sortDir, choosedStartPrice, choosedEndPrice]);
-
 
     const fetchFilters = async () => {
         setCategoryFilters(await searchService.getFilters(category || ""))
@@ -75,7 +87,7 @@ const SearchPage: React.FC = () => {
         setChoosedEndPrice(Number.parseInt(event.target.value));
     };
 
-    const search = async () => {
+    const search = async (sq: string) => {
         const result: Record<string, string[]> = {};
 
         Object.values(choosedFilters).forEach(subFilters => {
@@ -87,7 +99,7 @@ const SearchPage: React.FC = () => {
             });
         });
         const response = await searchService.search(category ?? '',
-            searchQuery, page - 1, 20, result, sortDir!, choosedStartPrice ?? categoryFilters.priceStart, choosedEndPrice ?? categoryFilters.priceEnd)
+            sq || searchQuery, page - 1, 20, result, sortDir!, choosedStartPrice ?? categoryFilters.priceStart, choosedEndPrice ?? categoryFilters.priceEnd)
         setProducts(response.results)
         setMaxPage(response.maxPage)
     }
@@ -109,13 +121,13 @@ const SearchPage: React.FC = () => {
                             Сортировка:
                         </p>
                         <Select value={sortDir} onValueChange={setSortDir}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-[200px]">
                                 <SelectValue placeholder="..."/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    <SelectItem value="asc">Сначала дорогие</SelectItem>
-                                    <SelectItem value="desc">Сначала недорогие</SelectItem>
+                                    <SelectItem value="desc">Сначала дорогие</SelectItem>
+                                    <SelectItem value="asc">Сначала недорогие</SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
@@ -159,7 +171,6 @@ const SearchPage: React.FC = () => {
                                                         <ScrollArea className="whitespace-normal border rounded-md ">
                                                             <div className={"m-1 max-h-50 flex flex-col space-x-4"}>
                                                                 {values.map(value => (
-                                                                    <>
                                                                     <div key={value} className="flex items-center my-1">
                                                                         <Checkbox
                                                                             checked={choosedFilters[filterCategory]?.[subFilterName]?.includes(value) || false}
@@ -187,7 +198,6 @@ const SearchPage: React.FC = () => {
                                                                         />
                                                                         <p className="pl-1 break-words">{value}</p>
                                                                     </div>
-                                                                    </>
                                                                 ))}
                                                             </div>
                                                         </ScrollArea>
@@ -204,7 +214,7 @@ const SearchPage: React.FC = () => {
                     </Accordion>
                     <Button className={"mt-2"} onClick={() => {
                         setCurrentPage(0);
-                        search()
+                        search(undefined)
                     }}>Искать</Button>
                 </div>
                 <div className={"w-full flex flex-col"}>

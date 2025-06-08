@@ -7,6 +7,7 @@ export const LaptopFiltersTranslations: Record<string, string> = {
     RAM_TYPE: "Тип оперативной памяти",
     MAX_FREQUENCY_SCREEN: "Максимальная частота обновления экрана",
     NUM_OF_CORES: "Количество ядер процессора",
+    NUM_OF_THREADS: "Количество потоков процессора",
     VOLUME_SSD: "Объем твердотельного накопителя",
     GPU_NAME: "Название видеокарты",
     VOLUME_HDD: "Объем жесткого диска",

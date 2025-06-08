@@ -40,11 +40,9 @@ class SearchService {
                     ...filters
                 },
                 paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' })})
-            console.log(sortDir)
             if (response.status !== 200) {
                 toast.error("Ошибка при загрузке данных");
             }
-            console.log(response.data)
             return response.data;
         } catch (error) {
             toast.error("Ошибка:" + error);
@@ -65,6 +63,17 @@ class SearchService {
         }
     }
 
+    async getProductCharacteristics(productUrl: string): Promise<Record<string, string>> {
+        try {
+            const response = await axiosInstance.get<Record<string, string>>(`/search/characteristics`,
+                {params: {productUrl}});
+
+            return response.data;
+        } catch (error) {
+            console.error('Ошибка при загрузке категорий:', error);
+            return undefined;
+        }
+    }
 }
 
 export const searchService = new SearchService();

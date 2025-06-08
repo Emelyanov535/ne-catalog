@@ -51,7 +51,8 @@ public class AnalogFinderServiceIntegrationTests {
     void findAnalogsTest() {
         List<AnalogResult> analogs =  analogFinderService.findAnalogs(
             "https://www.ozon.ru/product/msi-alpha-17-c7vg-046cn-igrovoy-noutbuk-17-3-amd-ryzen-9-7940hx-ram-32-gb-ssd-nvidia-geforce-rtx-1826945055/",
-            List.of("CPU_NAME", "FREQUENCY", "RESOLUTION", "RAM"));
+            List.of("CPU_NAME", "FREQUENCY", "RESOLUTION", "RAM"),
+            false);
 
         assertThat(analogs).hasSize(1);
     }

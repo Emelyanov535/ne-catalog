@@ -3,13 +3,14 @@ import {toast} from "sonner";
 import qs from 'qs';
 
 class AnalogService {
-    async findAnalogs(url: string, choosedAnalogAttributes: string[]): Promise<ProductDto[]> {
+    async findAnalogs(url: string, choosedAnalogAttributes: string[], reverse: boolean): Promise<ProductDto[]> {
         try {
             const response = await axiosInstance.get(`/find-analog`,
                 {
                     params: {
                         productUrl: url,
-                        attributeGroups: choosedAnalogAttributes
+                        attributeGroups: choosedAnalogAttributes,
+                        reverse: reverse
                     },
                     paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' })})
 

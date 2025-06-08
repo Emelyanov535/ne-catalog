@@ -17,8 +17,9 @@ public class AnalogFinderController implements AnalogFinderApi {
 
     @Override
     public List<AnalogResult> findAnalogs(String productUrl,
-                                          List<String> attributeGroups) {
-        return analogFinderService.findAnalogs(productUrl, attributeGroups);
+                                          List<String> attributeGroups,
+                                          boolean reverse) {
+        return analogFinderService.findAnalogs(productUrl, attributeGroups, reverse);
     }
 
     @Override

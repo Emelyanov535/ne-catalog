@@ -2,11 +2,14 @@ package ru.necatalog.search.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import ru.necatalog.persistence.dto.PriceFilterDto;
 import ru.necatalog.persistence.dto.ProductAttributeFilter;
 import ru.necatalog.persistence.entity.AttributeEntity;
+import ru.necatalog.persistence.entity.ProductAttributeEntity;
 import ru.necatalog.persistence.enumeration.Category;
 import ru.necatalog.persistence.enumeration.Marketplace;
 import ru.necatalog.persistence.repository.AttributeRepository;
@@ -58,22 +62,51 @@ public class SearchService {
             .toList();
         List<ProductAttributeFilter> attributeValuePairs =
             productAttributeRepository.findDistinctById_attributeIdIn(categoryAttributes);
+
         Map<String, Map<String, List<String>>> filters = attributeValuePairs.stream()
             .collect(Collectors.groupingBy(
                 pair -> attributes.get(pair.getAttributeId()).getGroup(),
                 Collectors.groupingBy(
                     pair -> attributes.get(pair.getAttributeId()).getName(),
-                    Collectors.mapping(
-                        pair -> pair.getValue()
-                            + (pair.getUnit() == null || StringUtils.containsIgnoreCase(pair.getValue(), pair.getUnit()) ? "" : " " + pair.getUnit()),
-                        Collectors.toList()
+                    Collectors.collectingAndThen(
+                        Collectors.mapping(
+                            pair -> {
+                                String value = pair.getValue();
+                                String unit = pair.getUnit();
+                                String fullValue = value + (unit == null || StringUtils.containsIgnoreCase(value, unit)
+                                    ? ""
+                                    : " " + unit);
+
+                                try {
+                                    double numericValue = Double.parseDouble(value);
+                                    return new SortableValue(1, numericValue, fullValue); // 1 = числовое
+                                } catch (NumberFormatException e) {
+                                    return new SortableValue(0, Double.MIN_VALUE, fullValue); // 0 = строковое
+                                }
+                            },
+                            Collectors.toList()
+                        ),
+                        list -> {
+                            // Разделяем на строки и числа
+                            List<SortableValue> nonNumeric = list.stream()
+                                .filter(v -> v.type() == 0)
+                                .sorted(Comparator.comparing(SortableValue::displayValue))
+                                .toList();
+
+                            List<SortableValue> numeric = list.stream()
+                                .filter(v -> v.type() == 1)
+                                .sorted(Comparator.comparingDouble(SortableValue::sortValue))
+                                .toList();
+
+                            // Объединяем
+                            return Stream.concat(nonNumeric.stream(), numeric.stream())
+                                .map(SortableValue::displayValue)
+                                .collect(Collectors.toList());
+                        }
                     )
-                )));
-        for (var characteristics : filters.values()) {
-            for (var attribute : characteristics.values()) {
-                Collections.sort(attribute);
-            }
-        }
+                )
+            ));
+
         FilterData filterData = new FilterData();
         filterData.setFilters(filters);
         filterData.setPriceStart(price.getPriceStart());
@@ -217,7 +250,27 @@ public class SearchService {
     }
 
     public List<Category> getCategories(String searchQuery) {
-        return productRepository.getSearchCategories(searchQuery);
+        return productRepository.getSearchCategories(buildTsQuery(searchQuery));
     }
+
+    private String buildTsQuery(String rawInput) {
+        return Arrays.stream(rawInput.split("\\s+"))
+            .map(word -> word + ":*")
+            .collect(Collectors.joining(" & "));
+    }
+
+    public Map<String, String> getProductCharacteristics(String productUrl) {
+        List<ProductAttributeEntity> productAttributes = productAttributeRepository.findById_ProductUrl(productUrl);
+        return productAttributes.stream()
+            .sorted(Comparator.comparing(pa -> attributes.get(pa.getId().getAttributeId()).getGroup()))
+            .collect(Collectors.toMap(
+                pa -> attributes.get(pa.getId().getAttributeId()).getName(),
+                pa -> pa.getValue() + (pa.getUnit() == null ? "" : " " + pa.getUnit()),
+                (v1, v2) -> v1, // дубликаты — берем первый
+                LinkedHashMap::new // сохраняем порядок
+            ));
+    }
+
+    record SortableValue(int type, double sortValue, String displayValue) {}
 
 }
