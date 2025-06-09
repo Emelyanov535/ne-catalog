@@ -31,33 +31,81 @@ const SearchPage: React.FC = () => {
     const page = parseInt(searchParams.get("page") || "1", 10);
     const location = useLocation();
 
+    const updateSearchParamsFromFilters = () => {
+        const params = new URLSearchParams();
+
+        // Цена
+        if (choosedStartPrice !== undefined) params.set("startPrice", String(choosedStartPrice));
+        if (choosedEndPrice !== undefined) params.set("endPrice", String(choosedEndPrice));
+
+        // Сортировка
+        if (sortDir) params.set("sortDir", sortDir);
+
+        // Поисковый запрос
+        if (searchQuery) params.set("searchQuery", searchQuery);
+
+        // Фильтры
+        Object.entries(choosedFilters).forEach(([category, subFilters]) => {
+            Object.entries(subFilters).forEach(([filterName, values]) => {
+                values.forEach(value => {
+                    params.append(filterName, value);
+                });
+            });
+        });
+
+        params.set("page", String(currentPage + 1));
+
+        setSearchParams(params);
+    };
+
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const query = params.get('searchQuery');
 
-        console.log(query)
-        if (query !== searchQuery) {
-            const performSearch = async () => {
-                await fetchFilters();
-                await search(query);
-            };
+        // Цена
+        const page = searchParams.get("page");
+        const startPrice = searchParams.get("startPrice");
+        const endPrice = searchParams.get("endPrice");
+        if (startPrice) setChoosedStartPrice(Number(startPrice));
+        if (endPrice) setChoosedEndPrice(Number(endPrice));
+        if (page) setCurrentPage(Number(page) - 1);
 
-            setSearchQuery(query || '');
-            performSearch();
+        // Сортировка
+        const sort = searchParams.get("sortDir");
+        if (sort) setSortDir(sort);
+
+        // Поиск
+        const query = searchParams.get("searchQuery");
+        setSearchQuery(query || '');
+
+        fetchFilters().then((filters) => {
+            const filterState: Record<string, Record<string, string[]>> = {};
+
+            Object.entries(filters.filters).forEach(([filterCategory, subFilters]) => {
+                Object.entries(subFilters).forEach(([subFilterName]) => {
+                    const values = searchParams.getAll(subFilterName);
+                    if (values.length > 0) {
+                        if (!filterState[filterCategory]) {
+                            filterState[filterCategory] = {};
+                        }
+                        filterState[filterCategory][subFilterName] = values;
+                    }
+                });
+            });
+
+            setChoosedFilters(filterState);
+        });
+    }, [searchParams]);
+
+    useEffect(() => {
+        if (choosedFilters) {
+            search(searchQuery);
         }
-    }, [location.search]);
+    }, [choosedFilters]);
 
-    useEffect(() => {
-        fetchFilters();
-    }, [category]);
-
-    useEffect(() => {
-        setCurrentPage(page - 1);
-    }, [page]);
-
-    const fetchFilters = async () => {
-        setCategoryFilters(await searchService.getFilters(category || ""))
-    }
+    const fetchFilters = async (): Promise<Filters> => {
+        const filters = await searchService.getFilters(category || "");
+        setCategoryFilters(filters);
+        return filters;
+    };
 
     const toggleFilterVisibility = (filterCategory: string, subFilterName: string) => {
         setOpenFilters(prev => ({
@@ -105,8 +153,14 @@ const SearchPage: React.FC = () => {
     }
 
     const handlePageChange = (newPage: number) => {
-        setSearchParams({ page: String(newPage) });
+        setCurrentPage(newPage - 1);
+        setSearchParams(prev => {
+            const params = new URLSearchParams(prev.toString());
+            params.set("page", String(newPage));
+            return params;
+        });
     };
+
 
     return (
         <div className={"max-w-2/3 mx-auto mt-4"}>
@@ -214,6 +268,7 @@ const SearchPage: React.FC = () => {
                     </Accordion>
                     <Button className={"mt-2"} onClick={() => {
                         setCurrentPage(0);
+                        updateSearchParamsFromFilters();
                         search(undefined)
                     }}>Искать</Button>
                 </div>

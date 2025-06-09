@@ -49,7 +49,7 @@ export function TestComponent({chartData}: { chartData: any }) {
         }));
     }, [chartData]);
 
-    const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("wildberries")
+    const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("general")
     return (
         <Card>
             <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
